@@ -38,5 +38,6 @@ namespace game
 		};
 
 		int run();
+		int getWindowFPS();
 	};
 }

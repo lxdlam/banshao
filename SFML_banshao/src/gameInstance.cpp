@@ -34,4 +34,9 @@ namespace game
 		window.run();
 		return 0;
 	}
+
+	int gameInstance::getWindowFPS()
+	{
+		return window.getFPS();
+	}
 }

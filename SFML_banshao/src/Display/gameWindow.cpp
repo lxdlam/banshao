@@ -13,30 +13,30 @@ using utils::log;
 
 namespace game::Display
 {
-	// FIXME fps
-	void calc_fps_thread_func(const unsigned long long& f, sf::RenderWindow& window)
+	void window::calc_fps_thread_func(const unsigned long long& f)
 	{
 		auto base = f;
 		auto FrameCountInterval = std::chrono::seconds(1);
-		while (window.isOpen())
+		while (isOpen())
 		{
 			base = f;
 			std::this_thread::sleep_for(FrameCountInterval);
-			std::cout << "frame: " << f << " fps: " << (f - base) * 1000 / std::chrono::duration_cast<std::chrono::milliseconds>(FrameCountInterval).count() << std::endl;
+			fps = (f - base) * 1000 / std::chrono::duration_cast<std::chrono::milliseconds>(FrameCountInterval).count();
+			std::cout << "frame: " << f << " fps: " << fps << std::endl;
 		}
 	}
 
-	void render_thread_func(sf::RenderWindow& window)
+	void window::render_thread_func()
 	{
 		unsigned long long frame = 0;
-		std::thread fps(calc_fps_thread_func, std::ref(frame), std::ref(window));
+		std::thread fps(&window::calc_fps_thread_func, this, std::ref(frame));
 		std::unique_ptr<Scene> pScene(new Scene);
-		while (window.isOpen())
+		while (sfWin.isOpen())
 		{
-			window.clear();
-			// TODO window.draw(thing); 
-			window.draw(*pScene);
-			window.display();
+			sfWin.clear();
+			// TODO sfWin.draw(thing); 
+			sfWin.draw(*pScene);
+			sfWin.display();
 			frame++;
 		}
 		fps.join();
@@ -57,18 +57,22 @@ namespace game::Display
 	{
 		while (!closed)
 		{
-			std::thread render(render_thread_func, std::ref(sfWin));
+			std::thread renderThread(&window::render_thread_func, this);
 			while (sfWin.isOpen())
 			{
 				sf::Event event;
 				while (sfWin.pollEvent(event))
 				{
 					// "close requested" event: we close the window
-					if (event.type == sf::Event::Closed)
-						close();
+					switch (event.type)
+					{
+					case sf::Event::Closed: close(); break;
+					}
+					// FIXME How long should event checking takes?
+					std::this_thread::sleep_for(std::chrono::milliseconds(10));
 				}
 			}
-			render.join();
+			renderThread.join();
 		}
 		return 0;
 	}
@@ -130,6 +134,11 @@ namespace game::Display
 	bool window::isOpen()
 	{
 		return sfWin.isOpen() || !closed;
+	}
+
+	int window::getFPS()
+	{
+		return fps;
 	}
 
 }
