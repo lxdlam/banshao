@@ -5,7 +5,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
-namespace game::Display
+namespace game
 {
 	// Parent class of scenes, defines how an object being stored and drawn.
 	// Every sub classes of scenes should inherit this class.

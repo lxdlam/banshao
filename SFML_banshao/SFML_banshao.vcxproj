@@ -124,22 +124,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Config\system.cpp" />
-    <ClCompile Include="src\Display\scene.cpp" />
+    <ClCompile Include="src\Scene\scene.cpp" />
     <ClCompile Include="src\utils.cpp" />
     <ClCompile Include="src\gameInstance.cpp" />
     <ClCompile Include="src\Config\general.cpp" />
     <ClCompile Include="src\Config\graphics.cpp" />
-    <ClCompile Include="src\Display\gameWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Display\scene.h" />
+    <ClInclude Include="src\Scene\scene.h" />
     <ClInclude Include="src\gameInstance.h" />
     <ClInclude Include="src\Config\general.h" />
     <ClInclude Include="src\Config\graphics.h" />
     <ClInclude Include="src\Config\sound.h" />
     <ClInclude Include="src\Config\system.h" />
-    <ClInclude Include="src\Display\gameWindow.h" />
     <ClInclude Include="src\resource.h" />
     <ClInclude Include="src\utils.h" />
   </ItemGroup>

@@ -1,6 +1,6 @@
 #include "scene.h"
 
-namespace game::Display
+namespace game
 {
 	Scene::Scene()
 	{

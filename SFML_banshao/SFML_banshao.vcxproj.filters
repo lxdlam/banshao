@@ -24,9 +24,6 @@
     <ClCompile Include="src\gameInstance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\Display\gameWindow.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\Config\general.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -36,7 +33,7 @@
     <ClCompile Include="src\Config\system.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\Display\scene.cpp">
+    <ClCompile Include="src\Scene\scene.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -48,9 +45,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\gameInstance.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Display\gameWindow.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\Config\general.h">
@@ -65,7 +59,7 @@
     <ClInclude Include="src\Config\system.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\Display\scene.h">
+    <ClInclude Include="src\Scene\scene.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

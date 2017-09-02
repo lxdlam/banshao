@@ -1,7 +1,5 @@
 #pragma once
-
-#include <memory>
-#include "Display/gameWindow.h"
+#include <SFML/Graphics.hpp>
 
 namespace game
 {
@@ -10,14 +8,17 @@ namespace game
 	private:
 		gameInstance();
 		~gameInstance();
-		Display::window window;
+
+		sf::RenderWindow sfWin;
+		int fps = 0;
+		unsigned long long totalFrameRendered = 0;
+		bool closed = false;
 
 	public:
 		static gameInstance& getInstance();
 		gameInstance(gameInstance const&) = delete;
 		void operator=(gameInstance const&) = delete;
 
-		// FIXME Maybe this should not be here
 		enum class eMode {
 			EXIT = 0,
 			TITLE = 1,
@@ -35,9 +36,22 @@ namespace game
 
 			RESULT,
 			COURSE_RESULT,
-		};
+		} mode = eMode::PLAY7;
 
 		int run();
-		int getWindowFPS();
+		int close();
+
+	private:
+		void calc_fps_thread_func();
+		void render_thread_func();
+
+	public:
+		int setWindowMode();
+		int setVSync();
+		int setMaxFPS();
+		int resize();
+
+		inline bool isOpen();
+		int getFPS();
 	};
 }
