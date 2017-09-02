@@ -19,24 +19,6 @@ namespace game
 		gameInstance(gameInstance const&) = delete;
 		void operator=(gameInstance const&) = delete;
 
-		enum class eMode {
-			EXIT = 0,
-			TITLE = 1,
-			SONG_SELECT,
-			THEME_SELECT,
-			KEY_CONFIG,
-
-			PLAY5,
-			PLAY5_2,
-			PLAY7,
-			PLAY7_2,
-			PLAY9,
-			PLAY10,
-			PLAY14,
-
-			RESULT,
-			COURSE_RESULT,
-		} mode = eMode::PLAY7;
 
 		int run();
 		int close();

@@ -16,6 +16,7 @@ namespace utils
 {
 	void log(std::string info, int verbose)
 	{
+		std::cout << info << std::endl;
 		if (verbose > game::Config::system::getInstance().getVerbose()) return;
 
 		auto sysclock = std::chrono::system_clock::now();

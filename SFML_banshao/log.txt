@@ -1,7 +1,7 @@
-[Sat Sep  2 18:52:41 2017] [System] Logfile set to log.txt
-[Sat Sep  2 18:52:41 2017] [Graphics] MaxFPS -> 0
-[Sat Sep  2 18:52:41 2017] [Graphics] Resolution -> 1280x720
-[Sat Sep  2 18:52:41 2017] [Graphics] Window Mode -> 1
-[Sat Sep  2 18:52:41 2017] [Graphics] VSync -> 0
-[Sat Sep  2 18:52:41 2017] OS: Windows 8
-[Sat Sep  2 18:52:41 2017] Render window set
+[Sun Sep  3 02:29:55 2017] [System] Logfile set to log.txt
+[Sun Sep  3 02:29:55 2017] [Graphics] MaxFPS -> 0
+[Sun Sep  3 02:29:55 2017] [Graphics] Resolution -> 1280x720
+[Sun Sep  3 02:29:55 2017] [Graphics] Window Mode -> 1
+[Sun Sep  3 02:29:55 2017] [Graphics] VSync -> 0
+[Sun Sep  3 02:29:55 2017] OS: Windows 8
+[Sun Sep  3 02:29:55 2017] Render window set

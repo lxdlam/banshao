@@ -8,14 +8,13 @@
 namespace game
 {
 	// Parent class of scenes, defines how an object being stored and drawn.
-	// Every sub classes of scenes should inherit this class.
+	// Every classes of scenes should inherit this class.
 	class Scene: public sf::Drawable
 	{
 	private:
-		// TODO 规定元件类型（如何存储、如何寻找并绘制）
-		// FIXME .
-		sf::Texture a_simple_texture_initialized_from_a_file_to_be_used_by_the_sprite;
-		sf::Sprite a_simple_random_picture_to_be_shown_on_the_window_xd_xd_xd;
+		std::vector<sf::Image> vecImage;
+		std::vector<sf::Texture> vecTexture;
+		std::vector<sf::Sprite> vecSprite;
 	public:
 		Scene();
 		~Scene();

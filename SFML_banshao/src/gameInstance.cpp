@@ -5,6 +5,7 @@
 #include "Scene/scene.h"
 #include <SFML/Graphics.hpp>
 #include "gameInstance.h"
+#include "modeController.h"
 
 #include <chrono>
 #include <thread>
@@ -48,19 +49,18 @@ namespace game
 			base = totalFrameRendered;
 			std::this_thread::sleep_for(FrameCountInterval);
 			fps = (totalFrameRendered - base) * 1000 / std::chrono::duration_cast<std::chrono::milliseconds>(FrameCountInterval).count();
-			//std::cout << "frame: " << f << " fps: " << fps << std::endl;
+			//std::cout << "fps: " << fps << std::endl;
 		}
 	}
 
 	void gameInstance::render_thread_func()
 	{
 		std::thread fps(&gameInstance::calc_fps_thread_func, this);
-		std::unique_ptr<Scene> pScene(new Scene);
+		auto& modeCon = game::modeController::getInstance();
 		while (sfWin.isOpen())
 		{
 			sfWin.clear();
-			// TODO sfWin.draw(thing); 
-			sfWin.draw(*pScene);
+			sfWin.draw(*modeCon.getScenePtr());
 			sfWin.display();
 			totalFrameRendered++;
 		}
