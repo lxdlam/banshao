@@ -20,6 +20,8 @@ namespace game::Config
 		return 0;
 	}
 
+	// FIXME sleep function in SFML is based on milliseconds (at least on Windows it is)
+	// which means any values higher than 1000 may not work as expected..
 	int graphics::setMaxFPS(int fps)
 	{
 		if (fps > 0 && fps < 30)	// Not sure if minimum of 30fps is enough for a VSRG

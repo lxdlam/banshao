@@ -14,6 +14,7 @@
 
 namespace utils
 {
+	// TODO switch to a logging library
 	void log(std::string info, int verbose)
 	{
 		std::cout << info << std::endl;
