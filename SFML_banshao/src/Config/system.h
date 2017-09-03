@@ -24,7 +24,7 @@ namespace game::Config
 		std::ostream *logStream = &std::cout;
 		int verbose = LOGS_All;
 
-	public:;
+	public:
 		int setDefaults();
 
 		int setLogFile(const std::string& path);

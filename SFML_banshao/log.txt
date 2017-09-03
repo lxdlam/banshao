@@ -1,7 +1,8 @@
-[Sun Sep  3 02:29:55 2017] [System] Logfile set to log.txt
-[Sun Sep  3 02:29:55 2017] [Graphics] MaxFPS -> 0
-[Sun Sep  3 02:29:55 2017] [Graphics] Resolution -> 1280x720
-[Sun Sep  3 02:29:55 2017] [Graphics] Window Mode -> 1
-[Sun Sep  3 02:29:55 2017] [Graphics] VSync -> 0
-[Sun Sep  3 02:29:55 2017] OS: Windows 8
-[Sun Sep  3 02:29:55 2017] Render window set
+[Sun Sep  3 23:04:02 2017] [System] Logfile set to log.txt
+[Sun Sep  3 23:04:02 2017] [Graphics] MaxFPS -> 0
+[Sun Sep  3 23:04:02 2017] [Graphics] Resolution -> 1280x720
+[Sun Sep  3 23:04:02 2017] [Graphics] Window Mode -> 1
+[Sun Sep  3 23:04:02 2017] [Graphics] VSync -> 0
+[Sun Sep  3 23:04:02 2017] OS: Windows 8
+[Sun Sep  3 23:04:03 2017] Render window set
+[Sun Sep  3 23:04:03 2017] Key bindings updated

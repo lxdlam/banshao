@@ -3,6 +3,8 @@
 #include "Config/graphics.h"
 #include "Config/system.h"
 #include "Scene/scene.h"
+#include "Input/functional.h"
+#include "Input/gamepad.h"
 #include <SFML/Graphics.hpp>
 #include "gameInstance.h"
 #include "modeController.h"
@@ -27,6 +29,7 @@ namespace game
 		utils::logSystemInfo();
 		closed = false;
 		setWindowMode();
+		Input::gamepad::updateBindings();
 	}
 
 	gameInstance::~gameInstance()
@@ -40,6 +43,7 @@ namespace game
 		Config::dispose();
 	}
 
+	// FIXME I've seen an ordinary way to count FPS with a loop array
 	void gameInstance::calc_fps_thread_func()
 	{
 		auto base = totalFrameRendered;
@@ -49,7 +53,9 @@ namespace game
 			base = totalFrameRendered;
 			std::this_thread::sleep_for(FrameCountInterval);
 			fps = (totalFrameRendered - base) * 1000 / std::chrono::duration_cast<std::chrono::milliseconds>(FrameCountInterval).count();
-			//std::cout << "fps: " << fps << std::endl;
+			std::cout << "fps: " << fps << std::endl;
+			// two threads are not synchronized
+			std::cout << "input fps: " << input_fps << " stat: " << functionalInput << ", " << gamepadInput << std::endl;
 		}
 	}
 
@@ -67,11 +73,49 @@ namespace game
 		fps.join();
 	}
 
+	// FIXME same as above
+	void gameInstance::calc_input_fps_thread_func()
+	{
+		auto base = totalInputDetected;
+		auto FrameCountInterval = std::chrono::seconds(1);
+		while (isOpen())
+		{
+			base = totalInputDetected;
+			std::this_thread::sleep_for(FrameCountInterval);
+			input_fps = (totalInputDetected - base) * 1000 / std::chrono::duration_cast<std::chrono::milliseconds>(FrameCountInterval).count();
+		}
+	}
+
+	void gameInstance::input_thread_func()
+	{
+		std::thread fps(&gameInstance::calc_input_fps_thread_func, this);
+		while (isOpen())
+		{
+			functionalInput = Input::functional::detect();
+			gamepadInput = Input::gamepad::detect();
+			totalInputDetected++;
+			// FIXME We are not burning our CPUs!
+		}
+		fps.join();
+	}
+
+	
+	const unsigned long& gameInstance::getFunctionalInput() const
+	{
+		return functionalInput;
+	}
+
+	const unsigned long& gameInstance::getGamepadInput() const
+	{
+		return gamepadInput;
+	}
+
 	int gameInstance::run()
 	{
 		while (!closed)
 		{
 			std::thread renderThread(&gameInstance::render_thread_func, this);
+			std::thread inputThread(&gameInstance::input_thread_func, this);
 			while (sfWin.isOpen())
 			{
 				sf::Event event;
@@ -86,6 +130,7 @@ namespace game
 				// FIXME How long should event checking takes?
 				std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			}
+			inputThread.join();
 			renderThread.join();
 		}
 		return 0;

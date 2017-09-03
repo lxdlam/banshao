@@ -2,6 +2,7 @@
 #include "system.h"
 #include "graphics.h"
 #include "sound.h"
+#include "key.h"
 //#include "../lib/json.hpp"
 #include <fstream>
 
@@ -43,6 +44,7 @@ namespace game::Config
 	{
 		system::getInstance().setDefaults();
 		graphics::getInstance().setDefaults();
+		key::getInstance().setDefaults();
 		return 0;
 	}
 }

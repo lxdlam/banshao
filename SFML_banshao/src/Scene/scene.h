@@ -9,12 +9,19 @@ namespace game
 {
 	// Parent class of scenes, defines how an object being stored and drawn.
 	// Every classes of scenes should inherit this class.
+	// vecImage[0] & vecTexture[0] stores error texture.
 	class Scene: public sf::Drawable
 	{
 	private:
 		std::vector<sf::Image> vecImage;
 		std::vector<sf::Texture> vecTexture;
 		std::vector<sf::Sprite> vecSprite;
+
+		// Virtual function that loads textures into sprites.
+		// Called at the end of constructor.
+		// Should check index to prevent overflow.
+		virtual void loadSprites();
+
 	public:
 		Scene();
 		~Scene();

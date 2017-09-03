@@ -123,7 +123,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Config\key.cpp" />
     <ClCompile Include="src\Config\system.cpp" />
+    <ClCompile Include="src\Input\functional.cpp" />
+    <ClCompile Include="src\Input\gamepad.cpp" />
     <ClCompile Include="src\modeController.cpp" />
     <ClCompile Include="src\Scene\scene.cpp" />
     <ClCompile Include="src\utils.cpp" />
@@ -133,6 +136,9 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Config\key.h" />
+    <ClInclude Include="src\Input\functional.h" />
+    <ClInclude Include="src\Input\gamepad.h" />
     <ClInclude Include="src\modeController.h" />
     <ClInclude Include="src\Scene\scene.h" />
     <ClInclude Include="src\gameInstance.h" />
