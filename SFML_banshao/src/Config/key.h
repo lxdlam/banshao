@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <utility>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Joystick.hpp>
 
@@ -48,21 +49,23 @@ namespace game::Config
 	private:
 		int deadZone = 25;
 
-		// A 2d-array stores key bindings.
 		// For keyboard binds, the value is raw enum value defined in sf::Keyboard::Key.0
 		// For joystick binds, the value is a negate number, mixing all of identifiers:
 		//  10000 * Joystick No
-		//  +1000 if Axis, hundreds digit representing direction (0 for -, 1 for +)
-		//  buttons are added directly
-		std::array<std::array<int, 10>, GAMEPAD_KEY_COUNT> gamepadKeyBindings = {};
+
+		// Usage: gamepadKeyBindings [target] [slot] {device, code}
+		//  Keyboard's device is -1
+		//  code +1000 if Axis, with hundreds digit representing direction (0 for -, 1 for +)
+		std::array<std::array<std::pair<int, int>, 10>, GAMEPAD_KEY_COUNT> gamepadKeyBindings = {};
+
+		void _bindKey(gamepad_keys target, int slot, int device, int key);
 
 	public:
 		int setDefaults();
 		int loadConfig();
-		void bindKey(gamepad_keys target, int index, int key);
-		void bindKey(gamepad_keys target, int index, sf::Keyboard::Key key);
-		void bindKey(gamepad_keys target, int index, unsigned joyNo, unsigned button);
-		void bindKey(gamepad_keys target, int index, unsigned joyNo, sf::Joystick::Axis axis, int direction);
+		void bindKey(gamepad_keys target, int slot, sf::Keyboard::Key key);
+		void bindKey(gamepad_keys target, int slot, unsigned joyNo, unsigned button);
+		void bindKey(gamepad_keys target, int slot, unsigned joyNo, sf::Joystick::Axis axis, int direction);
 		auto getBindings(gamepad_keys button) const -> const decltype(gamepadKeyBindings[0]);
 	};
 }

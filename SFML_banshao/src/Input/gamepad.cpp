@@ -10,25 +10,21 @@ namespace game::Input
 		return _inst;
 	}
 
-	void gamepad::updateBindings()
+	void gamepad::_updateBindings()
 	{
-		auto& kbd = getInstance().keyboardBinds;
-		auto& joy = getInstance().joystickBinds;
-		auto& joys = getInstance().joysticksConnected;
-		auto& haveJoy = getInstance().haveJoystick;
-
-		for (auto& k : kbd)
+		for (auto& k : keyboardBinds)
 			k.clear();
-		for (auto& joysticks : joy)
+		for (auto& joysticks : joystickBinds)
 			for (auto& k : joysticks)
 				k.clear();
-		haveJoy = false;
 
+		haveJoystick = false;
 		for (unsigned i = 0; i < sf::Joystick::Count; i++)
-		{
-			joys[i] = sf::Joystick::isConnected(i);
-			if (joys[i]) haveJoy = true;
-		}
+			if (sf::Joystick::isConnected(i))
+			{
+				joysticksConnected[i] = true;
+				haveJoystick = true;
+			}
 
 		for (int k = keys::S1L; k < keys::GAMEPAD_KEY_COUNT; k++)
 		{
@@ -36,33 +32,24 @@ namespace game::Input
 			auto binding = game::Config::key::getInstance().getBindings(eKey);
 			for (auto b : binding)
 			{
-				if (b > 0)
-				{
-					//Keyboard
-					kbd[eKey].push_back(b);
-				}
-				else if (b < 0)
-				{
-					//Joysticks
-					int joyNo = -b / 10000;
-
-					joy[joyNo][eKey].push_back(-b % 10000);
-				}
+				if (b.first == -1)
+					keyboardBinds[eKey].push_back(b.second);
+				else
+					joystickBinds[b.first][eKey].push_back(b.second);
 			}
 		}
 
 		log("Key bindings updated", LOGS_Core);
 	}
 
-	unsigned long gamepad::detect()
+	unsigned long gamepad::_detect()
 	{
-		const auto& kbd = getInstance().keyboardBinds;
+		unsigned long res = 0;
 
 		using sf::Keyboard;
-		unsigned long res = 0;
 		for (int k = keys::S1L; k < keys::GAMEPAD_KEY_COUNT; k++)
 		{
-			for (auto b: kbd[k])
+			for (auto b: keyboardBinds[k])
 				if (Keyboard::isKeyPressed(static_cast<Keyboard::Key>(b)))
 				{
 					res |= mask(static_cast<keys>(k));
@@ -70,60 +57,50 @@ namespace game::Input
 				}
 		}
 
-		if (getInstance().haveJoystick)
+		// Skip joystick detect if no joysticks connected
+		if (!haveJoystick)
+			return res;
+
+		using sf::Joystick;
+		for (int k = keys::S1L; k < keys::GAMEPAD_KEY_COUNT; k++)
 		{
-			using sf::Joystick;
-			const auto& joys = getInstance().joysticksConnected;
-			const auto& joy = getInstance().joystickBinds;
-			const auto& deadzone = getInstance()._deadZone;
-			for (int k = keys::S1L; k < keys::GAMEPAD_KEY_COUNT; k++)
+			for (int i = 0; i < sf::Joystick::Count; i++)
 			{
-				if (res & mask(static_cast<keys>(k))) continue;
-				for (int i = 0; i < joys.size(); i++)
+				if (res & mask(static_cast<keys>(k))) break;
+				if (!joysticksConnected[i]) continue;
+				for (auto b : joystickBinds[i][k])
 				{
-					if (!joys[i]) continue;
-					if (res & mask(static_cast<keys>(k))) break;
-					for (auto b : joy[i][k])
+					if (b / 1000)
 					{
-						if (b / 1000)
-						{
-							b = b % 1000;
-							//Axis
-							int axis = b % 100;
-							int direction = b / 100;
-							auto pos = Joystick::getAxisPosition(i, static_cast<Joystick::Axis>(axis));
-							if (direction > 0)
-							{
-								if (pos - deadzone > 0)
-								{
-									res |= mask(static_cast<keys>(k));
-									break;
-								}
-							}
-							else
-							{
-								if (pos + deadzone < 0)
-								{
-									res |= mask(static_cast<keys>(k));
-									break;
-								}
-							}
-						}
-						else
-						{
-							//Button
-							b = b % 1000;
-							if (Joystick::isButtonPressed(i, b))
-							{
-								res |= mask(static_cast<keys>(k));
-								break;
-							}
-						}
+						//Axis
+						b = b % 1000;
+						int axis = b % 100;
+						int direction = b / 100 == 0 ? -1 : 1;
+						auto pos = Joystick::getAxisPosition(i, static_cast<Joystick::Axis>(axis));
+						if (direction * pos - deadZone > 0)
+							res |= mask(static_cast<keys>(k));
+					}
+					else
+					{
+						//Button
+						b = b % 1000;
+						if (Joystick::isButtonPressed(i, b))
+							res |= mask(static_cast<keys>(k));
 					}
 				}
 			}
 		}
 
 		return res;
+	}
+
+	void gamepad::updateBindings()
+	{
+		getInstance()._updateBindings();
+	}
+
+	unsigned long gamepad::detect()
+	{
+		return getInstance()._detect();
 	}
 }

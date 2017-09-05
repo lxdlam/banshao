@@ -18,15 +18,19 @@ namespace game::Input
 		std::array<bool, sf::Joystick::Count> joysticksConnected{};
 
 		using keys = game::Config::key::gamepad_keys;
+
 		// Usage: keyboardBinds [targetKey] [bindings]
 		std::array<std::vector<int>, keys::GAMEPAD_KEY_COUNT> keyboardBinds;
 
 		// evil nesting declarations..
 		// Usage: joystickBinds [joystickNo] [targetKey] [bindings]
-		// Axes are added by 1000, with hundreds digit representing -/+.
+		//  code +1000 if Axis, with hundreds digit representing direction (0 for -, 1 for +)
 		std::array<std::array<std::vector<int>, keys::GAMEPAD_KEY_COUNT>, sf::Joystick::Count> joystickBinds;
 
-		int _deadZone = 25;
+		int deadZone = 25;
+
+		void _updateBindings();
+		unsigned long _detect();
 
 	public:
 		static constexpr unsigned long mask(keys k)

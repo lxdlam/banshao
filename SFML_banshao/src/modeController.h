@@ -3,7 +3,6 @@
 #include "Scene/scene.h"
 #include <memory>
 #include <string>
-#include <mutex>
 
 namespace game
 {
@@ -14,6 +13,8 @@ namespace game
 		~modeController();
 
 		enum class eMode {
+			UNKNOWN = -1,
+
 			EXIT = 0,
 			TITLE = 1,
 			SONG_SELECT,
@@ -31,7 +32,6 @@ namespace game
 			RESULT,
 			COURSE_RESULT,
 
-			TMPL,
 		} mode;
 
 		std::shared_ptr<Scene> pScene;

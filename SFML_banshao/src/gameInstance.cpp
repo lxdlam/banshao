@@ -47,15 +47,13 @@ namespace game
 	void gameInstance::calc_fps_thread_func()
 	{
 		auto base = totalFrameRendered;
-		auto FrameCountInterval = std::chrono::seconds(1);
+		auto FrameCountInterval = std::chrono::milliseconds(1000);
 		while (isOpen())
 		{
 			base = totalFrameRendered;
 			std::this_thread::sleep_for(FrameCountInterval);
-			fps = (totalFrameRendered - base) * 1000 / std::chrono::duration_cast<std::chrono::milliseconds>(FrameCountInterval).count();
+			fps = static_cast<int>((totalFrameRendered - base) * 1000 / FrameCountInterval.count());
 			std::cout << "fps: " << fps << std::endl;
-			// two threads are not synchronized
-			std::cout << "input fps: " << input_fps << " stat: " << functionalInput << ", " << gamepadInput << std::endl;
 		}
 	}
 
@@ -73,49 +71,11 @@ namespace game
 		fps.join();
 	}
 
-	// FIXME same as above
-	void gameInstance::calc_input_fps_thread_func()
-	{
-		auto base = totalInputDetected;
-		auto FrameCountInterval = std::chrono::seconds(1);
-		while (isOpen())
-		{
-			base = totalInputDetected;
-			std::this_thread::sleep_for(FrameCountInterval);
-			input_fps = (totalInputDetected - base) * 1000 / std::chrono::duration_cast<std::chrono::milliseconds>(FrameCountInterval).count();
-		}
-	}
-
-	void gameInstance::input_thread_func()
-	{
-		std::thread fps(&gameInstance::calc_input_fps_thread_func, this);
-		while (isOpen())
-		{
-			functionalInput = Input::functional::detect();
-			gamepadInput = Input::gamepad::detect();
-			totalInputDetected++;
-			// FIXME We are not burning our CPUs!
-		}
-		fps.join();
-	}
-
-	
-	const unsigned long& gameInstance::getFunctionalInput() const
-	{
-		return functionalInput;
-	}
-
-	const unsigned long& gameInstance::getGamepadInput() const
-	{
-		return gamepadInput;
-	}
-
 	int gameInstance::run()
 	{
 		while (!closed)
 		{
 			std::thread renderThread(&gameInstance::render_thread_func, this);
-			std::thread inputThread(&gameInstance::input_thread_func, this);
 			while (sfWin.isOpen())
 			{
 				sf::Event event;
@@ -127,10 +87,8 @@ namespace game
 					case sf::Event::Closed: close(); break;
 					}
 				}
-				// FIXME How long should event checking takes?
 				std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			}
-			inputThread.join();
 			renderThread.join();
 		}
 		return 0;

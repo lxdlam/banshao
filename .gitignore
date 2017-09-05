@@ -7,7 +7,7 @@
 *.userosscache
 *.sln.docstates
 SFML/
-log.txt
+SFML_banshao/log.txt
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

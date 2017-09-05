@@ -5,6 +5,8 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
+#include <future>
+
 namespace game
 {
 	// Parent class of scenes, defines how an object being stored and drawn.
@@ -21,6 +23,12 @@ namespace game
 		// Called at the end of constructor.
 		// Should check index to prevent overflow.
 		virtual void loadSprites();
+
+		bool running = false;
+		std::future<void> inputTaskFuture;
+		void input_thread_func();
+		unsigned long functionalInput = 0;
+		unsigned long gamepadInput = 0;
 
 	public:
 		Scene();

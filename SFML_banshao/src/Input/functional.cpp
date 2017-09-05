@@ -1,4 +1,5 @@
 #include "functional.h"
+
 #include <SFML/Window/Keyboard.hpp>
 
 namespace game::Input

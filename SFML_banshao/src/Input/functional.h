@@ -8,7 +8,7 @@ namespace game::Input
 		functional() = delete;
 		~functional() = delete;
 
-		static enum functional_keys
+		enum functional_keys
 		{
 			ESC = 0,
 			F1,

@@ -12,7 +12,7 @@ namespace game
 
 	modeController::modeController()
 	{
-		switchMode(eMode::TMPL);
+		switchMode(eMode::UNKNOWN);
 	}
 
 	modeController::~modeController() {}
@@ -43,7 +43,7 @@ namespace game
 		case eMode::RESULT:			return "Result";
 		case eMode::COURSE_RESULT:	return "Course Result";
 
-		case eMode::TMPL:			return "Template";
+		default:					return "Template";
 		}
 	}
 
@@ -71,7 +71,7 @@ namespace game
 		case eMode::RESULT: 		break;
 		case eMode::COURSE_RESULT: 	break;
 		*/
-		case eMode::TMPL:			pScene = std::make_shared<Scene>();
+		default:					pScene = std::make_shared<Scene>(); break;
 		}
 		return 0;
 	}

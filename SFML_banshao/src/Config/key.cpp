@@ -33,26 +33,25 @@ namespace game::Config
 		return 1;
 	}
 
-	void key::bindKey(gamepad_keys target, int index, int key)
+	void key::_bindKey(gamepad_keys target, int slot, int device, int key)
 	{
-		gamepadKeyBindings[target][index] = key;
+		gamepadKeyBindings[target][slot] = {device, key};
 	}
 
-	void key::bindKey(gamepad_keys target, int index, sf::Keyboard::Key key)
+	void key::bindKey(gamepad_keys target, int slot, sf::Keyboard::Key key)
 	{
-		bindKey(target, index, static_cast<int>(key));
+		_bindKey(target, slot, -1, static_cast<int>(key));
 	}
 
-	void key::bindKey(gamepad_keys target, int index, unsigned joyNo, unsigned button)
+	void key::bindKey(gamepad_keys target, int slot, unsigned joyNo, unsigned button)
 	{
-		bindKey(target, index, -static_cast<int>(joyNo * 10000 + button));
+		_bindKey(target, slot, static_cast<int>(joyNo), static_cast<int>(button));
 	}
 
-	void key::bindKey(gamepad_keys target, int index, unsigned joyNo, sf::Joystick::Axis axis, int direction)
+	void key::bindKey(gamepad_keys target, int slot, unsigned joyNo, sf::Joystick::Axis axis, int direction)
 	{
-		if (direction > 0) direction = 1;
-		else if (direction < 0) direction = 0;
-		bindKey(target, index, -static_cast<int>(joyNo * 10000 + 1000 + direction * 100 + static_cast<int>(axis)));
+		bindKey(target, slot, joyNo, 1000 + (direction > 0 ? 100 : 0) + axis);
+		
 	}
 
 	auto key::getBindings(gamepad_keys k) const -> const decltype(gamepadKeyBindings[0])

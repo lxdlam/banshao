@@ -1,5 +1,6 @@
 #include "scene.h"
 #include "../Input/functional.h"
+#include "../Input/gamepad.h"
 
 namespace game
 {
@@ -14,10 +15,17 @@ namespace game
 		vecTexture.push_back(std::move(errTexture));
 
 		loadSprites();
+
+		running = true;
+		inputTaskFuture = std::async(std::launch::async, &Scene::input_thread_func, this);
 	}
 
 	Scene::~Scene()
 	{
+		// Wait input thread terminates
+		running = false;
+		inputTaskFuture.wait();
+
 		// Destroy sprites first (if should be done manually)
 	}
 
@@ -48,5 +56,16 @@ namespace game
 		for (const auto& sprite : vecSprite)
 			target.draw(sprite, states);
 	}
+
+	void Scene::input_thread_func()
+	{
+		while (running)
+		{
+			functionalInput = Input::functional::detect();
+			gamepadInput = Input::gamepad::detect();
+			// FIXME We are not burning our CPUs!
+		}
+	}
+
 
 }
