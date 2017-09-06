@@ -18,19 +18,13 @@ namespace game::Config
 		bindKey(gamepad_keys::S1L, 0, sf::Keyboard::LShift);
 		bindKey(gamepad_keys::S1R, 0, sf::Keyboard::LControl);
 		bindKey(gamepad_keys::K11, 0, sf::Keyboard::Z);
-		bindKey(gamepad_keys::K12, 0, sf::Keyboard::X);
-		bindKey(gamepad_keys::K13, 0, sf::Keyboard::C);
-		bindKey(gamepad_keys::K14, 0, sf::Keyboard::V);
-		bindKey(gamepad_keys::K15, 0, sf::Keyboard::B);
-		bindKey(gamepad_keys::K16, 0, sf::Keyboard::N);
-		bindKey(gamepad_keys::K17, 0, sf::Keyboard::M);
+		bindKey(gamepad_keys::K12, 0, sf::Keyboard::S);
+		bindKey(gamepad_keys::K13, 0, sf::Keyboard::X);
+		bindKey(gamepad_keys::K14, 0, sf::Keyboard::D);
+		bindKey(gamepad_keys::K15, 0, sf::Keyboard::C);
+		bindKey(gamepad_keys::K16, 0, sf::Keyboard::F);
+		bindKey(gamepad_keys::K17, 0, sf::Keyboard::V);
 		return 0;
-	}
-
-	int key::loadConfig()
-	{
-		// TODO 
-		return 1;
 	}
 
 	void key::_bindKey(gamepad_keys target, int slot, int device, int key)

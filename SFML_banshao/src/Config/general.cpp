@@ -1,7 +1,7 @@
 #include "general.h"
 #include "system.h"
-#include "graphics.h"
-#include "sound.h"
+#include "video.h"
+#include "audio.h"
 #include "key.h"
 //#include "../lib/json.hpp"
 #include <fstream>
@@ -43,7 +43,8 @@ namespace game::Config
 	int setDefaults()
 	{
 		system::getInstance().setDefaults();
-		graphics::getInstance().setDefaults();
+		video::getInstance().setDefaults();
+		audio::getInstance().setDefaults();
 		key::getInstance().setDefaults();
 		return 0;
 	}

@@ -1,6 +1,5 @@
 #include "scene.h"
-#include "../Input/functional.h"
-#include "../Input/gamepad.h"
+
 
 namespace game
 {
@@ -61,11 +60,62 @@ namespace game
 	{
 		while (running)
 		{
+			prev_functionalInput = functionalInput;
+			prev_gamepadInput = gamepadInput;
 			functionalInput = Input::functional::detect();
 			gamepadInput = Input::gamepad::detect();
+			logic();
 			// FIXME We are not burning our CPUs!
 		}
 	}
 
+	bool Scene::isFuncKeyPressed(Input::functional::functional_keys k) const
+	{
+		auto m = Input::functional::mask(k);
+		if ((~prev_functionalInput & m) && (functionalInput & m))
+			return true;
+		else
+			return false;
+	}
+
+	bool Scene::isGamepadKeyPressed(Input::gamepad::keys k) const
+	{
+		auto m = Input::gamepad::mask(k);
+		if ((~prev_gamepadInput & m) && (gamepadInput & m))
+			return true;
+		else
+			return false;
+	}
+
+	bool Scene::isFuncKeyReleased(Input::functional::functional_keys k) const
+	{
+		auto m = Input::functional::mask(k);
+		if ((prev_functionalInput & m) && (~functionalInput & m))
+			return true;
+		else
+			return false;
+	}
+
+	bool Scene::isGamepadKeyReleased(Input::gamepad::keys k) const
+	{
+		auto m = Input::gamepad::mask(k);
+		if ((prev_gamepadInput & m) && (~gamepadInput & m))
+			return true;
+		else
+			return false;
+	}
+
+	void Scene::logic()
+	{
+	}
+
+	const unsigned long& Scene::getFunctionalInput() const
+	{
+		return functionalInput;
+	}
+	const unsigned long& Scene::getGamepadInput() const
+	{
+		return gamepadInput;
+	}
 
 }

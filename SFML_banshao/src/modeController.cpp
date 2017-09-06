@@ -2,6 +2,8 @@
 #include <string>
 #include <mutex>
 
+#include "Scene/dummy/test.h"
+
 namespace game
 {
 	modeController& modeController::getInstance()
@@ -71,7 +73,8 @@ namespace game
 		case eMode::RESULT: 		break;
 		case eMode::COURSE_RESULT: 	break;
 		*/
-		default:					pScene = std::make_shared<Scene>(); break;
+		//default:					pScene = std::make_shared<Scene>(); break;
+		default:					pScene = std::make_shared<test>(); break;
 		}
 		return 0;
 	}

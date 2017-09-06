@@ -75,14 +75,20 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../SFML/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../FMOD/inc;../SFML/include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../SFML/lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmodL_vc.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../SFML/lib;../FMOD/lib</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /d /y "$(ProjectDir)..\FMOD\lib\fmodL.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy dlls into build directory. (DEBUG)</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -98,16 +104,24 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../SFML/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../FMOD/inc;../SFML/include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>sfml-graphics-s.lib;sfml-window-s.lib;sfml-system-s.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../SFML/lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmod_vc.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-system-s.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../SFML/lib;../FMOD/lib</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Message>Copy dlls into build directory.</Message>
+      <Command>xcopy /d /y "$(ProjectDir)..\FMOD\lib\fmod.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -124,15 +138,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Config\key.cpp" />
+    <ClCompile Include="src\Config\audio.cpp" />
     <ClCompile Include="src\Config\system.cpp" />
     <ClCompile Include="src\Input\functional.cpp" />
     <ClCompile Include="src\Input\gamepad.cpp" />
     <ClCompile Include="src\modeController.cpp" />
+    <ClCompile Include="src\Scene\dummy\test.cpp" />
     <ClCompile Include="src\Scene\scene.cpp" />
+    <ClCompile Include="src\Sound\sound.cpp" />
     <ClCompile Include="src\utils.cpp" />
     <ClCompile Include="src\gameInstance.cpp" />
     <ClCompile Include="src\Config\general.cpp" />
-    <ClCompile Include="src\Config\graphics.cpp" />
+    <ClCompile Include="src\Config\video.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -140,13 +157,15 @@
     <ClInclude Include="src\Input\functional.h" />
     <ClInclude Include="src\Input\gamepad.h" />
     <ClInclude Include="src\modeController.h" />
+    <ClInclude Include="src\Scene\dummy\test.h" />
     <ClInclude Include="src\Scene\scene.h" />
     <ClInclude Include="src\gameInstance.h" />
     <ClInclude Include="src\Config\general.h" />
-    <ClInclude Include="src\Config\graphics.h" />
-    <ClInclude Include="src\Config\sound.h" />
+    <ClInclude Include="src\Config\video.h" />
+    <ClInclude Include="src\Config\audio.h" />
     <ClInclude Include="src\Config\system.h" />
     <ClInclude Include="src\resource.h" />
+    <ClInclude Include="src\Sound\sound.h" />
     <ClInclude Include="src\utils.h" />
   </ItemGroup>
   <ItemGroup>

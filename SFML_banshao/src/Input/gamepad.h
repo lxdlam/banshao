@@ -9,6 +9,9 @@ namespace game::Input
 {
 	class gamepad
 	{
+	public:
+		using keys = game::Config::key::gamepad_keys;
+
 	private:
 		gamepad() = default;
 		~gamepad() = default;
@@ -16,8 +19,6 @@ namespace game::Input
 
 		bool haveJoystick = false;
 		std::array<bool, sf::Joystick::Count> joysticksConnected{};
-
-		using keys = game::Config::key::gamepad_keys;
 
 		// Usage: keyboardBinds [targetKey] [bindings]
 		std::array<std::vector<int>, keys::GAMEPAD_KEY_COUNT> keyboardBinds;

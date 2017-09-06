@@ -13,6 +13,11 @@ namespace game::Config
 		~key() = default;
 	public:
 		static key& getInstance();
+		key(key const&) = delete;
+		void operator=(key const&) = delete;
+		int setDefaults();
+		int loadConfig();
+
 		enum gamepad_keys
 		{
 			S1L = 0,
@@ -61,8 +66,6 @@ namespace game::Config
 		void _bindKey(gamepad_keys target, int slot, int device, int key);
 
 	public:
-		int setDefaults();
-		int loadConfig();
 		void bindKey(gamepad_keys target, int slot, sf::Keyboard::Key key);
 		void bindKey(gamepad_keys target, int slot, unsigned joyNo, unsigned button);
 		void bindKey(gamepad_keys target, int slot, unsigned joyNo, sf::Joystick::Axis axis, int direction);

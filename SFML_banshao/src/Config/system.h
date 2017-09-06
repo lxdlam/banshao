@@ -15,6 +15,8 @@ namespace game::Config
 		static system& getInstance();
 		system(system const&) = delete;
 		void operator=(system const&) = delete;
+		int setDefaults();
+		int loadConfig();
 		
 	private:
 		const std::string title = "asdf";
@@ -25,8 +27,6 @@ namespace game::Config
 		int verbose = LOGS_All;
 
 	public:
-		int setDefaults();
-
 		int setLogFile(const std::string& path);
 		std::ostream* getLogStream();
 		

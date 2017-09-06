@@ -1,6 +1,6 @@
 #include "utils.h"
 #include "Config/general.h"
-#include "Config/graphics.h"
+#include "Config/video.h"
 #include "Config/system.h"
 #include "Scene/scene.h"
 #include "Input/functional.h"
@@ -24,9 +24,8 @@ namespace game
 
 	gameInstance::gameInstance()
 	{
-		// TODO init with file
-		Config::init();
 		utils::logSystemInfo();
+		Config::init();
 		closed = false;
 		setWindowMode();
 		Input::gamepad::updateBindings();
@@ -104,18 +103,18 @@ namespace game
 
 	int gameInstance::setWindowMode()
 	{
-		using Config::graphics;
-		auto& graphicInst = graphics::getInstance();
+		using Config::video;
+		auto& graphicInst = video::getInstance();
 		auto resolution = graphicInst.getResolution();
 
 		int windowStyle = 0;
 		switch (graphicInst.getWindowMode())
 		{
-		case graphics::windowed::Borderless:
+		case video::windowed::Borderless:
 			windowStyle = sf::Style::None; break;
-		case graphics::windowed::Fullscreen:
+		case video::windowed::Fullscreen:
 			windowStyle = sf::Style::Fullscreen; break;
-		case graphics::windowed::Windowed:
+		case video::windowed::Windowed:
 			windowStyle = sf::Style::Titlebar | sf::Style::Close; break;
 		}
 		sfWin.create(
@@ -141,19 +140,19 @@ namespace game
 
 	int gameInstance::setVSync()
 	{
-		sfWin.setVerticalSyncEnabled(Config::graphics::getInstance().getVSync());
+		sfWin.setVerticalSyncEnabled(Config::video::getInstance().getVSync());
 		return 0;
 	}
 
 	int gameInstance::setMaxFPS()
 	{
-		sfWin.setFramerateLimit(Config::graphics::getInstance().getMaxFPS());
+		sfWin.setFramerateLimit(Config::video::getInstance().getMaxFPS());
 		return 0;
 	}
 
 	int gameInstance::resize()
 	{
-		auto resolution = Config::graphics::getInstance().getResolution();
+		auto resolution = Config::video::getInstance().getResolution();
 		sfWin.setSize(sf::Vector2u(resolution.first, resolution.second));
 		return 0;
 	}
