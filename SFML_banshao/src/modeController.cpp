@@ -1,23 +1,34 @@
 #include "modeController.h"
 #include <string>
-#include <mutex>
+#include "utils.h"
+using utils::log;
 
 #include "Scene/dummy/test.h"
 
 namespace game
 {
-	modeController& modeController::getInstance()
-	{
-		static modeController _inst;
-		return _inst;
-	}
-
 	modeController::modeController()
 	{
-		switchMode(eMode::UNKNOWN);
+		pSound = nullptr;
+		log("modeController initialized without sound system specified.", LOGS_Core);
 	}
 
-	modeController::~modeController() {}
+	modeController::modeController(std::shared_ptr<Sound> p)
+	{
+		pSound = p;
+		log("modeController initialized.", LOGS_Core);
+	}
+
+	modeController::~modeController()
+	{
+		log("modeController destroyed.", LOGS_Core);
+	}
+
+	int modeController::start()
+	{
+		switchMode(eMode::TEST);
+		return 0;
+	}
 	
 	modeController::eMode modeController::getCurrentMode()
 	{
@@ -45,18 +56,17 @@ namespace game
 		case eMode::RESULT:			return "Result";
 		case eMode::COURSE_RESULT:	return "Course Result";
 
-		default:					return "Template";
+		case eMode::TEST:			return "Test";
+		default:					return "Unknown";
 		}
 	}
 
 	int modeController::switchMode(eMode newMode)
 	{
 		mode = newMode;
-		// also change pScene here
 		switch (mode)
 		{
-		/*
-		case eMode::EXIT: 			break;
+		case eMode::EXIT: 			pScene = nullptr; break;
 		case eMode::TITLE: 			break;
 		case eMode::SONG_SELECT: 	break;
 		case eMode::THEME_SELECT: 	break;
@@ -72,10 +82,11 @@ namespace game
 
 		case eMode::RESULT: 		break;
 		case eMode::COURSE_RESULT: 	break;
-		*/
-		//default:					pScene = std::make_shared<Scene>(); break;
-		default:					pScene = std::make_shared<test>(); break;
+			
+		case eMode::TEST:			pScene = std::make_shared<test>(pSound); break;
+		default:					pScene = std::make_shared<Scene>(pSound); break;
 		}
+		log("mode switched to " + getCurrentModeStr(), LOGS_Core);
 		return 0;
 	}
 

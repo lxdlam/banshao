@@ -7,7 +7,7 @@
 #include "Input/gamepad.h"
 #include <SFML/Graphics.hpp>
 #include "gameInstance.h"
-#include "modeController.h"
+#include "Sound/sound.h"
 
 #include <chrono>
 #include <thread>
@@ -26,9 +26,12 @@ namespace game
 	{
 		Config::init();
 		utils::logSystemInfo();
-		closed = false;
 		setWindowMode();
 		Input::gamepad::updateBindings();
+		pSound = std::make_shared<Sound>();
+		modeCon = std::make_unique<modeController>(pSound);
+		active = true;
+		log("Game Instance initialized.", LOGS_Core);
 	}
 
 	gameInstance::~gameInstance()
@@ -36,10 +39,11 @@ namespace game
 		if (isOpen())
 			close();
 
-		log("-------------------------------------------------------------");
-
+		modeCon->switchMode(defs::eMode::EXIT);
+		modeCon.reset();
+		pSound.reset();
 		Config::saveConfig();
-		Config::dispose();
+		log("Game Instance destroyed.", LOGS_Core);
 	}
 
 	// FIXME I've seen an ordinary way to count FPS with a loop array
@@ -59,11 +63,10 @@ namespace game
 	void gameInstance::render_thread_func()
 	{
 		std::thread fps(&gameInstance::calc_fps_thread_func, this);
-		auto& modeCon = game::modeController::getInstance();
-		while (sfWin.isOpen())
+		while (isOpen())
 		{
 			sfWin.clear();
-			sfWin.draw(*modeCon.getScenePtr());
+			sfWin.draw(*modeCon->getScenePtr());
 			sfWin.display();
 			totalFrameRendered++;
 		}
@@ -72,8 +75,9 @@ namespace game
 
 	int gameInstance::run()
 	{
-		while (!closed)
+		while (isOpen())
 		{
+			modeCon->start();
 			std::thread renderThread(&gameInstance::render_thread_func, this);
 			while (sfWin.isOpen())
 			{
@@ -86,6 +90,7 @@ namespace game
 					case sf::Event::Closed: close(); break;
 					}
 				}
+				modeCon->getScenePtr()->setActive(sfWin.hasFocus());
 				std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			}
 			renderThread.join();
@@ -97,7 +102,7 @@ namespace game
 	{
 		if (sfWin.isOpen())
 			sfWin.close();
-		closed = true;
+		active = false;
 		return 0;
 	}
 
@@ -135,7 +140,7 @@ namespace game
 
 	bool gameInstance::isOpen()
 	{
-		return sfWin.isOpen() || !closed;
+		return sfWin.isOpen() && active;
 	}
 
 	int gameInstance::setVSync()

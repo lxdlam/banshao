@@ -34,6 +34,8 @@ namespace game
 
 		if (r == FMOD_OK)
 		{
+			log("[FMOD] FMOD System Initialize Finished.", LOGS_Core);
+
 			FMOD_OUTPUTTYPE outputtype;
 			fmodSystem->getOutput(&outputtype);
 			switch (outputtype)
@@ -85,30 +87,21 @@ namespace game
 	Sound::~Sound()
 	{
 		fmodSystem->release();
+		log("[FMOD] FMOD System released.", LOGS_Core);
 	}
 
-	Sound& Sound::getInstance()
-	{
-		static Sound _inst;
-		return _inst;
-	}
-
-	int Sound::_loadKeySample(std::string path, FMOD_MODE mode, FMOD_CREATESOUNDEXINFO *exinfo, size_t index)
+	int Sound::loadKeySample(std::string path, size_t index)
 	{
 		FMOD_RESULT r =
-			fmodSystem->createSound(path.c_str(), mode, exinfo, &keySamples[index]);
+			fmodSystem->createSound(path.c_str(), FMOD_DEFAULT, 0, &keySamples[index]);
 #if _DEBUG
 		if (r != FMOD_OK)
-			log("ERROR: Loading Sample (" + path + ") Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r), LOGS_Minimum);
+			log("ERROR: Loading Sample (" + path + ") Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r));
 #endif
 		return r;
 	}
-	int Sound::loadKeySample(std::string path, FMOD_MODE mode, FMOD_CREATESOUNDEXINFO *exinfo, size_t index)
-	{
-		return getInstance()._loadKeySample(path, mode, exinfo, index);
-	}
 
-	void Sound::_playKeySample(size_t count, size_t index[])
+	void Sound::playKeySample(size_t count, size_t index[])
 	{
 		for (size_t i = 0; i < count; i++)
 		{
@@ -117,16 +110,12 @@ namespace game
 				r = fmodSystem->playSound(keySamples[index[i]], 0, false, 0);
 #if _DEBUG
 			if (r != FMOD_OK)
-				log("ERROR: Playing Sample Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r), LOGS_Minimum);
+				log("ERROR: Playing Sample Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r));
 #endif
 		}
 	}
-	void Sound::playKeySample(size_t count, size_t index[])
-	{
-		getInstance()._playKeySample(count, index);
-	}
 
-	void Sound::_freeKeySamples()
+	void Sound::freeKeySamples()
 	{
 		for (auto& s : keySamples)
 			if (s != nullptr)
@@ -135,23 +124,53 @@ namespace game
 				s = nullptr;
 			}
 	}
-	void Sound::freeKeySamples()
+
+	int Sound::loadSample(std::string path,size_t index, bool isStream, bool loop)
 	{
-		getInstance()._freeKeySamples();
+		if (etcSamples[index] != nullptr)
+			etcSamples[index]->release();
+
+		int flag = FMOD_DEFAULT;
+		if (isStream)
+			flag |= FMOD_CREATESTREAM;
+		if (loop)
+			flag |= FMOD_LOOP_NORMAL;
+		FMOD_RESULT r =
+			fmodSystem->createSound(path.c_str(), flag, 0, &etcSamples[index]);
+#if _DEBUG
+		if (r != FMOD_OK)
+			log("ERROR: Loading Sample (" + path + ") Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r));
+#endif
+		return r;
 	}
 
-	int Sound::_update()
+	void Sound::playSample(size_t index)
+	{
+		FMOD_RESULT r = FMOD_OK;
+		if (etcSamples[index] != nullptr)
+			r = fmodSystem->playSound(etcSamples[index], 0, false, 0);
+#if _DEBUG
+		if (r != FMOD_OK)
+			log("ERROR: Playing Sample Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r));
+#endif
+	}
+
+	void Sound::freeSamples()
+	{
+		for (auto& s : etcSamples)
+			if (s != nullptr)
+			{
+				s->release();
+				s = nullptr;
+			}
+	}
+
+	int Sound::update()
 	{
 		FMOD_RESULT r = fmodSystem->update();
 #if _DEBUG
 		if (r != FMOD_OK)
-			log("ERROR: Sound System Update Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r), LOGS_Minimum);
+			log("ERROR: Sound System Update Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r));
 #endif
 		return r;
-	}
-	int Sound::update()
-	{
-		return getInstance()._update();
-	}
-
-}
+	}}

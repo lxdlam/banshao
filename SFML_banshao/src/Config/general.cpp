@@ -34,12 +34,6 @@ namespace game::Config
 		return 0;
 	}
 
-	int dispose()
-	{
-		saveConfig();
-		return 0;
-	}
-
 	int setDefaults()
 	{
 		system::getInstance().setDefaults();

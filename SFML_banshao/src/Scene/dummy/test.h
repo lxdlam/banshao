@@ -10,7 +10,8 @@ namespace game
 	class test : public Scene
 	{
 	public:
-		test();
+		test() = delete;
+		test(std::shared_ptr<Sound> pSound);
 		~test();
 	private:
 		sf::Font font;

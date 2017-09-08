@@ -9,7 +9,6 @@ namespace game::Config
 	int init();
 	int initWithConfig();
 	int saveConfig();
-	int dispose();
 
 	int setDefaults();
 }

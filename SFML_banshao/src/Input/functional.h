@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../defs.h"
+
 namespace game::Input
 {
 	class functional
@@ -8,34 +10,9 @@ namespace game::Input
 		functional() = delete;
 		~functional() = delete;
 
-		enum functional_keys
-		{
-			ESC = 0,
-			F1,
-			F2,
-			F3,
-			F4,
-			F5,
-			F6,
-			F7,
-			F8,
-			F9,
-			F10,
-			F11,
-			F12,
-			F13,
-			F14,
-			F15,
-			UP,
-			DOWN,
-			LEFT,
-			RIGHT,
-			RETURN,
-			BACKSPACE,
-			FUNC_KEY_COUNT
-		};
+		using keys = defs::functionalKeys;
 
-		static constexpr unsigned long mask(functional_keys k)
+		static constexpr unsigned long mask(keys k)
 		{
 			return 1 << k;
 		}

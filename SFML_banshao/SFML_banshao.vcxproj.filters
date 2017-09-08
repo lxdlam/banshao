@@ -101,6 +101,9 @@
     <ClInclude Include="src\Config\video.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\defs.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\placeholder.png">
@@ -109,5 +112,11 @@
     <Image Include="resources\error.png">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="resources\fmod.png">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="resources\sansation.ttf" />
   </ItemGroup>
 </Project>

@@ -15,40 +15,42 @@ namespace game::Config
 	int key::setDefaults()
 	{
 		deadZone = 25;
-		bindKey(gamepad_keys::S1L, 0, sf::Keyboard::LShift);
-		bindKey(gamepad_keys::S1R, 0, sf::Keyboard::LControl);
-		bindKey(gamepad_keys::K11, 0, sf::Keyboard::Z);
-		bindKey(gamepad_keys::K12, 0, sf::Keyboard::S);
-		bindKey(gamepad_keys::K13, 0, sf::Keyboard::X);
-		bindKey(gamepad_keys::K14, 0, sf::Keyboard::D);
-		bindKey(gamepad_keys::K15, 0, sf::Keyboard::C);
-		bindKey(gamepad_keys::K16, 0, sf::Keyboard::F);
-		bindKey(gamepad_keys::K17, 0, sf::Keyboard::V);
+
+		// loadConfig(default);
+		bindKey(keys::S1L, 0, sf::Keyboard::LShift);
+		bindKey(keys::S1R, 0, sf::Keyboard::LControl);
+		bindKey(keys::K11, 0, sf::Keyboard::Z);
+		bindKey(keys::K12, 0, sf::Keyboard::S);
+		bindKey(keys::K13, 0, sf::Keyboard::X);
+		bindKey(keys::K14, 0, sf::Keyboard::D);
+		bindKey(keys::K15, 0, sf::Keyboard::C);
+		bindKey(keys::K16, 0, sf::Keyboard::F);
+		bindKey(keys::K17, 0, sf::Keyboard::V);
 		return 0;
 	}
 
-	void key::_bindKey(gamepad_keys target, int slot, int device, int key)
+	void key::_bindKey(keys target, int slot, int device, int key)
 	{
 		gamepadKeyBindings[target][slot] = {device, key};
 	}
 
-	void key::bindKey(gamepad_keys target, int slot, sf::Keyboard::Key key)
+	void key::bindKey(keys target, int slot, sf::Keyboard::Key key)
 	{
 		_bindKey(target, slot, -1, static_cast<int>(key));
 	}
 
-	void key::bindKey(gamepad_keys target, int slot, unsigned joyNo, unsigned button)
+	void key::bindKey(keys target, int slot, unsigned joyNo, unsigned button)
 	{
 		_bindKey(target, slot, static_cast<int>(joyNo), static_cast<int>(button));
 	}
 
-	void key::bindKey(gamepad_keys target, int slot, unsigned joyNo, sf::Joystick::Axis axis, int direction)
+	void key::bindKey(keys target, int slot, unsigned joyNo, sf::Joystick::Axis axis, int direction)
 	{
 		bindKey(target, slot, joyNo, 1000 + (direction > 0 ? 100 : 0) + axis);
 		
 	}
 
-	auto key::getBindings(gamepad_keys k) const -> const decltype(gamepadKeyBindings[0])
+	auto key::getBindings(keys k) const -> const decltype(gamepadKeyBindings[0])
 	{
 		return gamepadKeyBindings[k];
 	}

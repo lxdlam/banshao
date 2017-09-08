@@ -1,9 +1,13 @@
 #include "scene.h"
+#include "../Input/functional.h"
+#include "../Input/gamepad.h"
+#include "../utils.h"
+using utils::log;
 
 
 namespace game
 {
-	Scene::Scene()
+	Scene::Scene(std::shared_ptr<Sound> pSound)
 	{
 		sf::Image errImage;
 		errImage.loadFromFile("resources/error.png");
@@ -15,8 +19,12 @@ namespace game
 
 		loadSprites();
 
+		soundSystem = pSound;
+
 		running = true;
 		inputTaskFuture = std::async(std::launch::async, &Scene::input_thread_func, this);
+
+		log("Scene created", LOGS_Core);
 	}
 
 	Scene::~Scene()
@@ -26,6 +34,8 @@ namespace game
 		inputTaskFuture.wait();
 
 		// Destroy sprites first (if should be done manually)
+
+		log("Scene destroyed", LOGS_Core);
 	}
 
 	void Scene::loadSprites()
@@ -62,14 +72,19 @@ namespace game
 		{
 			prev_functionalInput = functionalInput;
 			prev_gamepadInput = gamepadInput;
-			functionalInput = Input::functional::detect();
-			gamepadInput = Input::gamepad::detect();
+			functionalInput = active ? Input::functional::detect() : 0;
+			gamepadInput = active ? Input::gamepad::detect() : 0;
 			logic();
 			// FIXME We are not burning our CPUs!
 		}
 	}
 
-	bool Scene::isFuncKeyPressed(Input::functional::functional_keys k) const
+	void Scene::setActive(bool a)
+	{
+		active = a;
+	}
+
+	bool Scene::isFuncKeyPressed(defs::functionalKeys k) const
 	{
 		auto m = Input::functional::mask(k);
 		if ((~prev_functionalInput & m) && (functionalInput & m))
@@ -78,7 +93,7 @@ namespace game
 			return false;
 	}
 
-	bool Scene::isGamepadKeyPressed(Input::gamepad::keys k) const
+	bool Scene::isGamepadKeyPressed(defs::gamepadKeys k) const
 	{
 		auto m = Input::gamepad::mask(k);
 		if ((~prev_gamepadInput & m) && (gamepadInput & m))
@@ -87,7 +102,7 @@ namespace game
 			return false;
 	}
 
-	bool Scene::isFuncKeyReleased(Input::functional::functional_keys k) const
+	bool Scene::isFuncKeyReleased(defs::functionalKeys k) const
 	{
 		auto m = Input::functional::mask(k);
 		if ((prev_functionalInput & m) && (~functionalInput & m))
@@ -96,7 +111,7 @@ namespace game
 			return false;
 	}
 
-	bool Scene::isGamepadKeyReleased(Input::gamepad::keys k) const
+	bool Scene::isGamepadKeyReleased(defs::gamepadKeys k) const
 	{
 		auto m = Input::gamepad::mask(k);
 		if ((prev_gamepadInput & m) && (~gamepadInput & m))

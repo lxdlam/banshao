@@ -1,5 +1,6 @@
 #pragma once
 #include "../Config/key.h"
+#include "../defs.h"
 #include <vector>
 #include <array>
 #include <SFML/Window/Keyboard.hpp>
@@ -10,7 +11,7 @@ namespace game::Input
 	class gamepad
 	{
 	public:
-		using keys = game::Config::key::gamepad_keys;
+		using keys = defs::gamepadKeys;
 
 	private:
 		gamepad() = default;

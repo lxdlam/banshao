@@ -154,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Config\key.h" />
+    <ClInclude Include="src\defs.h" />
     <ClInclude Include="src\Input\functional.h" />
     <ClInclude Include="src\Input\gamepad.h" />
     <ClInclude Include="src\modeController.h" />
@@ -170,7 +171,11 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\error.png" />
+    <Image Include="resources\fmod.png" />
     <Image Include="resources\placeholder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="resources\sansation.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

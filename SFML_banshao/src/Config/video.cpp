@@ -13,7 +13,7 @@ namespace game::Config
 
 	int video::setDefaults()
 	{
-		setMaxFPS(-1);
+		setMaxFPS(0);
 		setResolution(1280, 720);
 		setWindowMode(windowed::Windowed);
 		setVSync(false);

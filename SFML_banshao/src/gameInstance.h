@@ -1,5 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Sound/sound.h"
+#include "modeController.h"
 
 namespace game
 {
@@ -10,7 +12,9 @@ namespace game
 		~gameInstance();
 
 		sf::RenderWindow sfWin;
-		bool closed = false;
+		std::shared_ptr<Sound> pSound;
+		std::unique_ptr<modeController> modeCon;
+		bool active = false;
 
 	public:
 		static gameInstance& getInstance();

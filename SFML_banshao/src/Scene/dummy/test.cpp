@@ -6,7 +6,7 @@ using utils::log;
 
 namespace game
 {
-	test::test()
+	test::test(std::shared_ptr<Sound> pSound): Scene(pSound)
 	{
 		if (!font.loadFromFile("resources/sansation.ttf"))
 			log("ERROR: Load font file failed!", LOGS_Core);
@@ -16,10 +16,13 @@ namespace game
 		text.setFillColor(sf::Color::White);
 
 		loadSounds();
+
+		log("test scene created", LOGS_Core);
 	}
 
 	test::~test()
 	{
+		log("test scene destroyed", LOGS_Core);
 	}
 
 	void test::loadSprites()
@@ -28,15 +31,15 @@ namespace game
 
 	void test::loadSounds()
 	{
-		Sound::loadKeySample("resources/Sound/kick_000.wav", FMOD_DEFAULT, 0, 0);
-		Sound::loadKeySample("resources/Sound/kick_000.wav", FMOD_DEFAULT, 0, 1);
-		Sound::loadKeySample("resources/Sound/cdefgab_000.wav", FMOD_DEFAULT, 0, 2);
-		Sound::loadKeySample("resources/Sound/cdefgab_001.wav", FMOD_DEFAULT, 0, 3);
-		Sound::loadKeySample("resources/Sound/cdefgab_002.wav", FMOD_DEFAULT, 0, 4);
-		Sound::loadKeySample("resources/Sound/cdefgab_003.wav", FMOD_DEFAULT, 0, 5);
-		Sound::loadKeySample("resources/Sound/cdefgab_004.wav", FMOD_DEFAULT, 0, 6);
-		Sound::loadKeySample("resources/Sound/cdefgab_005.wav", FMOD_DEFAULT, 0, 7);
-		Sound::loadKeySample("resources/Sound/cdefgab_006.wav", FMOD_DEFAULT, 0, 8);
+		soundSystem->loadKeySample("resources/Sound/kick_000.wav", 0);
+		soundSystem->loadKeySample("resources/Sound/kick_000.wav", 1);
+		soundSystem->loadKeySample("resources/Sound/cdefgab_000.wav", 2);
+		soundSystem->loadKeySample("resources/Sound/cdefgab_001.wav", 3);
+		soundSystem->loadKeySample("resources/Sound/cdefgab_002.wav", 4);
+		soundSystem->loadKeySample("resources/Sound/cdefgab_003.wav", 5);
+		soundSystem->loadKeySample("resources/Sound/cdefgab_004.wav", 6);
+		soundSystem->loadKeySample("resources/Sound/cdefgab_005.wav", 7);
+		soundSystem->loadKeySample("resources/Sound/cdefgab_006.wav", 8);
 	}
 
 	void test::logic()
@@ -45,9 +48,9 @@ namespace game
 		for (size_t i = keys::S1L; i <= keys::K17; i++)
 		{
 			if (isGamepadKeyPressed(static_cast<keys>(i)))
-				Sound::playKeySample(1, &i);
+				soundSystem->playKeySample(1, &i);
 		}
-		Sound::update();
+		soundSystem->update();
 	}
 
 	void test::draw(sf::RenderTarget& target, sf::RenderStates states) const

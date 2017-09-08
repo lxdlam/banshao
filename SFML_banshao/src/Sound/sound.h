@@ -13,24 +13,31 @@ namespace game
 	class Sound
 	{
 	private:
-		Sound();
-		~Sound();
 		FMOD::System *fmodSystem = nullptr;
 		std::pair<int, std::string> initResult;
+
 	public:
-		static Sound& getInstance();
+		Sound();
+		~Sound();
 
 	private:
-		std::array<FMOD::Sound*, 36 * 36> keySamples{};
-		int _loadKeySample(std::string path, FMOD_MODE mode, FMOD_CREATESOUNDEXINFO *exinfo, size_t index);
-		void _playKeySample(size_t count, size_t index[]);
-		void _freeKeySamples();
-		int _update();
+		static const size_t KEYSAMPLES = 36 * 36;
+		std::array<FMOD::Sound*, KEYSAMPLES> keySamples{};
+
 	public:
-		static int loadKeySample(std::string path, FMOD_MODE mode, FMOD_CREATESOUNDEXINFO *exinfo, size_t index);
-		static void playKeySample(size_t count, size_t index[]);
-		static void freeKeySamples();
-		static int update();
+		int loadKeySample(std::string path, size_t index);
+		void playKeySample(size_t count, size_t index[]);
+		void freeKeySamples();
+		int update();
+
+	private:
+		static const size_t ETCSAMPLES = 32;
+		std::array<FMOD::Sound*, ETCSAMPLES> etcSamples{};
+
+	public:
+		int loadSample(std::string path, size_t index, bool isStream = false, bool loop = false);
+		void playSample(size_t index);
+		void freeSamples();
 
 	};
 }

@@ -3,41 +3,25 @@
 #include "Scene/scene.h"
 #include <memory>
 #include <string>
+#include "defs.h"
 
 namespace game
 {
 	class modeController
 	{
-	private:
+	public:
 		modeController();
+		modeController(std::shared_ptr<Sound>);
 		~modeController();
+		int start();
 
-		enum class eMode {
-			UNKNOWN = -1,
-
-			EXIT = 0,
-			TITLE = 1,
-			SONG_SELECT,
-			THEME_SELECT,
-			KEY_CONFIG,
-
-			PLAY5,
-			PLAY5_2,
-			PLAY7,
-			PLAY7_2,
-			PLAY9,
-			PLAY10,
-			PLAY14,
-
-			RESULT,
-			COURSE_RESULT,
-
-		} mode;
-
+	private:
+		using eMode = defs::eMode;
+		eMode mode = eMode::UNKNOWN;
+		std::shared_ptr<Sound> pSound;
 		std::shared_ptr<Scene> pScene;
 
 	public:
-		static modeController& getInstance();
 		eMode getCurrentMode();
 		std::string getCurrentModeStr();
 		int switchMode(eMode newMode);
