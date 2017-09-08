@@ -75,16 +75,16 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../lib/FMOD/inc;../lib/SFML/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>fmodL_vc.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../lib/SFML/lib;../lib/FMOD/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../lib</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /d /y "$(ProjectDir)..\FMOD\lib\fmodL.dll" "$(OutDir)"</Command>
+      <Command>xcopy /d /y "$(ProjectDir)..\natives\fmodL.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copy dlls into build directory. (DEBUG)</Message>
@@ -104,7 +104,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../lib/FMOD/inc;../lib/SFML/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
@@ -112,11 +112,11 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>fmod_vc.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-system-s.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../lib/SFML/lib;../lib/FMOD/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../lib</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Message>Copy dlls into build directory.</Message>
-      <Command>xcopy /d /y "$(ProjectDir)..\FMOD\lib\fmod.dll" "$(OutDir)"</Command>
+      <Command>xcopy /d /y "$(ProjectDir)..\natives\fmod.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
