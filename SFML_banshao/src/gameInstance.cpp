@@ -24,8 +24,8 @@ namespace game
 
 	gameInstance::gameInstance()
 	{
-		utils::logSystemInfo();
 		Config::init();
+		utils::logSystemInfo();
 		closed = false;
 		setWindowMode();
 		Input::gamepad::updateBindings();

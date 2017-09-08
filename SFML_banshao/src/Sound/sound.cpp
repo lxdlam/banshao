@@ -38,31 +38,31 @@ namespace game
 			fmodSystem->getOutput(&outputtype);
 			switch (outputtype)
 			{
-			case FMOD_OUTPUTTYPE_AUTODETECT: log("[FMOD] Type: FMOD_OUTPUTTYPE_AUTODETECT"); break;
-			case FMOD_OUTPUTTYPE_UNKNOWN: log("[FMOD] Type: FMOD_OUTPUTTYPE_UNKNOWN"); break;
-			case FMOD_OUTPUTTYPE_NOSOUND: log("[FMOD] Type: FMOD_OUTPUTTYPE_NOSOUND"); break;
-			case FMOD_OUTPUTTYPE_WAVWRITER: log("[FMOD] Type: FMOD_OUTPUTTYPE_WAVWRITER"); break;
-			case FMOD_OUTPUTTYPE_NOSOUND_NRT: log("[FMOD] Type: FMOD_OUTPUTTYPE_NOSOUND_NRT"); break;
-			case FMOD_OUTPUTTYPE_WAVWRITER_NRT: log("[FMOD] Type: FMOD_OUTPUTTYPE_WAVWRITER_NRT"); break;
-			case FMOD_OUTPUTTYPE_DSOUND: log("[FMOD] Type: FMOD_OUTPUTTYPE_DSOUND"); break;
-			case FMOD_OUTPUTTYPE_WINMM: log("[FMOD] Type: FMOD_OUTPUTTYPE_WINMM"); break;
-			case FMOD_OUTPUTTYPE_WASAPI: log("[FMOD] Type: FMOD_OUTPUTTYPE_WASAPI"); break;
-			case FMOD_OUTPUTTYPE_ASIO: log("[FMOD] Type: FMOD_OUTPUTTYPE_ASIO"); break;
-			case FMOD_OUTPUTTYPE_PULSEAUDIO: log("[FMOD] Type: FMOD_OUTPUTTYPE_PULSEAUDIO"); break;
-			case FMOD_OUTPUTTYPE_ALSA: log("[FMOD] Type: FMOD_OUTPUTTYPE_ALSA"); break;
-			case FMOD_OUTPUTTYPE_COREAUDIO: log("[FMOD] Type: FMOD_OUTPUTTYPE_COREAUDIO"); break;
-			case FMOD_OUTPUTTYPE_XAUDIO: log("[FMOD] Type: FMOD_OUTPUTTYPE_XAUDIO"); break;
-			case FMOD_OUTPUTTYPE_PS3: log("[FMOD] Type: FMOD_OUTPUTTYPE_PS3"); break;
-			case FMOD_OUTPUTTYPE_AUDIOTRACK: log("[FMOD] Type: FMOD_OUTPUTTYPE_AUDIOTRACK"); break;
-			case FMOD_OUTPUTTYPE_OPENSL: log("[FMOD] Type: FMOD_OUTPUTTYPE_OPENSL"); break;
-			case FMOD_OUTPUTTYPE_WIIU: log("[FMOD] Type: FMOD_OUTPUTTYPE_WIIU"); break;
-			case FMOD_OUTPUTTYPE_AUDIOOUT: log("[FMOD] Type: FMOD_OUTPUTTYPE_AUDIOOUT"); break;
-			case FMOD_OUTPUTTYPE_AUDIO3D: log("[FMOD] Type: FMOD_OUTPUTTYPE_AUDIO3D"); break;
-			case FMOD_OUTPUTTYPE_ATMOS: log("[FMOD] Type: FMOD_OUTPUTTYPE_ATMOS"); break;
-			case FMOD_OUTPUTTYPE_WEBAUDIO: log("[FMOD] Type: FMOD_OUTPUTTYPE_WEBAUDIO"); break;
-			case FMOD_OUTPUTTYPE_NNAUDIO: log("[FMOD] Type: FMOD_OUTPUTTYPE_NNAUDIO"); break;
-			case FMOD_OUTPUTTYPE_MAX: log("[FMOD] Type: FMOD_OUTPUTTYPE_MAX"); break;
-			default: log("[FMOD] Type: ???");
+			case FMOD_OUTPUTTYPE_AUTODETECT: log("[FMOD] Output Type: AUTODETECT"); break;
+			case FMOD_OUTPUTTYPE_UNKNOWN: log("[FMOD] Output Type: UNKNOWN"); break;
+			case FMOD_OUTPUTTYPE_NOSOUND: log("[FMOD] Output Type: NOSOUND"); break;
+			case FMOD_OUTPUTTYPE_WAVWRITER: log("[FMOD] Output Type: WAVWRITER"); break;
+			case FMOD_OUTPUTTYPE_NOSOUND_NRT: log("[FMOD] Output Type: NOSOUND_NRT"); break;
+			case FMOD_OUTPUTTYPE_WAVWRITER_NRT: log("[FMOD] Output Type: WAVWRITER_NRT"); break;
+			case FMOD_OUTPUTTYPE_DSOUND: log("[FMOD] Output Type: DSOUND"); break;
+			case FMOD_OUTPUTTYPE_WINMM: log("[FMOD] Output Type: WINMM"); break;
+			case FMOD_OUTPUTTYPE_WASAPI: log("[FMOD] Output Type: WASAPI"); break;
+			case FMOD_OUTPUTTYPE_ASIO: log("[FMOD] Output Type: ASIO"); break;
+			case FMOD_OUTPUTTYPE_PULSEAUDIO: log("[FMOD] Output Type: PULSEAUDIO"); break;
+			case FMOD_OUTPUTTYPE_ALSA: log("[FMOD] Output Type: ALSA"); break;
+			case FMOD_OUTPUTTYPE_COREAUDIO: log("[FMOD] Output Type: COREAUDIO"); break;
+			case FMOD_OUTPUTTYPE_XAUDIO: log("[FMOD] Output Type: XAUDIO"); break;
+			case FMOD_OUTPUTTYPE_PS3: log("[FMOD] Output Type: PS3"); break;
+			case FMOD_OUTPUTTYPE_AUDIOTRACK: log("[FMOD] Output Type: AUDIOTRACK"); break;
+			case FMOD_OUTPUTTYPE_OPENSL: log("[FMOD] Output Type: OPENSL"); break;
+			case FMOD_OUTPUTTYPE_WIIU: log("[FMOD] Output Type: WIIU"); break;
+			case FMOD_OUTPUTTYPE_AUDIOOUT: log("[FMOD] Output Type: AUDIOOUT"); break;
+			case FMOD_OUTPUTTYPE_AUDIO3D: log("[FMOD] Output Type: AUDIO3D"); break;
+			case FMOD_OUTPUTTYPE_ATMOS: log("[FMOD] Output Type: ATMOS"); break;
+			case FMOD_OUTPUTTYPE_WEBAUDIO: log("[FMOD] Output Type: WEBAUDIO"); break;
+			case FMOD_OUTPUTTYPE_NNAUDIO: log("[FMOD] Output Type: NNAUDIO"); break;
+			case FMOD_OUTPUTTYPE_MAX: log("[FMOD] Output Type: MAX"); break;
+			default: log("[FMOD] Output Type: ???");
 			}
 
 			int driverId;
@@ -142,8 +142,7 @@ namespace game
 
 	int Sound::_update()
 	{
-		FMOD_RESULT r =
-			fmodSystem->update();
+		FMOD_RESULT r = fmodSystem->update();
 #if _DEBUG
 		if (r != FMOD_OK)
 			log("ERROR: Sound System Update Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r), LOGS_Minimum);
