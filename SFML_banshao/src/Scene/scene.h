@@ -35,6 +35,7 @@ namespace game
 
 		bool active = false;
 		bool running = false;
+		bool saveCPU = true;
 		std::future<void> inputTaskFuture;
 		void input_thread_func();
 		unsigned long prev_functionalInput = 0;
@@ -43,6 +44,7 @@ namespace game
 		unsigned long gamepadInput = 0;
 		
 	public:
+		void setHighResponsive(bool);
 		void setActive(bool);
 		bool Scene::isFuncKeyPressed(defs::functionalKeys k) const;
 		bool Scene::isGamepadKeyPressed(defs::gamepadKeys k) const;
@@ -53,6 +55,6 @@ namespace game
 
 	protected:
 		std::shared_ptr<Sound> soundSystem;
-		virtual void logic();
+		virtual void mainLoop();
 	};
 }

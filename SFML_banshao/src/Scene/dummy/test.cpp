@@ -1,7 +1,6 @@
 #include "test.h"
 #include "../../Input/gamepad.h"
 #include "../../utils.h"
-#include "../../Sound/sound.h"
 using utils::log;
 
 namespace game
@@ -42,7 +41,7 @@ namespace game
 		soundSystem->loadKeySample("resources/Sound/cdefgab_006.wav", 8);
 	}
 
-	void test::logic()
+	void test::mainLoop()
 	{
 		using keys = Input::gamepad::keys;
 		for (size_t i = keys::S1L; i <= keys::K17; i++)
@@ -50,7 +49,6 @@ namespace game
 			if (isGamepadKeyPressed(static_cast<keys>(i)))
 				soundSystem->playKeySample(1, &i);
 		}
-		soundSystem->update();
 	}
 
 	void test::draw(sf::RenderTarget& target, sf::RenderStates states) const

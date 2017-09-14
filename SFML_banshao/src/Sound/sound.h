@@ -3,6 +3,8 @@
 #include <utility>
 #include <array>
 #include <string>
+#include "../defs.h"
+
 #include <fmod.hpp>
 
 // This game uses FMOD Low Level API to play Sounds as we don't use FMOD Studio,
@@ -21,8 +23,7 @@ namespace game
 		~Sound();
 
 	private:
-		static const size_t KEYSAMPLES = 36 * 36;
-		std::array<FMOD::Sound*, KEYSAMPLES> keySamples{};
+		std::array<FMOD::Sound*, defs::MAXSAMPLEIDX + 1> keySamples{};
 
 	public:
 		int loadKeySample(std::string path, size_t index);

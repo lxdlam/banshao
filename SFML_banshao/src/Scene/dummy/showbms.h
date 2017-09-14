@@ -1,24 +1,24 @@
 #pragma once
-
 #include <SFML/Graphics.hpp>
 #include <fmod.hpp>
 #include <array>
 #include "../../Sound/sound.h"
+#include "../../bms/bms.h"
 #include "../scene.h"
 
 namespace game
 {
-	class test : public Scene
+	class showbms : public Scene
 	{
 	public:
-		test() = delete;
-		test(std::shared_ptr<Sound> pSound);
-		~test();
+		showbms() = delete;
+		showbms(std::shared_ptr<Sound> pSound);
+		~showbms();
 	private:
+		bms objBms;
 		sf::Font font;
-		sf::Text text;
+		sf::Text text[20];
 		void loadSprites() override;
-		void loadSounds();
 	protected:
 		void mainLoop() override;
 	public:

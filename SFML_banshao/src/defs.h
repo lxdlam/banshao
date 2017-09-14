@@ -2,7 +2,8 @@
 
 namespace game::defs
 {
-	enum class eMode {
+	// Mode
+	enum class eMode{
 		UNKNOWN = -1,
 
 		EXIT = 0,
@@ -25,6 +26,8 @@ namespace game::defs
 		TMPL,
 		TEST
 	};
+
+	// Keys
 	enum gamepadKeys
 	{
 		S1L = 0,
@@ -51,6 +54,8 @@ namespace game::defs
 		K25,
 		K26,
 		K27,
+		K28,
+		K29,
 		K2START,
 		K2SELECT,
 		K2SPDUP,
@@ -82,5 +87,27 @@ namespace game::defs
 		RETURN,
 		BACKSPACE,
 		FUNC_KEY_COUNT
-	};;
+	};
+
+	// bms related
+	static const unsigned MAXBGMCHANNEL = 32;
+	static const unsigned MAXSAMPLEIDX = 36 * 36;
+	static const unsigned MAXMEASUREIDX = 999;
+	enum bmsMode {
+		MODE_5KEYS,
+		MODE_7KEYS,
+		MODE_9KEYS,
+		MODE_10KEYS,
+		MODE_14KEYS
+	};
+	enum class bmsErrorCode
+	{
+		OK = 0,
+		FILE_ERROR= 1,
+		ALREADY_INITIALIZED,
+		VALUE_ERROR,
+		TYPE_MISMATCH,
+		NOTE_LINE_ERROR,
+	};
+
 }

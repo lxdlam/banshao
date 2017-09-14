@@ -1,0 +1,184 @@
+
+*---------------------- HEADER FIELD
+
+#PLAYER 3
+#GENRE Foon
+#TITLE (^^) [10keys Normal]
+#ARTIST Yamajet
+#BPM 140
+#PLAYLEVEL 2
+#RANK 0
+#TOTAL 83
+#VOLWAV 100
+#STAGEFILE title.bmp
+#BANNER _banner.bmp
+
+#WAV01 kick.wav
+#WAV02 kick.wav
+#WAV03 clap.wav
+#WAV04 clap.wav
+#WAV05 v_f.wav
+#WAV06 v_o.wav
+#WAV07 v_o.wav
+#WAV08 v_n.wav
+#WAV09 v_foon.wav
+#WAV0A bass.wav
+#WAV0B ohh.wav
+
+#BMP01 cyc-foonmain_00000.bmp
+#BMP02 cyc-foonmain_00001.bmp
+#BMP03 cyc-foonmain_00002.bmp
+#BMP04 cyc-foonmain_00003.bmp
+#BMP05 cyc-foonmain_00004.bmp
+#BMP06 cyc-foonmain_00005.bmp
+#BMP07 cyc-foonmain_00006.bmp
+#BMP08 cyc-foonmain_00007.bmp
+#BMP09 cyc-foonmain_00008.bmp
+#BMP0A cyc-foonmain_00009.bmp
+#BMP0B cyc-foonmain_00010.bmp
+#BMP0C cyc-foonmain_00011.bmp
+#BMP0D cyc-foonmain_00012.bmp
+#BMP0E cyc-foonmain_00013.bmp
+#BMP0F cyc-foonmain_00014.bmp
+#BMP10 cyc-foonmain_00015.bmp
+#BMP11 cyc-foonmain_00016.bmp
+#BMP12 cyc-foonmain_00017.bmp
+#BMP13 cyc-foonmain_00018.bmp
+#BMP14 cyc-foonmain_00019.bmp
+#BMP15 cyc-foonmain_00020.bmp
+#BMP16 cyc-foonmain_00021.bmp
+#BMP17 cyc-foonmain_00022.bmp
+#BMP18 cyc-foonmain_00023.bmp
+#BMP19 cyc-foonmain_00024.bmp
+#BMP1A cyc-foonmain_00025.bmp
+#BMP1B cyc-foonmain_00026.bmp
+#BMP1C cyc-foonmain_00027.bmp
+#BMP1D cyc-foonmain_00028.bmp
+#BMP1E cyc-foonmain_00029.bmp
+#BMP1F cyc-foonmain_00030.bmp
+#BMP20 cyc-foonmain_00031.bmp
+#BMP21 cyc-foonmain_00032.bmp
+#BMP22 cyc-foonmain_00033.bmp
+#BMP23 cyc-foonmain_00034.bmp
+#BMP24 cyc-foonmain_00035.bmp
+#BMP25 cyc-foonmain_00036.bmp
+#BMP26 cyc-foonmain_00037.bmp
+#BMP27 cyc-foonmain_00038.bmp
+#BMP28 cyc-foonmain_00039.bmp
+#BMP29 cyc-foonmain_00040.bmp
+#BMP2A cyc-foonmain_00041.bmp
+#BMP2B cyc-foonmain_00042.bmp
+#BMP2C cyc-foonmain_00043.bmp
+#BMP2D cyc-foonmain_00044.bmp
+#BMP2E cyc-foonmain_00045.bmp
+#BMP2F cyc-foonmain_00046.bmp
+#BMP30 cyc-foonmain_00047.bmp
+#BMP31 cyc-foonmain_00048.bmp
+#BMP32 cyc-foonmain_00049.bmp
+#BMP33 cyc-foonmain_00050.bmp
+#BMP34 cyc-foonmain_00051.bmp
+#BMP35 cyc-foonmain_00052.bmp
+#BMP36 cyc-foonmain_00053.bmp
+#BMP37 cyc-foonmain_00054.bmp
+#BMP38 cyc-foonmain_00055.bmp
+#BMP39 cyc-foonmain_00056.bmp
+#BMP3A cyc-foonmain_00057.bmp
+#BMP3B cyc-foonmain_00058.bmp
+#BMP3C cyc-foonmain_00059.bmp
+#BMP3D cyc-foonmain_00060.bmp
+#BMP3E cyc-foonmain_00061.bmp
+#BMP3F cyc-foonmain_00062.bmp
+#BMP40 cyc-foonmain_00063.bmp
+#BMP41 cyc-last_00000.bmp
+#BMP42 cyc-last_00001.bmp
+#BMP43 cyc-last_00002.bmp
+#BMP44 cyc-last_00003.bmp
+#BMP45 cyc-last_00004.bmp
+#BMP46 cyc-last_00005.bmp
+#BMP47 cyc-last_00006.bmp
+#BMP48 cyc-last_00007.bmp
+#BMP49 cyc-last_00008.bmp
+#BMP4A cyc-last_00009.bmp
+#BMP4B cyc-last_00010.bmp
+#BMP4C cyc-last_00011.bmp
+#BMP4D cyc-last_00012.bmp
+#BMP4E cyc-last_00013.bmp
+#BMP4F cyc-last_00014.bmp
+#BMP50 cyc-last_00015.bmp
+#BMP51 cyc-last_00016.bmp
+#BMP52 cyc-last_00017.bmp
+#BMP53 cyc-last_00018.bmp
+#BMP54 cyc-last_00019.bmp
+#BMP55 cyc-last_00020.bmp
+#BMP56 cyc-last_00021.bmp
+#BMP57 cyc-last_00022.bmp
+#BMP58 cyc-last_00023.bmp
+#BMP59 cyc-last_00024.bmp
+#BMP5A cyc-last_00025.bmp
+#BMP5B cyc-last_00026.bmp
+#BMP5C cyc-last_00027.bmp
+#BMP5D cyc-last_00028.bmp
+#BMP5E cyc-last_00029.bmp
+#BMP5F cyc-last_00030.bmp
+#BMP60 cyc-last_00031.bmp
+#BMP61 cyc-staff_00000.bmp
+#BMP62 cyc-staff_00001.bmp
+#BMP63 cyc-staff_00002.bmp
+#BMP64 cyc-staff_00003.bmp
+#BMP65 cyc-staff_00004.bmp
+#BMP66 cyc-staff_00005.bmp
+#BMP67 cyc-staff_00006.bmp
+#BMP68 cyc-staff_00007.bmp
+#BMP69 cyc-staff_00008.bmp
+#BMP6A cyc-staff_00009.bmp
+#BMP6B cyc-staff_00010.bmp
+#BMP6C cyc-staff_00011.bmp
+#BMP6D cyc-staff_00012.bmp
+#BMP6E cyc-staff_00013.bmp
+#BMP6F cyc-staff_00014.bmp
+#BMP70 cyc-staff_00015.bmp
+#BMP71 cyc-staff_00016.bmp
+#BMP72 cyc-staff_00017.bmp
+#BMP73 cyc-staff_00018.bmp
+#BMP74 cyc-staff_00019.bmp
+#BMP75 cyc-staff_00020.bmp
+#BMP76 cyc-staff_00021.bmp
+#BMP77 cyc-staff_00022.bmp
+#BMPFD cyc-miss00000.bmp
+#BMPFE cyc-miss00001.bmp
+#BMPFF cyc-miss00002.bmp
+
+
+
+
+#SUBARTIST BGA: cyclia
+
+
+*---------------------- MAIN DATA FIELD
+
+
+#00101:0100020001020100
+#00101:0300040003040300
+#00101:000B000B000B000B
+#00101:0A000A000A0A0A00
+#00104:0102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F40
+#00106:FD0000FE
+#00112:00060600
+#00114:05
+#00115:00000008
+
+#00201:0102010200000000
+#00201:0304030400000000
+#00201:000B000B00000000
+#00201:0A0A0A0A00000000
+#00204:090A0B0C0D0E0F10191A1B1C1D1E1F20292A2B2C2D2E2F30393A3B3C3D3E3F4000000000000000004142434445464748494A4B4C4D4E4F505152535455565758
+#00206:0000000000FF0000
+#00212:0006070000000000
+#00214:05
+#00215:0000000800000000
+#00226:0000000000090000
+
+#00304:595A5B5C5D5E5F600000000000000000000000000000000000000000000000006162636465666768000000000000000000000000000000000000000000000000
+
+#00404:696A6B6C6D6E6F700000000000000000000000000000000000000000000000007172737475767760000000000000000000000000000000000000000000000000
+

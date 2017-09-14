@@ -3,6 +3,7 @@
 #include "utils.h"
 using utils::log;
 
+#include "Scene/dummy/showbms.h"
 #include "Scene/dummy/test.h"
 
 namespace game
@@ -83,7 +84,8 @@ namespace game
 		case eMode::RESULT: 		break;
 		case eMode::COURSE_RESULT: 	break;
 			
-		case eMode::TEST:			pScene = std::make_shared<test>(pSound); break;
+		//case eMode::TEST:			pScene = std::make_shared<test>(pSound); break;
+		case eMode::TEST:			pScene = std::make_shared<showbms>(pSound); break;
 		default:					pScene = std::make_shared<Scene>(pSound); break;
 		}
 		log("mode switched to " + getCurrentModeStr(), LOGS_Core);

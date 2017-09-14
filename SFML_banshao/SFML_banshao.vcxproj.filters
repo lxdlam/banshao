@@ -48,13 +48,19 @@
     <ClCompile Include="src\Sound\sound.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\dummy\test.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\Config\audio.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\Config\video.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bms\bms.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\dummy\showbms.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\dummy\test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -102,6 +108,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\defs.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bms\bms.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\dummy\showbms.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

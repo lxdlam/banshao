@@ -68,15 +68,26 @@ namespace game
 
 	void Scene::input_thread_func()
 	{
+		using namespace std::literals::chrono_literals;
 		while (running)
 		{
+			auto now = std::chrono::system_clock::now();
+
 			prev_functionalInput = functionalInput;
 			prev_gamepadInput = gamepadInput;
 			functionalInput = active ? Input::functional::detect() : 0;
 			gamepadInput = active ? Input::gamepad::detect() : 0;
-			logic();
-			// FIXME We are not burning our CPUs!
+			mainLoop();
+			if (soundSystem) soundSystem->update();
+
+			if (saveCPU)
+				std::this_thread::sleep_until(now + 8ms);
 		}
+	}
+
+	void Scene::setHighResponsive(bool b)
+	{
+		saveCPU = !b;
 	}
 
 	void Scene::setActive(bool a)
@@ -120,7 +131,7 @@ namespace game
 			return false;
 	}
 
-	void Scene::logic()
+	void Scene::mainLoop()
 	{
 	}
 
