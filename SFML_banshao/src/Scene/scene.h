@@ -16,7 +16,7 @@ namespace game
 	// vecImage[0] & vecTexture[0] stores error texture.
 	class Scene: public sf::Drawable
 	{
-	private:
+	protected:
 		std::vector<sf::Image> vecImage;
 		std::vector<sf::Texture> vecTexture;
 		std::vector<sf::Sprite> vecSprite;
@@ -32,7 +32,14 @@ namespace game
 		// Called at the end of constructor.
 		// Should check index to prevent overflow.
 		virtual void loadSprites();
+	protected:
+		size_t loadImage(std::string path);
+		size_t loadTexture(size_t imageIdx);
+		size_t loadTexture(size_t imageIdx, unsigned x, unsigned y, unsigned w, unsigned h);
+		size_t createSprite(size_t textureidx);
+		size_t createSprite(size_t imageIdx, unsigned x, unsigned y, unsigned w, unsigned h);
 
+	private:
 		bool active = false;
 		bool running = false;
 		bool saveCPU = true;

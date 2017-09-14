@@ -109,5 +109,22 @@ namespace game::defs
 		TYPE_MISMATCH,
 		NOTE_LINE_ERROR,
 	};
+	enum class bmsGetChannelCode
+	{
+		BGM = 0,
+		BPM,
+		STOP,
+		BGABASE,
+		BGALAYER,
+		BGAPOOR,
+		NOTE1,
+		NOTE2,
+		NOTEINV1,
+		NOTEINV2,
+		NOTELN1,
+		NOTELN2,
+		NOTEMINE1,
+		NOTEMINE2,
+	};
 
 }

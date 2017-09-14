@@ -9,15 +9,8 @@ namespace game
 {
 	Scene::Scene(std::shared_ptr<Sound> pSound)
 	{
-		sf::Image errImage;
-		errImage.loadFromFile("resources/error.png");
-		vecImage.push_back(std::move(errImage));
-		sf::Texture errTexture;
-		errTexture.loadFromImage(vecImage[0]);
-		errTexture.setRepeated(true);
-		vecTexture.push_back(std::move(errTexture));
-
-		loadSprites();
+		loadImage("resources/error.png");
+		vecTexture[loadTexture(0)].setRepeated(true);
 
 		soundSystem = pSound;
 
@@ -40,15 +33,48 @@ namespace game
 
 	void Scene::loadSprites()
 	{
+		//auto imgIdx = loadImage("resources/placeholder.png");
+		//auto texIdx = loadTexture(imgIdx);
+		//auto sprIdx = createSprite(texIdx);
+	}
+	
+	size_t Scene::loadImage(std::string path)
+	{
 		sf::Image sfImage;
-		sfImage.loadFromFile("resources/placeholder.png");
+		if (!sfImage.loadFromFile(path))
+			log("Load image Failed: " + path, LOGS_Core);
 		vecImage.push_back(std::move(sfImage));
+		return vecImage.size() - 1;
+	}
 
+	size_t Scene::loadTexture(size_t imageIdx)
+	{
 		sf::Texture sfTexture;
-		sfTexture.loadFromImage(vecImage[1]);
+		if (!sfTexture.loadFromImage(vecImage[imageIdx]))
+			log("Load texture Failed: " + std::to_string(imageIdx), LOGS_Core);
 		vecTexture.push_back(std::move(sfTexture));
+		return vecTexture.size() - 1;
+	}
 
-		vecSprite.emplace_back(vecTexture[1]);
+	size_t Scene::loadTexture(size_t imageIdx, unsigned x, unsigned y, unsigned w, unsigned h)
+	{
+		sf::Texture sfTexture;
+		if (!sfTexture.loadFromImage(vecImage[imageIdx], sf::IntRect(x, y, w, h)))
+			log("Load texture Failed: " + std::to_string(imageIdx), LOGS_Core);
+		vecTexture.push_back(std::move(sfTexture));
+		return vecTexture.size() - 1;
+	}
+
+	size_t Scene::createSprite(size_t textureIdx)
+	{
+		vecSprite.emplace_back(vecTexture[textureIdx]);
+		return vecSprite.size() - 1;
+	}
+
+	size_t Scene::createSprite(size_t imageIdx, unsigned x, unsigned y, unsigned w, unsigned h)
+	{
+		auto textureIdx = loadTexture(imageIdx, x, y, w, h);
+		return createSprite(textureIdx);
 	}
 
 	void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const

@@ -25,6 +25,11 @@ namespace game
 		int errorLine;
 
 	public:
+		struct channel {
+			// {segment, sampleIdx/BPMvalue}
+			std::list<std::pair<int, int>> notes{};
+			int segments = 1;
+		};
 
 	protected:
 		// BMS File Path.
@@ -58,11 +63,6 @@ namespace game
 		std::array<double, defs::MAXMEASUREIDX + 1> barLength{};
 		
 		// Channels.
-		struct channel {
-			// {segment, sampleIdx/BPMvalue}
-			std::list<std::pair<int, int>> notes{};
-			int segments = 1;
-		};
 		int strToChannel(channel&, const std::string& str);
 		std::array<std::array<channel, defs::MAXMEASUREIDX + 1>, defs::MAXBGMCHANNEL + 1> chBGM{};
 		std::array<channel, defs::MAXMEASUREIDX + 1> chStop{};
@@ -89,14 +89,16 @@ namespace game
 		bool haveBPMChange = false;
 		bool haveBGA = false;
 		bool haveRandom = false;
+		unsigned bgmLayers = 0;
 		unsigned long notes = 0;
-		unsigned measures = 0;
+		unsigned maxMeasure = 0;
 		double minBPM;
 		double maxBPM;
 
 	public:
 		int getMode() const;
 		unsigned getNoteCount() const;
+		unsigned getMaxMeasure() const;
 		bool hasMine() const;
 		bool hasLN() const;
 		bool hasInvisible() const;
@@ -117,6 +119,9 @@ namespace game
 		int getJudgeRank() const;
 		int getPlayLevel() const;
 		int getDifficulty() const;
+
+		auto getMeasureLength(unsigned idx) -> decltype(barLength[0]) const;
+		auto getChannel(defs::bmsGetChannelCode, unsigned chIdx, unsigned measureIdx) const -> const decltype(chBGM[0][0])&;
 
 	};
 }

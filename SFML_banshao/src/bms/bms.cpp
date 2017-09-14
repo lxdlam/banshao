@@ -41,7 +41,7 @@ namespace game
 		skipRegex.emplace_back(R"(#BMP00 .*)");
 
 		std::string buf;
-		std::array<int, defs::MAXMEASUREIDX+ 1> bgmLayersCount{};
+		std::array<unsigned, defs::MAXMEASUREIDX+ 1> bgmLayersCount{};
 		unsigned line = 0;
 		while (!fs.eof())
 		{
@@ -133,12 +133,12 @@ namespace game
 						std::string key = buf.substr(1, colon_idx - 1);
 						std::string value = buf.substr(colon_idx + 1);
 
-						// measures & channels
+						// maxMeasure & channels
 						if (std::regex_match(key, std::regex(R"(\d{3}[0-9A-Za-z]{2})")))
 						{
 							unsigned measure = std::stoi(key.substr(0, 3));
-							if (measures < measure)
-								measures = measure;
+							if (maxMeasure < measure)
+								maxMeasure = measure;
 							std::pair<int, int> channel = { base36(key[3]), base36(key[4]) };
 							switch (channel.first)
 							{
@@ -148,6 +148,8 @@ namespace game
 								case 1:			// 01: BGM
 									strToChannel(chBGM[bgmLayersCount[measure]][measure], value);
 									bgmLayersCount[measure]++;
+									if (bgmLayersCount[measure] > bgmLayers)
+										bgmLayers = bgmLayersCount[measure];
 									break;
 
 								case 2:			// 02: Measure Length
@@ -228,13 +230,13 @@ namespace game
 		fs.close();
 
 		// Get statistics
-		for (size_t i = 0; i < measures; i++)
+		for (size_t i = 0; i < maxMeasure; i++)
 			if (barLength[i] == 0.0)
 				barLength[i] = 1.0;
 
 		if (haveNote)
 		for (const auto& chs : chNotesVisible)
-			for (int m = 0; m < measures; m++)
+			for (unsigned m = 0; m < maxMeasure; m++)
 				for (const auto& ns : chs[m].notes)
 					notes++;
 
@@ -242,7 +244,7 @@ namespace game
 		{
 			int ln = 0;
 			for (const auto& chs : chNotesVisible)
-				for (int m = 0; m < measures; m++)
+				for (unsigned m = 0; m < maxMeasure; m++)
 					for (const auto& ns : chs[m].notes)
 						ln++;
 			notes += ln / 2;
@@ -252,7 +254,7 @@ namespace game
 		maxBPM = bpm;
 		if (haveBPMChange)
 		{
-			for (int m = 0; m < measures; m++)
+			for (unsigned m = 0; m < maxMeasure; m++)
 			{
 				for (const auto& ns : chBPMChange[m].notes)
 				{
@@ -349,6 +351,11 @@ namespace game
 		return notes;
 	}
 
+	unsigned bms::getMaxMeasure() const
+	{
+		return maxMeasure;
+	}
+
 	bool bms::hasMine() const
 	{
 		return haveMine;
@@ -439,6 +446,33 @@ namespace game
 	int bms::getDifficulty() const
 	{
 		return difficulty;
+	}
+
+	auto bms::getMeasureLength(unsigned idx) -> decltype(barLength[0]) const
+	{
+		return barLength[idx];
+	}
+	
+	auto bms::getChannel(defs::bmsGetChannelCode code, unsigned chIdx, unsigned measureIdx) const -> const decltype(chBGM[0][0])&
+	{
+		using eC = defs::bmsGetChannelCode;
+		switch (code)
+		{
+		case eC::BGM:		return chBGM[chIdx][measureIdx]; break;
+		case eC::BPM:		return chBPMChange[measureIdx]; break;
+		case eC::STOP:		return chStop[measureIdx]; break;
+		case eC::BGABASE:	return chBGABase[measureIdx]; break;
+		case eC::BGALAYER:	return chBGALayer[measureIdx]; break;
+		case eC::BGAPOOR:	return chBGAPoor[measureIdx]; break;;
+		case eC::NOTE1:		return chNotesVisible[chIdx][measureIdx]; break;
+		case eC::NOTE2:		return chNotesVisible[10 + chIdx][measureIdx]; break;
+		case eC::NOTEINV1:	return chNotesInvisible[chIdx][measureIdx]; break;
+		case eC::NOTEINV2:	return chNotesInvisible[10 + chIdx][measureIdx]; break;
+		case eC::NOTELN1:	return chNotesLN[chIdx][measureIdx]; break;
+		case eC::NOTELN2:	return chNotesLN[10 + chIdx][measureIdx]; break;
+		case eC::NOTEMINE1:	return chMines[chIdx][measureIdx]; break;
+		case eC::NOTEMINE2:	return chMines[10 + chIdx][measureIdx]; break;
+		}
 	}
 
 }
