@@ -1,4 +1,5 @@
 #pragma once
+#include <utility>
 
 namespace game::defs
 {
@@ -113,6 +114,7 @@ namespace game::defs
 	{
 		BGM = 0,
 		BPM,
+		EXBPM,
 		STOP,
 		BGABASE,
 		BGALAYER,

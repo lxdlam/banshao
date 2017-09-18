@@ -47,22 +47,22 @@ namespace game
 	}
 
 	// FIXME I've seen an ordinary way to count FPS with a loop array
-	void gameInstance::calc_fps_thread_func()
-	{
-		auto base = totalFrameRendered;
-		auto FrameCountInterval = std::chrono::milliseconds(1000);
-		while (isOpen())
-		{
-			base = totalFrameRendered;
-			std::this_thread::sleep_for(FrameCountInterval);
-			fps = static_cast<int>((totalFrameRendered - base) * 1000 / FrameCountInterval.count());
-			std::cout << "fps: " << fps << std::endl;
-		}
-	}
+	//void gameInstance::calc_fps_thread_func()
+	//{
+	//	auto base = totalFrameRendered;
+	//	auto FrameCountInterval = std::chrono::milliseconds(1000);
+	//	while (isOpen())
+	//	{
+	//		base = totalFrameRendered;
+	//		std::this_thread::sleep_for(FrameCountInterval);
+	//		fps = static_cast<int>((totalFrameRendered - base) * 1000 / FrameCountInterval.count());
+	//		//std::cout << "fps: " << fps << std::endl;
+	//	}
+	//}
 
 	void gameInstance::render_thread_func()
 	{
-		std::thread fps(&gameInstance::calc_fps_thread_func, this);
+		//std::thread fps(&gameInstance::calc_fps_thread_func, this);
 		while (isOpen())
 		{
 			sfWin.clear();
@@ -70,7 +70,7 @@ namespace game
 			sfWin.display();
 			totalFrameRendered++;
 		}
-		fps.join();
+		//fps.join();
 	}
 
 	int gameInstance::run()
@@ -133,10 +133,10 @@ namespace game
 		return 0;
 	}
 
-	int gameInstance::getFPS()
-	{
-		return fps;
-	}
+	//int gameInstance::getFPS()
+	//{
+	//	return fps;
+	//}
 
 	bool gameInstance::isOpen()
 	{

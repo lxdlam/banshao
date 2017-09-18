@@ -122,6 +122,9 @@
     <ClInclude Include="src\Config\play.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\types.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\placeholder.png">

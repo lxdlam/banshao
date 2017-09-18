@@ -22,9 +22,8 @@ namespace game
 		void operator=(gameInstance const&) = delete;
 
 	private:
-		int fps = 0;
 		unsigned long long totalFrameRendered = 0;
-		void calc_fps_thread_func();
+		//void calc_fps_thread_func();
 		void render_thread_func();
 
 	public:
@@ -37,6 +36,6 @@ namespace game
 		int resize();
 
 		inline bool isOpen();
-		int getFPS();
+		//int getFPS();
 	};
 }

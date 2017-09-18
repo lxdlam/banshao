@@ -6,6 +6,7 @@
 
 #include "../defs.h"
 #include "../utils.h"
+using utils::base16;
 using utils::base36;
 
 namespace game
@@ -26,8 +27,8 @@ namespace game
 
 	public:
 		struct channel {
-			// {segment, sampleIdx/BPMvalue}
-			std::list<std::pair<int, int>> notes{};
+			// {segment, sampleIdx/value}
+			std::list<std::pair<unsigned, unsigned>> notes{};
 			int segments = 1;
 		};
 
@@ -60,10 +61,12 @@ namespace game
 
 		// Measures related.
 		std::array<double, defs::MAXSAMPLEIDX + 1> exBPM{};
+		std::array<double, defs::MAXSAMPLEIDX + 1> stop{};
 		std::array<double, defs::MAXMEASUREIDX + 1> barLength{};
 		
 		// Channels.
-		int strToChannel(channel&, const std::string& str);
+		int strToChannel36(channel&, const std::string& str);
+		int strToChannel16(channel&, const std::string& str);
 		std::array<std::array<channel, defs::MAXMEASUREIDX + 1>, defs::MAXBGMCHANNEL + 1> chBGM{};
 		std::array<channel, defs::MAXMEASUREIDX + 1> chStop{};
 		std::array<channel, defs::MAXMEASUREIDX + 1> chBPMChange{};
@@ -120,8 +123,10 @@ namespace game
 		int getPlayLevel() const;
 		int getDifficulty() const;
 
-		auto getMeasureLength(unsigned idx) -> decltype(barLength[0]) const;
+		auto getMeasureLength(unsigned idx) const -> decltype(barLength[0]) const;
 		auto getChannel(defs::bmsGetChannelCode, unsigned chIdx, unsigned measureIdx) const -> const decltype(chBGM[0][0])&;
 
+		auto getExBPM(size_t idx) const -> decltype(exBPM[0]);
+		auto getStop(size_t idx) const -> decltype(stop[0]);
 	};
 }

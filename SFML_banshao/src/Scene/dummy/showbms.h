@@ -5,6 +5,7 @@
 #include "../../Sound/sound.h"
 #include "../../bms/bms.h"
 #include "../scene.h"
+#include "../../types.hpp"
 
 namespace game
 {
@@ -23,13 +24,18 @@ namespace game
 
 		// variables
 		bms objBms;
-		std::array<std::list<std::pair<double, int>>, 20> noteLists;	// noteLists [key] [time(ms)] [sample/value]
+		// noteLists [key] [measure] {beat, time(ms), sample/value, hit}}
+		std::array<std::array<std::list<std::tuple<rational, double, int, bool>>, defs::MAXMEASUREIDX + 1>, 20> noteLists;
+		std::array<std::list<std::tuple<rational, double, int, bool>>, defs::MAXMEASUREIDX + 1> bpmLists;
+		std::array<std::list<std::tuple<rational, double, int, bool>>, defs::MAXMEASUREIDX + 1> stopLists;
 		void createNoteList();
 		std::array<size_t, 20> notesTextureIdx{};
 		void createNoteVertices(std::array<sf::VertexArray, 20>&) const;
 
 		// controllable variables
 		int hispeed = 100;
+		unsigned currentMeasure = 0;
+		double currentBeat = 0;
 
 	protected:
 		void mainLoop() override;

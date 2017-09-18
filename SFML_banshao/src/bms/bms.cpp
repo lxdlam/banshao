@@ -6,6 +6,7 @@
 #include <exception>
 
 using utils::log;
+using utils::base16;
 using utils::base36;
 
 namespace game
@@ -73,6 +74,7 @@ namespace game
 					{
 						std::string key = buf.substr(1, space_idx - 1);
 						std::string value = buf.substr(space_idx + 1);
+						if (value.empty()) continue;
 
 						// digits
 						if (key == "PLAYER")
@@ -122,6 +124,11 @@ namespace game
 							int idx = base36(key[3], key[4]);
 							exBPM[idx] = std::stod(value);
 						}
+						else if (std::regex_match(key, std::regex(R"(STOP[0-9A-Za-z]{1,2})")))
+						{
+							int idx = base36(key[4], key[5]);
+							stop[idx] = std::stod(value);
+						}
 
 						// unknown
 						else
@@ -146,7 +153,7 @@ namespace game
 								switch (channel.second)
 								{
 								case 1:			// 01: BGM
-									strToChannel(chBGM[bgmLayersCount[measure]][measure], value);
+									strToChannel36(chBGM[bgmLayersCount[measure]][measure], value);
 									bgmLayersCount[measure]++;
 									if (bgmLayersCount[measure] > bgmLayers)
 										bgmLayers = bgmLayersCount[measure];
@@ -158,23 +165,33 @@ namespace game
 									break;
 
 								case 3:			// 03: BPM change
-									strToChannel(chBPMChange[measure], value);
+									strToChannel16(chBPMChange[measure], value);
 									haveBPMChange = true;
 									break;
 
 								case 4:			// 04: BGA Base
-									strToChannel(chBGABase[measure], value);
+									strToChannel36(chBGABase[measure], value);
 									haveBGA = true;
 									break;
 
 								case 6:			// 06: BGA Poor
-									strToChannel(chBGAPoor[measure], value);
+									strToChannel36(chBGAPoor[measure], value);
 									haveBGA = true;
 									break;
 
 								case 7:			// 07: BGA Layer
-									strToChannel(chBGALayer[measure], value);
+									strToChannel36(chBGALayer[measure], value);
 									haveBGA = true;
+									break;
+
+								case 8:			// 08: ExBPM
+									strToChannel36(chExBPMChange[measure], value);
+									haveStop = true;
+									break;
+
+								case 9:			// 09: Stop
+									strToChannel36(chStop[measure], value);
+									haveStop = true;
 									break;
 								}
 								break;
@@ -230,7 +247,7 @@ namespace game
 		fs.close();
 
 		// Get statistics
-		for (size_t i = 0; i < maxMeasure; i++)
+		for (size_t i = 0; i <= maxMeasure; i++)
 			if (barLength[i] == 0.0)
 				barLength[i] = 1.0;
 
@@ -272,14 +289,26 @@ namespace game
 		return 0;
 	}
 	
-	int bms::strToChannel(channel& ch, const std::string& str)
+	int bms::strToChannel36(channel& ch, const std::string& str)
 	{
 		if (!std::regex_match(str, std::regex(R"(([0-9A-Za-z][0-9A-Za-z]){1,})")))
 			throw new noteLineException;
 
 		ch.segments = str.length() / 2;
-		for (int i = 0; i < ch.segments * 2; i += 2)
-			if (auto sample = base36(str[i], str[i + 1]) != 0)
+		for (int i = 0; i < ch.segments; i++)
+			if (unsigned sample = base36(str[i * 2], str[i * 2 + 1]))
+				ch.notes.push_back({ i, sample });
+		return 0;
+	}
+
+	int bms::strToChannel16(channel& ch, const std::string& str)
+	{
+		if (!std::regex_match(str, std::regex(R"(([0-9A-Fa-f][0-9A-Fa-f]){1,})")))
+			throw new noteLineException;
+
+		ch.segments = str.length() / 2;
+		for (int i = 0; i < ch.segments; i++)
+			if (unsigned sample = base16(str[i * 2], str[i * 2 + 1]))
 				ch.notes.push_back({ i, sample });
 		return 0;
 	}
@@ -323,7 +352,7 @@ namespace game
 			idx = 9;
 			break;
 		}
-		return strToChannel(arrCh[idx][measure], str);
+		return strToChannel36(arrCh[idx][measure], str);
 	}
 
 	std::string bms::getError()
@@ -448,7 +477,7 @@ namespace game
 		return difficulty;
 	}
 
-	auto bms::getMeasureLength(unsigned idx) -> decltype(barLength[0]) const
+	auto bms::getMeasureLength(unsigned idx) const -> decltype(barLength[0]) const
 	{
 		return barLength[idx];
 	}
@@ -460,6 +489,7 @@ namespace game
 		{
 		case eC::BGM:		return chBGM[chIdx][measureIdx]; break;
 		case eC::BPM:		return chBPMChange[measureIdx]; break;
+		case eC::EXBPM:		return chExBPMChange[measureIdx]; break;
 		case eC::STOP:		return chStop[measureIdx]; break;
 		case eC::BGABASE:	return chBGABase[measureIdx]; break;
 		case eC::BGALAYER:	return chBGALayer[measureIdx]; break;
@@ -473,6 +503,15 @@ namespace game
 		case eC::NOTEMINE1:	return chMines[chIdx][measureIdx]; break;
 		case eC::NOTEMINE2:	return chMines[10 + chIdx][measureIdx]; break;
 		}
+	}
+
+	auto bms::getExBPM(size_t idx) const -> decltype(exBPM[0])
+	{
+		return exBPM[idx];
+	}
+	auto bms::getStop(size_t idx) const -> decltype(stop[0])
+	{
+		return stop[idx];
 	}
 
 }

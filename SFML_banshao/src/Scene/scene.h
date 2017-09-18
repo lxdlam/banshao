@@ -43,6 +43,7 @@ namespace game
 		bool active = false;
 		bool running = false;
 		bool saveCPU = true;
+		int fps = 0;
 		std::future<void> inputTaskFuture;
 		void input_thread_func();
 		unsigned long prev_functionalInput = 0;
