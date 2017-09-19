@@ -65,7 +65,7 @@ namespace game
 		double basetime = 0;
 		for (unsigned m = 0; m <= maxMeasure ; m++)
 		{
-			log("MEASURE " + std::to_string(m) + " LENGTH " + std::to_string(objBms.getMeasureLength(m)), LOGS_Core);
+			//log("MEASURE " + std::to_string(m) + " LENGTH " + std::to_string(objBms.getMeasureLength(m)), LOGS_Core);
 
 			// notes [] {seg, {lane, sample/val}}
 			std::vector<std::pair<rational, std::pair<unsigned, unsigned>>> notes;
@@ -75,11 +75,6 @@ namespace game
 			{
 				auto ch = objBms.getChannel(defs::bmsGetChannelCode::NOTE1, i, m);
 				{
-					if (ch.segments == 0)
-					{
-						log("ERROR: Zero Note measure detected: #" + std::to_string(m));
-						continue;
-					}
 					for (const auto& n : ch.notes)
 					{
 						notes.push_back({ rational(n.first, ch.segments), {i, n.second} });
@@ -89,21 +84,21 @@ namespace game
 
 			// The following patterns must be arranged in specified order
 
-			// EX BPM: 97
-			{
-				auto ch = objBms.getChannel(defs::bmsGetChannelCode::EXBPM, 0, m);
-				{
-					for (const auto& n : ch.notes)
-						notes.push_back({ rational(n.first, ch.segments), {97, n.second} });
-				}
-			}
-
 			// BPM Change: 98
 			{
 				auto ch = objBms.getChannel(defs::bmsGetChannelCode::BPM, 0, m);
 				{
 					for (const auto& n : ch.notes)
 						notes.push_back({ rational(n.first, ch.segments), {98, n.second} });
+				}
+			}
+
+			// EX BPM: 97
+			{
+				auto ch = objBms.getChannel(defs::bmsGetChannelCode::EXBPM, 0, m);
+				{
+					for (const auto& n : ch.notes)
+						notes.push_back({ rational(n.first, ch.segments), {97, n.second} });
 				}
 			}
 

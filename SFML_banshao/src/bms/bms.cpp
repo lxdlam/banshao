@@ -39,6 +39,7 @@ namespace game
 		skipRegex.emplace_back(R"(\/\/.*)");
 		skipRegex.emplace_back(R"(;.*)");
 		skipRegex.emplace_back(R"(#BPM00 .*)");
+		skipRegex.emplace_back(R"(#STOP00 .*)");
 		skipRegex.emplace_back(R"(#BMP00 .*)");
 
 		std::string buf;
@@ -139,6 +140,13 @@ namespace game
 					{
 						std::string key = buf.substr(1, colon_idx - 1);
 						std::string value = buf.substr(colon_idx + 1);
+						if (value.empty())
+						{
+							log("[BMS] Empty element line detected: line " + std::to_string(line));
+							errorLine = line;
+							errorCode = defs::bmsErrorCode::NOTE_LINE_ERROR;
+							return 1;
+						}
 
 						// maxMeasure & channels
 						if (std::regex_match(key, std::regex(R"(\d{3}[0-9A-Za-z]{2})")))
@@ -285,6 +293,8 @@ namespace game
 				}
 			}
 		}
+
+		initialized = true;
 
 		return 0;
 	}

@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <fmod.hpp>
+#include <chrono>
 #include <array>
 #include "../../Sound/sound.h"
 #include "../../bms/bms.h"
@@ -34,8 +35,12 @@ namespace game
 
 		// controllable variables
 		int hispeed = 100;
+
+		// state variables
 		unsigned currentMeasure = 0;
 		double currentBeat = 0;
+		bool started = false;
+		std::chrono::system_clock startTime;
 
 	protected:
 		void mainLoop() override;
