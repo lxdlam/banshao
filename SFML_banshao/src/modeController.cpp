@@ -67,7 +67,7 @@ namespace game
 		mode = newMode;
 		switch (mode)
 		{
-		case eMode::EXIT: 			pScene = nullptr; break;
+		case eMode::EXIT: 			pScene = nullptr; return 0;
 		case eMode::TITLE: 			break;
 		case eMode::SONG_SELECT: 	break;
 		case eMode::THEME_SELECT: 	break;
@@ -89,6 +89,7 @@ namespace game
 		default:					pScene = std::make_shared<Scene>(pSound); break;
 		}
 		log("mode switched to " + getCurrentModeStr(), LOGS_Core);
+		pScene->run();
 		return 0;
 	}
 

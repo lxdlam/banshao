@@ -25,6 +25,7 @@ namespace game
 		Scene() = delete;
 		Scene(std::shared_ptr<Sound>);
 		~Scene();
+		virtual void preDraw();
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	private:
@@ -52,6 +53,7 @@ namespace game
 		unsigned long gamepadInput = 0;
 		
 	public:
+		void run();
 		void setHighResponsive(bool);
 		void setActive(bool);
 		bool Scene::isFuncKeyPressed(defs::functionalKeys k) const;

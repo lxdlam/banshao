@@ -14,9 +14,6 @@ namespace game
 
 		soundSystem = pSound;
 
-		running = true;
-		inputTaskFuture = std::async(std::launch::async, &Scene::input_thread_func, this);
-
 		log("Scene created", LOGS_Core);
 	}
 
@@ -77,6 +74,10 @@ namespace game
 		return createSprite(textureIdx);
 	}
 
+	void Scene::preDraw()
+	{
+	}
+
 	void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		/// You can draw other high-level objects
@@ -103,7 +104,7 @@ namespace game
 			prev_gamepadInput = gamepadInput;
 			functionalInput = active ? Input::functional::detect() : 0;
 			gamepadInput = active ? Input::gamepad::detect() : 0;
-			mainLoop();
+			if (running) mainLoop();
 			if (soundSystem) soundSystem->update();
 
 			if (saveCPU)
@@ -119,6 +120,12 @@ namespace game
 	void Scene::setActive(bool a)
 	{
 		active = a;
+	}
+
+	void Scene::run()
+	{
+		running = true;
+		inputTaskFuture = std::async(std::launch::async, &Scene::input_thread_func, this);
 	}
 
 	bool Scene::isFuncKeyPressed(defs::functionalKeys k) const

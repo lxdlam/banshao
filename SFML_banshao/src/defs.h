@@ -91,7 +91,7 @@ namespace game::defs
 	};
 
 	// bms related
-	static const unsigned MAXBGMCHANNEL = 32;
+	static const unsigned BGMCHANNELS = 32;
 	static const unsigned MAXSAMPLEIDX = 36 * 36;
 	static const unsigned MAXMEASUREIDX = 999;
 	enum bmsMode {

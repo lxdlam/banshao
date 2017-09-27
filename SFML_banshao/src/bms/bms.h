@@ -35,6 +35,7 @@ namespace game
 	protected:
 		// BMS File Path.
 		std::string path;
+		std::string dirpath;
 
 		// File properties.
 		// TODO MD5_t MD5;
@@ -67,7 +68,8 @@ namespace game
 		// Channels.
 		int strToChannel36(channel&, const std::string& str);
 		int strToChannel16(channel&, const std::string& str);
-		std::array<std::array<channel, defs::MAXMEASUREIDX + 1>, defs::MAXBGMCHANNEL + 1> chBGM{};
+		std::array<unsigned, defs::MAXMEASUREIDX+ 1> bgmLayersCount{};
+		std::array<std::array<channel, defs::MAXMEASUREIDX + 1>, defs::BGMCHANNELS> chBGM{};
 		std::array<channel, defs::MAXMEASUREIDX + 1> chStop{};
 		std::array<channel, defs::MAXMEASUREIDX + 1> chBPMChange{};
 		std::array<channel, defs::MAXMEASUREIDX + 1> chExBPMChange{};
@@ -124,9 +126,15 @@ namespace game
 		int getDifficulty() const;
 
 		auto getMeasureLength(unsigned idx) const -> decltype(barLength[0]) const;
+		unsigned getBGMChannelCount(unsigned measure) const;
 		auto getChannel(defs::bmsGetChannelCode, unsigned chIdx, unsigned measureIdx) const -> const decltype(chBGM[0][0])&;
 
 		auto getExBPM(size_t idx) const -> decltype(exBPM[0]);
 		auto getStop(size_t idx) const -> decltype(stop[0]);
+
+		auto getWavPath(size_t idx) const -> decltype(wavFile[0]);
+		auto getBmpPath(size_t idx) const -> decltype(bmpFile[0]);
+
+		std::string getDirectory() const;
 	};
 }

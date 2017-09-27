@@ -66,6 +66,7 @@ namespace game
 		while (isOpen())
 		{
 			sfWin.clear();
+			modeCon->getScenePtr()->preDraw();
 			sfWin.draw(*modeCon->getScenePtr());
 			sfWin.display();
 			totalFrameRendered++;

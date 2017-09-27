@@ -4,6 +4,7 @@
 #include <regex>
 #include <utility>
 #include <exception>
+#include <filesystem>
 
 using utils::log;
 using utils::base16;
@@ -23,7 +24,9 @@ namespace game
 			return 1;
 		}
 
-		path = file;
+		auto p = std::experimental::filesystem::absolute(file);
+		path = p.string();
+		dirpath = p.parent_path().string();
 		std::ifstream fs(path);
 		if (fs.fail())
 		{
@@ -31,6 +34,7 @@ namespace game
 			errorLine = 0;
 			return 1;
 		}
+
 
 		// TODO 天国的PARSER！！！
 		// SUPER LAZY PARSER FOR TESTING
@@ -43,7 +47,6 @@ namespace game
 		skipRegex.emplace_back(R"(#BMP00 .*)");
 
 		std::string buf;
-		std::array<unsigned, defs::MAXMEASUREIDX+ 1> bgmLayersCount{};
 		unsigned line = 0;
 		while (!fs.eof())
 		{
@@ -161,8 +164,7 @@ namespace game
 								switch (channel.second)
 								{
 								case 1:			// 01: BGM
-									strToChannel36(chBGM[bgmLayersCount[measure]][measure], value);
-									bgmLayersCount[measure]++;
+									strToChannel36(chBGM[bgmLayersCount[measure]++][measure], value);
 									if (bgmLayersCount[measure] > bgmLayers)
 										bgmLayers = bgmLayersCount[measure];
 									break;
@@ -261,15 +263,15 @@ namespace game
 
 		if (haveNote)
 		for (const auto& chs : chNotesVisible)
-			for (unsigned m = 0; m < maxMeasure; m++)
+			for (unsigned m = 0; m <= maxMeasure; m++)
 				for (const auto& ns : chs[m].notes)
 					notes++;
 
 		if (haveLN)
 		{
 			int ln = 0;
-			for (const auto& chs : chNotesVisible)
-				for (unsigned m = 0; m < maxMeasure; m++)
+			for (const auto& chs : chNotesLN)
+				for (unsigned m = 0; m <= maxMeasure; m++)
 					for (const auto& ns : chs[m].notes)
 						ln++;
 			notes += ln / 2;
@@ -279,7 +281,7 @@ namespace game
 		maxBPM = bpm;
 		if (haveBPMChange)
 		{
-			for (unsigned m = 0; m < maxMeasure; m++)
+			for (unsigned m = 0; m <= maxMeasure; m++)
 			{
 				for (const auto& ns : chBPMChange[m].notes)
 				{
@@ -491,6 +493,11 @@ namespace game
 	{
 		return barLength[idx];
 	}
+
+	unsigned bms::getBGMChannelCount(unsigned measure) const
+	{
+		return bgmLayersCount[measure];
+	}
 	
 	auto bms::getChannel(defs::bmsGetChannelCode code, unsigned chIdx, unsigned measureIdx) const -> const decltype(chBGM[0][0])&
 	{
@@ -513,6 +520,7 @@ namespace game
 		case eC::NOTEMINE1:	return chMines[chIdx][measureIdx]; break;
 		case eC::NOTEMINE2:	return chMines[10 + chIdx][measureIdx]; break;
 		}
+		// FIXME warning C4715 : “game::bms::getChannel” : 不是所有的控件路径都返回值
 	}
 
 	auto bms::getExBPM(size_t idx) const -> decltype(exBPM[0])
@@ -524,4 +532,17 @@ namespace game
 		return stop[idx];
 	}
 
+	auto bms::getWavPath(size_t idx) const -> decltype(wavFile[0])
+	{
+		return wavFile[idx];
+	}
+	auto bms::getBmpPath(size_t idx) const -> decltype(bmpFile[0])
+	{
+		return bmpFile[idx];
+	}
+
+	std::string bms::getDirectory() const
+	{
+		return dirpath;
+	}
 }

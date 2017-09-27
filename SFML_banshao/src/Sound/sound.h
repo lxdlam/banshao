@@ -39,6 +39,7 @@ namespace game
 		int loadSample(std::string path, size_t index, bool isStream = false, bool loop = false);
 		void playSample(size_t index);
 		void freeSamples();
+		int getChannelsPlaying();
 
 	};
 }

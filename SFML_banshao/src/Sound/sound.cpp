@@ -92,11 +92,15 @@ namespace game
 
 	int Sound::loadKeySample(std::string path, size_t index)
 	{
+		if (path.empty())
+			return FMOD_OK;
 		FMOD_RESULT r =
-			fmodSystem->createSound(path.c_str(), FMOD_DEFAULT, 0, &keySamples[index]);
+			fmodSystem->createSound(path.c_str(), FMOD_UNIQUE, 0, &keySamples[index]);
+		if (r == FMOD_ERR_FILE_NOTFOUND && path.length() > 4 && path.substr(path.length() - 4) == ".wav")
+			r = fmodSystem->createSound(path.replace(path.length() - 4, 4, ".ogg").c_str(), FMOD_UNIQUE, 0, &keySamples[index]);
 #if _DEBUG
 		if (r != FMOD_OK)
-			log("ERROR: Loading Sample (" + path + ") Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r));
+			log("[FMOD] Loading Sample (" + path + ") Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r));
 #endif
 		return r;
 	}
@@ -137,10 +141,9 @@ namespace game
 			flag |= FMOD_LOOP_NORMAL;
 		FMOD_RESULT r =
 			fmodSystem->createSound(path.c_str(), flag, 0, &etcSamples[index]);
-#if _DEBUG
+		
 		if (r != FMOD_OK)
-			log("ERROR: Loading Sample (" + path + ") Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r));
-#endif
+			log("[FMOD] Loading Sample (" + path + ") Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r));
 		return r;
 	}
 
@@ -151,7 +154,7 @@ namespace game
 			r = fmodSystem->playSound(etcSamples[index], 0, false, 0);
 #if _DEBUG
 		if (r != FMOD_OK)
-			log("ERROR: Playing Sample Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r));
+			log("[FMOD] Playing Sample Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r));
 #endif
 	}
 
@@ -170,7 +173,15 @@ namespace game
 		FMOD_RESULT r = fmodSystem->update();
 #if _DEBUG
 		if (r != FMOD_OK)
-			log("ERROR: Sound System Update Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r));
+			log("[FMOD] Sound System Update Error: " + std::to_string(r) + ", " + FMOD_ErrorString(r));
 #endif
 		return r;
-	}}
+	}
+
+	int Sound::getChannelsPlaying()
+	{
+		int c = 0;
+		fmodSystem->getChannelsPlaying(&c);
+		return c;
+	}
+}
