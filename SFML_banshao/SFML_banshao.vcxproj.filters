@@ -66,6 +66,9 @@
     <ClCompile Include="src\Config\play.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\external\easylogging++.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\resource.h">
@@ -123,6 +126,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\types.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\external\easylogging++.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\external\json.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

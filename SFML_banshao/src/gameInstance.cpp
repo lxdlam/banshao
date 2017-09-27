@@ -12,8 +12,6 @@
 #include <chrono>
 #include <thread>
 
-using utils::log;
-
 namespace game
 {
 	gameInstance& gameInstance::getInstance()
@@ -24,14 +22,14 @@ namespace game
 
 	gameInstance::gameInstance()
 	{
+		utils::initLogging();
 		Config::init();
-		utils::logSystemInfo();
 		setWindowMode();
 		Input::gamepad::updateBindings();
 		pSound = std::make_shared<Sound>();
 		modeCon = std::make_unique<modeController>(pSound);
 		active = true;
-		log("Game Instance initialized.", LOGS_Core);
+		LOG(DEBUG) << "Game Instance initialized.";
 	}
 
 	gameInstance::~gameInstance()
@@ -43,7 +41,7 @@ namespace game
 		modeCon.reset();
 		pSound.reset();
 		Config::saveConfig();
-		log("Game Instance destroyed.", LOGS_Core);
+		LOG(DEBUG) << "Game Instance destroyed.";
 	}
 
 	// FIXME I've seen an ordinary way to count FPS with a loop array
@@ -85,7 +83,6 @@ namespace game
 				sf::Event event;
 				while (sfWin.pollEvent(event))
 				{
-					// "close requested" event: we close the window
 					switch (event.type)
 					{
 					case sf::Event::Closed: close(); break;
@@ -130,7 +127,7 @@ namespace game
 		sfWin.setActive(false);
 		setMaxFPS();
 
-		log("Render window set", LOGS_Core);
+		LOG(DEBUG) << "Render window set";
 		return 0;
 	}
 

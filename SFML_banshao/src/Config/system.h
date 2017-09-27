@@ -21,19 +21,7 @@ namespace game::Config
 	private:
 		const std::string title = "asdf";
 
-		std::string logFilePath;
-		std::fstream logFileStream;
-		std::ostream *logStream = &std::cout;
-		int verbose = LOGS_All;
-
 	public:
-		int setLogFile(const std::string& path);
-		std::ostream* getLogStream();
-		
 		std::string getTitle();
-
-		int setVerbose(verbose_level v);
-		int getVerbose();
-
 	};
 }

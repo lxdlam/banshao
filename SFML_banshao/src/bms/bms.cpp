@@ -6,7 +6,6 @@
 #include <exception>
 #include <filesystem>
 
-using utils::log;
 using utils::base16;
 using utils::base36;
 
@@ -145,7 +144,7 @@ namespace game
 						std::string value = buf.substr(colon_idx + 1);
 						if (value.empty())
 						{
-							log("[BMS] Empty element line detected: line " + std::to_string(line));
+							LOG(WARNING) << "[BMS] Empty element line detected: line " << line;
 							errorLine = line;
 							errorCode = defs::bmsErrorCode::NOTE_LINE_ERROR;
 							return 1;

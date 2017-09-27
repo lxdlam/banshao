@@ -1,7 +1,6 @@
 #include "modeController.h"
 #include <string>
 #include "utils.h"
-using utils::log;
 
 #include "Scene/dummy/showbms.h"
 #include "Scene/dummy/test.h"
@@ -11,18 +10,18 @@ namespace game
 	modeController::modeController()
 	{
 		pSound = nullptr;
-		log("modeController initialized without sound system specified.", LOGS_Core);
+		LOG(DEBUG) << "modeController initialized without sound system specified.";
 	}
 
 	modeController::modeController(std::shared_ptr<Sound> p)
 	{
 		pSound = p;
-		log("modeController initialized.", LOGS_Core);
+		LOG(DEBUG) << "modeController initialized.";
 	}
 
 	modeController::~modeController()
 	{
-		log("modeController destroyed.", LOGS_Core);
+		LOG(DEBUG) << "modeController destroyed.";
 	}
 
 	int modeController::start()
@@ -88,7 +87,7 @@ namespace game
 		case eMode::TEST:			pScene = std::make_shared<showbms>(pSound); break;
 		default:					pScene = std::make_shared<Scene>(pSound); break;
 		}
-		log("mode switched to " + getCurrentModeStr(), LOGS_Core);
+		LOG(DEBUG) << "mode switched to " + getCurrentModeStr();
 		pScene->run();
 		return 0;
 	}

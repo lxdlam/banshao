@@ -1,5 +1,6 @@
 #pragma once
 #include <utility>
+#include <vector>
 
 namespace game::defs
 {
@@ -129,4 +130,21 @@ namespace game::defs
 		NOTEMINE2,
 	};
 
+	// judge {PG, GR, GD, BD, PR, early poor}
+	struct judge_t {
+		unsigned PERFECT;
+		unsigned GREAT;
+		unsigned GOOD;
+		unsigned BAD;
+		unsigned POOR;
+		unsigned BPOOR;
+	};
+	const std::vector<judge_t> judge = {
+		{ 8, 27, 40, 150, 250, 600},		// VERY HARD
+		{15, 32, 60, 200, 300, 600},		// HARD
+		{18, 40, 96, 250, 400, 650},		// NORMAL
+		{21, 60, 116, 320, 500, 800},		// EASY
+		{},									// VERY EASY??
+		{5, 10, 10, 150, 250, 600}			// XD
+	};
 }

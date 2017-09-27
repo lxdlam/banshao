@@ -142,6 +142,7 @@
     <ClCompile Include="src\Config\audio.cpp" />
     <ClCompile Include="src\Config\play.cpp" />
     <ClCompile Include="src\Config\system.cpp" />
+    <ClCompile Include="src\external\easylogging++.cc" />
     <ClCompile Include="src\Input\functional.cpp" />
     <ClCompile Include="src\Input\gamepad.cpp" />
     <ClCompile Include="src\modeController.cpp" />
@@ -160,6 +161,8 @@
     <ClInclude Include="src\Config\key.h" />
     <ClInclude Include="src\Config\play.h" />
     <ClInclude Include="src\defs.h" />
+    <ClInclude Include="src\external\easylogging++.h" />
+    <ClInclude Include="src\external\json.hpp" />
     <ClInclude Include="src\Input\functional.h" />
     <ClInclude Include="src\Input\gamepad.h" />
     <ClInclude Include="src\modeController.h" />

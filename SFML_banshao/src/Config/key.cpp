@@ -2,7 +2,6 @@
 #include <SFML/Window/Keyboard.hpp>
 
 #include "../utils.h"
-using utils::log;
 
 namespace game::Config
 {

@@ -2,7 +2,6 @@
 #include "../utils.h"
 #include <string>
 
-using utils::log;
 namespace game::Config
 {
 	video& video::getInstance()
@@ -32,7 +31,7 @@ namespace game::Config
 			fps = 0;
 
 		maxFPS = fps;
-		log("[Graphics] MaxFPS -> " + std::to_string(fps), LOGS_Config);
+		LOG(INFO) << "[Graphics] MaxFPS -> " << fps;
 		return 0;
 	}
 	decltype(video::maxFPS) video::getMaxFPS() const
@@ -45,7 +44,7 @@ namespace game::Config
 		// TODO error check
 		res.x = x;
 		res.y = y;
-		log("[Graphics] Resolution -> " + std::to_string(x) + "x" + std::to_string(y), LOGS_Config);
+		LOG(INFO) << "[Graphics] Resolution -> " << x << "x" << y;
 		return 0;
 	}
 	std::pair<decltype(video::res.x), decltype(video::res.y)> video::getResolution() const
@@ -56,7 +55,7 @@ namespace game::Config
 	int video::setWindowMode(decltype(windowMode) w)
 	{
 		windowMode = w;
-		log("[Graphics] Window Mode -> " + std::to_string(static_cast<int>(w)), LOGS_Config);
+		LOG(INFO) << "[Graphics] Window Mode -> " << static_cast<int>(w);
 		return 0;
 	}
 	decltype(video::windowMode) video::getWindowMode() const
@@ -67,7 +66,7 @@ namespace game::Config
 	int video::setVSync(bool v)
 	{
 		VSync= v;
-		log("[Graphics] VSync -> " + std::to_string(v), LOGS_Config);
+		LOG(INFO) << "[Graphics] VSync -> " << v;
 		return 0;
 	}
 	bool video::getVSync() const

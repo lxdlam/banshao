@@ -1,7 +1,5 @@
 #include "play.h"
 
-using utils::log;
-
 namespace game::Config
 {
 	play& play::getInstance()

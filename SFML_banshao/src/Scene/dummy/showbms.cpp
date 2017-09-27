@@ -3,7 +3,6 @@
 #include "../../utils.h"
 #include <cmath>
 #include <filesystem>
-using utils::log;
 using namespace std::chrono;
 
 namespace game
@@ -11,7 +10,7 @@ namespace game
 	showbms::showbms(std::shared_ptr<Sound> pSound): Scene(pSound)
 	{
 		if (!font.loadFromFile("resources/sansation.ttf"))
-			log("ERROR: Load font file failed!", LOGS_Core);
+			LOG(WARNING) << "Load font file failed!";
 		int idx = 0;
 		for (auto& t : text)
 		{
@@ -25,7 +24,7 @@ namespace game
 		//if (objBms.initWithFile("resources/_goodbounce_yukuri.bms"))
 		if (objBms.initWithFile("resources/bms/asdf.bme"))
 		{
-			log("Error: load bms failed");
+			LOG(WARNING) << "Error: load bms failed";
 			text[0].setString("load failed");
 			return;
 		}
@@ -43,12 +42,12 @@ namespace game
 
 		loadSprites();
 
-		log("showbms scene created", LOGS_Core);
+		LOG(DEBUG) << "showbms scene created";
 	}
 
 	showbms::~showbms()
 	{
-		log("showbms scene destroyed", LOGS_Core);
+		LOG(DEBUG) << "showbms scene destroyed";
 	}
 
 	void showbms::loadSprites()
@@ -80,7 +79,6 @@ namespace game
 		bool bpmfucked = false;
 		for (unsigned m = 0; m <= objBms.getMaxMeasure(); m++)
 		{
-			//log("MEASURE " + std::to_string(m) + " LENGTH " + std::to_string(objBms.getMeasureLength(m)), LOGS_Core);
 
 			// notes [] {seg, {lane, sample/val}}
 			std::vector<std::pair<rational, std::pair<unsigned, unsigned>>> notes;
@@ -269,7 +267,6 @@ namespace game
 			drawBasetime = std::get<1>(*itBPM);
 			drawBPM = std::get<2>(*itBPM);
 			itBPM++;
-			log("+BPM " + std::to_string(drawBPM) + " " + std::to_string(drawBasetime));
 		}
 
 		// Stop
@@ -280,7 +277,6 @@ namespace game
 			drawBasetime += stopTimeMs;
 			drawStopUntil = { std::get<0>(*itStop), std::get<1>(*itStop) + stopTimeMs };
 			itStop++;
-			log("+STOP " + std::to_string(drawStopUntil.first) + " " + std::to_string(drawStopUntil.second));
 		}
 
 		if (relativeTime < drawStopUntil.second)

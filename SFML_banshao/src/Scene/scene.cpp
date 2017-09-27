@@ -2,8 +2,6 @@
 #include "../Input/functional.h"
 #include "../Input/gamepad.h"
 #include "../utils.h"
-using utils::log;
-
 
 namespace game
 {
@@ -14,7 +12,7 @@ namespace game
 
 		soundSystem = pSound;
 
-		log("Scene created", LOGS_Core);
+		LOG(DEBUG) << "Scene created";
 	}
 
 	Scene::~Scene()
@@ -25,7 +23,7 @@ namespace game
 
 		// Destroy sprites first (if should be done manually)
 
-		log("Scene destroyed", LOGS_Core);
+		LOG(DEBUG) << "Scene destroyed";
 	}
 
 	void Scene::loadSprites()
@@ -39,7 +37,7 @@ namespace game
 	{
 		sf::Image sfImage;
 		if (!sfImage.loadFromFile(path))
-			log("Load image Failed: " + path, LOGS_Core);
+			LOG(WARNING) << "Load image Failed: " << path;
 		vecImage.push_back(std::move(sfImage));
 		return vecImage.size() - 1;
 	}
@@ -48,7 +46,7 @@ namespace game
 	{
 		sf::Texture sfTexture;
 		if (!sfTexture.loadFromImage(vecImage[imageIdx]))
-			log("Load texture Failed: " + std::to_string(imageIdx), LOGS_Core);
+			LOG(WARNING) << "Load texture Failed: " << imageIdx;
 		vecTexture.push_back(std::move(sfTexture));
 		return vecTexture.size() - 1;
 	}
@@ -57,7 +55,7 @@ namespace game
 	{
 		sf::Texture sfTexture;
 		if (!sfTexture.loadFromImage(vecImage[imageIdx], sf::IntRect(x, y, w, h)))
-			log("Load texture Failed: " + std::to_string(imageIdx), LOGS_Core);
+			LOG(WARNING) << "Load texture Failed: " << imageIdx;
 		vecTexture.push_back(std::move(sfTexture));
 		return vecTexture.size() - 1;
 	}

@@ -1,6 +1,5 @@
 #include "gamepad.h"
 #include "../utils.h"
-using utils::log;
 
 namespace game::Input
 {
@@ -39,7 +38,7 @@ namespace game::Input
 			}
 		}
 
-		log("Key bindings updated", LOGS_Core);
+		LOG(INFO) << "Key bindings updated";
 	}
 
 	unsigned long gamepad::_detect()

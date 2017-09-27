@@ -1,14 +1,13 @@
 #include "test.h"
 #include "../../Input/gamepad.h"
 #include "../../utils.h"
-using utils::log;
 
 namespace game
 {
 	test::test(std::shared_ptr<Sound> pSound): Scene(pSound)
 	{
 		if (!font.loadFromFile("resources/sansation.ttf"))
-			log("ERROR: Load font file failed!", LOGS_Core);
+			LOG(WARNING) << "ERROR: Load font file failed!";
 		text.setFont(font);
 		text.setString("Push keys to play sounds (LS/LC, ZSXDCFV)");
 		text.setCharacterSize(24);
@@ -16,12 +15,12 @@ namespace game
 
 		loadSounds();
 
-		log("test scene created", LOGS_Core);
+		LOG(DEBUG) << "test scene created";
 	}
 
 	test::~test()
 	{
-		log("test scene destroyed", LOGS_Core);
+		LOG(DEBUG) << "test scene destroyed";
 	}
 
 	void test::loadSprites()
