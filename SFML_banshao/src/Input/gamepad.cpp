@@ -1,4 +1,5 @@
 #include "gamepad.h"
+#include "../Config/configManager.h"
 #include "../utils.h"
 
 namespace game::Input
@@ -9,13 +10,22 @@ namespace game::Input
 		return _inst;
 	}
 
-	void gamepad::_updateBindings()
+	void gamepad::_updateBindings(unsigned K)
 	{
 		for (auto& k : keyboardBinds)
 			k.clear();
 		for (auto& joysticks : joystickBinds)
 			for (auto& k : joysticks)
 				k.clear();
+
+		std::string k;
+		switch (K)
+		{
+		case 5: k = defs::k_5keys; break;
+		case 7: k = defs::k_7keys; break;
+		case 9: k = defs::k_9keys; break;
+		}
+		if (k.empty()) return;
 
 		haveJoystick = false;
 		for (unsigned i = 0; i < sf::Joystick::Count; i++)
@@ -28,7 +38,7 @@ namespace game::Input
 		for (int k = keys::S1L; k < keys::GAMEPAD_KEY_COUNT; k++)
 		{
 			auto eKey = static_cast<keys>(k);
-			auto binding = game::Config::key::getInstance().getBindings(eKey);
+			auto binding = configManager::getInstance().key.getBindings(k, eKey);
 			for (auto b : binding)
 			{
 				if (b.first == -1)
@@ -93,9 +103,9 @@ namespace game::Input
 		return res;
 	}
 
-	void gamepad::updateBindings()
+	void gamepad::updateBindings(unsigned K)
 	{
-		getInstance()._updateBindings();
+		getInstance()._updateBindings(K);
 	}
 
 	unsigned long gamepad::detect()

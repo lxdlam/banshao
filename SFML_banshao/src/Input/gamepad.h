@@ -1,5 +1,4 @@
 #pragma once
-#include "../Config/key.h"
 #include "../defs.h"
 #include <vector>
 #include <array>
@@ -31,16 +30,11 @@ namespace game::Input
 
 		int deadZone = 25;
 
-		void _updateBindings();
+		void _updateBindings(unsigned K);
 		unsigned long _detect();
 
 	public:
-		static constexpr unsigned long mask(keys k)
-		{
-			return 1 << k;
-		}
-
-		static void updateBindings();
+		static void updateBindings(unsigned K);
 		static unsigned long detect();
 	};
 }

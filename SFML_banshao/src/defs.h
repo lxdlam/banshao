@@ -1,9 +1,16 @@
 #pragma once
-#include <utility>
+#include <string>
 #include <vector>
 
+using std::string;
 namespace game::defs
 {
+	// Game 
+	const string name = "asdf";
+	const string subname = "alpha";
+	const unsigned versionMajor = 0;
+	const unsigned versionMinor = 1;
+
 	// Mode
 	enum class eMode{
 		UNKNOWN = -1,
@@ -47,6 +54,7 @@ namespace game::defs
 		K1SELECT,
 		K1SPDUP,
 		K1SPDDN,
+
 		S2L,
 		S2R,
 		K21,
@@ -90,6 +98,99 @@ namespace game::defs
 		BACKSPACE,
 		FUNC_KEY_COUNT
 	};
+	static constexpr unsigned long mask(gamepadKeys k) { return 1 << k; }
+	static constexpr unsigned long mask(functionalKeys k) { return 1 << k; }
+
+	// Config keys
+	// system
+	const string sys_basespd = "Basespeed";
+	// video
+	const string vid_FullHD = "FullHD";
+	const string vid_fullscreen = "FullScreen";
+	const string vid_borderless = "Borderless";
+	const string vid_maxfps = "MaxFPS";
+	const string vid_vsync = "VSync";
+	// audio
+	enum audioMode
+	{
+		AutoDetect = 0,
+		Nosound,
+		Unknown,
+
+		// Windows
+		WinMM = 10,
+		DSound,
+		WASAPI,
+		ASIO,
+		Atmos,
+
+		// Linux
+		PulseAudio = 20,
+		ALSA,
+		
+		// Mac
+		CoreAudio = 30,
+	};
+	const string aud_mode = "OutputMode";
+	const string aud_bufLen = "BufferLength";
+	const string aud_bufCount = "BufferCount";
+	// play
+	const string pl_hs1 = "HiSpeed1P";
+	const string pl_hs2 = "HiSpeed2P";
+	const string pl_sud1 = "Sud+1P";
+	const string pl_sud2 = "Sud+2P";
+	const string pl_hid1 = "Hid+1P";
+	const string pl_hid2 = "Hid+2P";
+	const string pl_lift1 = "Lift+1P";
+	const string pl_lift2 = "Lift+2P";
+	const string pl_gr1 = "Green1P";
+	const string pl_gr2 = "Green2P";
+	const string pl_mod1 = "Mode1P";
+	const string pl_mod2 = "Mode2P";
+	// key
+	const unsigned KEYSLOTS = 10;
+	const string k_5keys = "5keys";
+	const string k_7keys = "7keys";
+	const string k_9keys = "9keys";
+
+
+
+	// mod
+	enum playMod
+	{
+		// random
+		RANDOM = 0,
+		MIRROR,
+		SRAN,
+		HRAN,			// Scatter
+		ALLSCR,			// Converge
+
+		// gauge
+		HARD = 6,
+		EASY,
+		DEATH,
+		PATTACK,
+		GATTACK,
+
+		// assist
+		AUTO67 = 12,	// 5keys
+		AUTOSCR,
+		LEGACY,			// LN -> Note
+		NOMINES,
+
+		// hs fix
+		MAXBPM = 18,
+		MINBPM,
+		AVERAGE,
+		CONSTANT,
+
+		// effect
+		SUDDEN = 24,
+		HIDDEN,
+		LIFT,
+
+	};
+	static constexpr unsigned long mask(playMod k) { return 1 << k; }
 
 	// bms related
 	static const unsigned BGMCHANNELS = 32;

@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include "external/easylogging++.h"
 
 namespace utils

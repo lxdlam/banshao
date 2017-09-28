@@ -56,7 +56,7 @@ namespace game
 		void mainLoop() override;
 		void start();
 	public:
-		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 		virtual void preDraw() override;
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	};
 }

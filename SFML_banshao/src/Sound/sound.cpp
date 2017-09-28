@@ -1,5 +1,6 @@
 #include "sound.h"
-#include "../Config/audio.h"
+#include "../Config/configManager.h"
+#include "../defs.h"
 #include "../utils.h"
 #include <fmod_errors.h>
 
@@ -17,8 +18,8 @@ namespace game
 		}
 
 		fmodSystem->setDSPBufferSize(
-			Config::audio::getInstance().getBufferLength(),
-			Config::audio::getInstance().getBufferCount()
+			configManager::getInstance().audio.get<unsigned>(defs::aud_bufLen),
+			configManager::getInstance().audio.get<int>(defs::aud_bufCount)
 		);
 
 		r = fmodSystem->init(512, FMOD_INIT_NORMAL, 0);    // Initialize FMOD.
@@ -99,7 +100,7 @@ namespace game
 			r = fmodSystem->createSound(path.replace(path.length() - 4, 4, ".ogg").c_str(), FMOD_UNIQUE, 0, &keySamples[index]);
 #if _DEBUG
 		if (r != FMOD_OK)
-			LOG(DEBUG) << "[FMOD] Loading Sample (" + path + ") Error: " << r<< ", " + FMOD_ErrorString(r);
+			LOG(DEBUG) << "[FMOD] Loading Sample (" + path + ") Error: " << r << ", " << FMOD_ErrorString(r);
 #endif
 		return r;
 	}
@@ -113,7 +114,7 @@ namespace game
 				r = fmodSystem->playSound(keySamples[index[i]], 0, false, 0);
 #if _DEBUG
 			if (r != FMOD_OK)
-				LOG(WARNING) << "ERROR: Playing Sample Error: " << r << ", " + FMOD_ErrorString(r);
+				LOG(WARNING) << "ERROR: Playing Sample Error: " << r << ", " << FMOD_ErrorString(r);
 #endif
 		}
 	}

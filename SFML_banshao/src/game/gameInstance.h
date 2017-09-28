@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Sound/sound.h"
+#include "../Sound/sound.h"
 #include "modeController.h"
 
 namespace game
@@ -33,7 +33,6 @@ namespace game
 		int setWindowMode();
 		int setVSync();
 		int setMaxFPS();
-		int resize();
 
 		inline bool isOpen();
 		//int getFPS();

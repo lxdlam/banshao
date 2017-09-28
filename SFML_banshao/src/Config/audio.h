@@ -1,27 +1,18 @@
 #pragma once
+#include "general.h"
 
 namespace game::Config
 {
-	class audio
+	class audio : public config
 	{
-	private:
-		audio() = default;
-		~audio() = default;
 	public:
-		static audio& getInstance();
+		audio() : config("config/audio.json") {}
 		audio(audio const&) = delete;
 		void operator=(audio const&) = delete;
-		int setDefaults();
-		int loadConfig();
-		
-	private:
-		unsigned bufferLength = 256;
-		int bufferCount = 2;
 
 	public:
-		unsigned getBufferLength();
-		int getBufferCount();
-
-		// TODO getters setters
+		virtual void setDefaults() noexcept override;
+	protected:
+		virtual int copyValues(json& j) noexcept override;
 	};
 }

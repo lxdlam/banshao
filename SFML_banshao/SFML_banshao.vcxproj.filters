@@ -21,16 +21,10 @@
     <ClCompile Include="src\utils.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\gameInstance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\Config\general.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\Config\system.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\modeController.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene\scene.cpp">
@@ -40,9 +34,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\Input\gamepad.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Config\key.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\Sound\sound.cpp">
@@ -69,6 +60,18 @@
     <ClCompile Include="src\external\easylogging++.cc">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\modeController.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\gameInstance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Config\keyconfig.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Config\configManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\resource.h">
@@ -77,22 +80,13 @@
     <ClInclude Include="src\utils.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\gameInstance.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="src\Config\general.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\Config\system.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\modeController.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="src\Scene\scene.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Config\key.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\Input\functional.h">
@@ -132,6 +126,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\external\json.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\modeController.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\gameInstance.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Config\keyconfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Config\configManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

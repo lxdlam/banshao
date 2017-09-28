@@ -1,21 +1,16 @@
 #include "system.h"
+#include "../defs.h"
 
 namespace game::Config
 {
-	system& system::getInstance()
-	{
-		static system _inst;
-		return _inst;
+	using namespace defs;
+	void system::setDefaults() noexcept
+	{	
+		set<unsigned>(sys_basespd, 100);
 	}
 
-	int system::setDefaults()
+	int system::copyValues(json& j) noexcept 
 	{
-		return 0;
+		return checkUnsigned(j, sys_basespd) ? 1 : 0;
 	}
-
-	std::string system::getTitle()
-	{
-		return title;
-	}
-
 }

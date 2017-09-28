@@ -1,9 +1,9 @@
 #include "modeController.h"
 #include <string>
-#include "utils.h"
+#include "../utils.h"
 
-#include "Scene/dummy/showbms.h"
-#include "Scene/dummy/test.h"
+#include "../Scene/dummy/showbms.h"
+#include "../Scene/dummy/test.h"
 
 namespace game
 {

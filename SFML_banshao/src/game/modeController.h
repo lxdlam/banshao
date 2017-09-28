@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Scene/scene.h"
+#include "../Scene/scene.h"
 #include <memory>
 #include <string>
-#include "defs.h"
+#include "../defs.h"
 
 namespace game
 {

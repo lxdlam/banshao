@@ -11,12 +11,6 @@ namespace game::Input
 		~functional() = delete;
 
 		using keys = defs::functionalKeys;
-
-		static constexpr unsigned long mask(keys k)
-		{
-			return 1 << k;
-		}
-
 		static unsigned long detect();
 	};
 }

@@ -1,4 +1,4 @@
-#include "gameInstance.h"
+#include "game/gameInstance.h"
 
 // TODO hide console window
 int main()

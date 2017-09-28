@@ -1,28 +1,18 @@
 #pragma once
-#include "../utils.h"
-#include <string>
-#include <iostream>
-#include <fstream>
+#include "general.h"
 
 namespace game::Config
 {
-	class play
+	class play : public config
 	{
-	private:
-		play() = default;
-		~play() = default;
 	public:
-		static play& getInstance();
+		play() : config("config/play.json") {}
 		play(play const&) = delete;
 		void operator=(play const&) = delete;
-		int setDefaults();
-		int loadConfig();
-		
-	private:
-		int baseSpeed = 100;
-	public:
-		int getBaseSpeed() const;
-		void setBaseSpeed(int);
 
+	public:
+		virtual void setDefaults() noexcept override;
+	protected:
+		virtual int copyValues(json& j) noexcept override;
 	};
 }

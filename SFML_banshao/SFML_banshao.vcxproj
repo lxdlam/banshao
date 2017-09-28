@@ -76,7 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>SFML_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ELPP_NO_DEFAULT_LOG_FILE;SFML_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -105,7 +105,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>SFML_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ELPP_NO_DEFAULT_LOG_FILE;SFML_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -138,38 +138,40 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\bms\bms.cpp" />
-    <ClCompile Include="src\Config\key.cpp" />
+    <ClCompile Include="src\Config\configManager.cpp" />
+    <ClCompile Include="src\Config\keyconfig.cpp" />
     <ClCompile Include="src\Config\audio.cpp" />
     <ClCompile Include="src\Config\play.cpp" />
     <ClCompile Include="src\Config\system.cpp" />
     <ClCompile Include="src\external\easylogging++.cc" />
     <ClCompile Include="src\Input\functional.cpp" />
     <ClCompile Include="src\Input\gamepad.cpp" />
-    <ClCompile Include="src\modeController.cpp" />
+    <ClCompile Include="src\game\modeController.cpp" />
     <ClCompile Include="src\Scene\dummy\showbms.cpp" />
     <ClCompile Include="src\Scene\dummy\test.cpp" />
     <ClCompile Include="src\Scene\scene.cpp" />
     <ClCompile Include="src\Sound\sound.cpp" />
     <ClCompile Include="src\utils.cpp" />
-    <ClCompile Include="src\gameInstance.cpp" />
+    <ClCompile Include="src\game\gameInstance.cpp" />
     <ClCompile Include="src\Config\general.cpp" />
     <ClCompile Include="src\Config\video.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\bms\bms.h" />
-    <ClInclude Include="src\Config\key.h" />
+    <ClInclude Include="src\Config\configManager.h" />
+    <ClInclude Include="src\Config\keyconfig.h" />
     <ClInclude Include="src\Config\play.h" />
     <ClInclude Include="src\defs.h" />
     <ClInclude Include="src\external\easylogging++.h" />
     <ClInclude Include="src\external\json.hpp" />
     <ClInclude Include="src\Input\functional.h" />
     <ClInclude Include="src\Input\gamepad.h" />
-    <ClInclude Include="src\modeController.h" />
+    <ClInclude Include="src\game\modeController.h" />
     <ClInclude Include="src\Scene\dummy\showbms.h" />
     <ClInclude Include="src\Scene\dummy\test.h" />
     <ClInclude Include="src\Scene\scene.h" />
-    <ClInclude Include="src\gameInstance.h" />
+    <ClInclude Include="src\game\gameInstance.h" />
     <ClInclude Include="src\Config\general.h" />
     <ClInclude Include="src\Config\video.h" />
     <ClInclude Include="src\Config\audio.h" />

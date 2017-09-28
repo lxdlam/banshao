@@ -128,7 +128,7 @@ namespace game
 
 	bool Scene::isFuncKeyPressed(defs::functionalKeys k) const
 	{
-		auto m = Input::functional::mask(k);
+		auto m = mask(k);
 		if ((~prev_functionalInput & m) && (functionalInput & m))
 			return true;
 		else
@@ -137,7 +137,7 @@ namespace game
 
 	bool Scene::isGamepadKeyPressed(defs::gamepadKeys k) const
 	{
-		auto m = Input::gamepad::mask(k);
+		auto m = mask(k);
 		if ((~prev_gamepadInput & m) && (gamepadInput & m))
 			return true;
 		else
@@ -146,7 +146,7 @@ namespace game
 
 	bool Scene::isFuncKeyReleased(defs::functionalKeys k) const
 	{
-		auto m = Input::functional::mask(k);
+		auto m = mask(k);
 		if ((prev_functionalInput & m) && (~functionalInput & m))
 			return true;
 		else
@@ -155,7 +155,7 @@ namespace game
 
 	bool Scene::isGamepadKeyReleased(defs::gamepadKeys k) const
 	{
-		auto m = Input::gamepad::mask(k);
+		auto m = mask(k);
 		if ((prev_gamepadInput & m) && (~gamepadInput & m))
 			return true;
 		else
