@@ -6,13 +6,12 @@ namespace game::Config
 	class play : public config
 	{
 	public:
-		play() : config("config/play.json") {}
-		play(play const&) = delete;
-		void operator=(play const&) = delete;
+		play() {}
 
 	public:
 		virtual void setDefaults() noexcept override;
 	protected:
-		virtual int copyValues(json& j) noexcept override;
+		virtual int copyValues(const json& j) noexcept override;
+		virtual int checkValues() noexcept override;
 	};
 }

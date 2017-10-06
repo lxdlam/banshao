@@ -1,13 +1,12 @@
 #include "video.h"
 #include "../defs.h"
-#include "../utils.h"
-#include <string>
 
 namespace game::Config
 {
+	using namespace defs::config;
+
 	// FIXME sleep function in SFML is based on milliseconds (at least on Windows it is)
 	// which means any values higher than 1000 may not work as expected..
-	using namespace defs;
 	void video::setDefaults() noexcept
 	{
 		set<bool>(vid_FullHD, false);
@@ -17,7 +16,7 @@ namespace game::Config
 		set<unsigned>(vid_maxfps, 240);
 	}
 
-	int video::copyValues(json& j) noexcept
+	int video::copyValues(const json& j) noexcept
 	{
 		int c = 0;
 		c += checkBool(j, vid_FullHD);
@@ -28,4 +27,19 @@ namespace game::Config
 		return c;
 	}
 
+	int video::checkValues() noexcept
+	{
+		int c = 0;
+		
+		if (get<unsigned>(vid_maxfps) > 1000)
+		{
+			c++;
+			set<unsigned>(vid_maxfps, 240);
+		}
+
+		return c;
+	}
+
+
 }
+

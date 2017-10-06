@@ -138,7 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\bms\bms.cpp" />
-    <ClCompile Include="src\Config\configManager.cpp" />
+    <ClCompile Include="src\game\configManager.cpp" />
     <ClCompile Include="src\Config\keyconfig.cpp" />
     <ClCompile Include="src\Config\audio.cpp" />
     <ClCompile Include="src\Config\play.cpp" />
@@ -159,7 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\bms\bms.h" />
-    <ClInclude Include="src\Config\configManager.h" />
+    <ClInclude Include="src\game\configManager.h" />
     <ClInclude Include="src\Config\keyconfig.h" />
     <ClInclude Include="src\Config\play.h" />
     <ClInclude Include="src\defs.h" />

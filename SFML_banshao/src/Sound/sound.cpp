@@ -1,8 +1,9 @@
 #include "sound.h"
-#include "../Config/configManager.h"
+#include "../game/configManager.h"
 #include "../defs.h"
 #include "../utils.h"
 #include <fmod_errors.h>
+using namespace game::defs::config;
 
 namespace game
 {
@@ -18,8 +19,8 @@ namespace game
 		}
 
 		fmodSystem->setDSPBufferSize(
-			configManager::getInstance().audio.get<unsigned>(defs::aud_bufLen),
-			configManager::getInstance().audio.get<int>(defs::aud_bufCount)
+			config().audio.get<unsigned>(aud_bufLen),
+			config().audio.get<int>(aud_bufCount)
 		);
 
 		r = fmodSystem->init(512, FMOD_INIT_NORMAL, 0);    // Initialize FMOD.

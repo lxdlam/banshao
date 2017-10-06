@@ -126,40 +126,25 @@ namespace game
 		inputTaskFuture = std::async(std::launch::async, &Scene::input_thread_func, this);
 	}
 
-	bool Scene::isFuncKeyPressed(defs::functionalKeys k) const
+	bool Scene::isFuncKeyPressed(functionalKeys k) const
 	{
-		auto m = mask(k);
-		if ((~prev_functionalInput & m) && (functionalInput & m))
-			return true;
-		else
-			return false;
+		return (~prev_functionalInput & mask(k)) && (functionalInput & mask(k));
 	}
 
-	bool Scene::isGamepadKeyPressed(defs::gamepadKeys k) const
+	bool Scene::isGamepadKeyPressed(gamepadKeys k) const
 	{
-		auto m = mask(k);
-		if ((~prev_gamepadInput & m) && (gamepadInput & m))
-			return true;
-		else
-			return false;
+		return (~prev_gamepadInput & mask(k)) && (gamepadInput & mask(k));
+
 	}
 
-	bool Scene::isFuncKeyReleased(defs::functionalKeys k) const
+	bool Scene::isFuncKeyReleased(functionalKeys k) const
 	{
-		auto m = mask(k);
-		if ((prev_functionalInput & m) && (~functionalInput & m))
-			return true;
-		else
-			return false;
+		return (prev_functionalInput & mask(k)) && (~functionalInput & mask(k));
 	}
 
-	bool Scene::isGamepadKeyReleased(defs::gamepadKeys k) const
+	bool Scene::isGamepadKeyReleased(gamepadKeys k) const
 	{
-		auto m = mask(k);
-		if ((prev_gamepadInput & m) && (~gamepadInput & m))
-			return true;
-		else
-			return false;
+		return (prev_gamepadInput & mask(k)) && (~gamepadInput & mask(k));
 	}
 
 	void Scene::mainLoop()

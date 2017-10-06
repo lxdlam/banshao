@@ -30,7 +30,7 @@ namespace game
 		return 0;
 	}
 	
-	modeController::eMode modeController::getCurrentMode()
+	eMode modeController::getCurrentMode()
 	{
 		return mode;
 	}

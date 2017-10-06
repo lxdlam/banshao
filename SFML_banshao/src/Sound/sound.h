@@ -6,6 +6,7 @@
 #include "../defs.h"
 
 #include <fmod.hpp>
+using namespace game::defs::bms;
 
 // This game uses FMOD Low Level API to play Sounds as we don't use FMOD Studio,
 // since the audio part of SFML is kinda not enough (mostly low-latency support).
@@ -23,7 +24,7 @@ namespace game
 		~Sound();
 
 	private:
-		std::array<FMOD::Sound*, defs::MAXSAMPLEIDX + 1> keySamples{};
+		std::array<FMOD::Sound*, MAXSAMPLEIDX + 1> keySamples{};
 
 	public:
 		int loadKeySample(std::string path, size_t index);

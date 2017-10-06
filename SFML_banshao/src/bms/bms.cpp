@@ -11,11 +11,13 @@ using utils::base36;
 
 namespace game
 {
+	using namespace defs::bms;
+
 	class noteLineException : public std::exception {};
 
 	int bms::initWithFile(std::string file)
 	{
-		using err = defs::bmsErrorCode;
+		using err = bmsErrorCode;
 		if (initialized)
 		{
 			//errorCode = err::ALREADY_INITIALIZED;
@@ -146,7 +148,7 @@ namespace game
 						{
 							LOG(WARNING) << "[BMS] Empty element line detected: line " << line;
 							errorLine = line;
-							errorCode = defs::bmsErrorCode::NOTE_LINE_ERROR;
+							errorCode = err::NOTE_LINE_ERROR;
 							return 1;
 						}
 
@@ -368,7 +370,7 @@ namespace game
 
 	std::string bms::getError()
 	{
-		using err = defs::bmsErrorCode;
+		using err = bmsErrorCode;
 		switch (errorCode)
 		{
 		case err::OK:	return "No errors.";
@@ -381,9 +383,9 @@ namespace game
 	int bms::getMode() const
 	{
 		if (player == 3)
-			return (have67) ? defs::MODE_14KEYS : defs::MODE_10KEYS;
+			return (have67) ? MODE_14KEYS : MODE_10KEYS;
 		else
-			return (have89) ? defs::MODE_9KEYS : (have67) ? defs::MODE_7KEYS : defs::MODE_5KEYS;
+			return (have89) ? MODE_9KEYS : (have67) ? MODE_7KEYS : MODE_5KEYS;
 	}
 
 	unsigned bms::getNoteCount() const
@@ -498,9 +500,9 @@ namespace game
 		return bgmLayersCount[measure];
 	}
 	
-	auto bms::getChannel(defs::bmsGetChannelCode code, unsigned chIdx, unsigned measureIdx) const -> const decltype(chBGM[0][0])&
+	auto bms::getChannel(bmsGetChannelCode code, unsigned chIdx, unsigned measureIdx) const -> const decltype(chBGM[0][0])&
 	{
-		using eC = defs::bmsGetChannelCode;
+		using eC = bmsGetChannelCode;
 		switch (code)
 		{
 		case eC::BGM:		return chBGM[chIdx][measureIdx]; break;

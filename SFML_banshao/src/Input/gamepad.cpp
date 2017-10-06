@@ -1,9 +1,11 @@
 #include "gamepad.h"
-#include "../Config/configManager.h"
+#include "../game/configManager.h"
 #include "../utils.h"
 
 namespace game::Input
 {
+	using namespace defs::config;
+
 	gamepad& gamepad::getInstance()
 	{
 		static gamepad _inst;
@@ -21,9 +23,9 @@ namespace game::Input
 		std::string k;
 		switch (K)
 		{
-		case 5: k = defs::k_5keys; break;
-		case 7: k = defs::k_7keys; break;
-		case 9: k = defs::k_9keys; break;
+		case 5: k = k_5keys; break;
+		case 7: k = k_7keys; break;
+		case 9: k = k_9keys; break;
 		}
 		if (k.empty()) return;
 
@@ -38,7 +40,7 @@ namespace game::Input
 		for (int k = keys::S1L; k < keys::GAMEPAD_KEY_COUNT; k++)
 		{
 			auto eKey = static_cast<keys>(k);
-			auto binding = configManager::getInstance().key.getBindings(k, eKey);
+			auto binding = config().key.getBindings(k, eKey);
 			for (auto b : binding)
 			{
 				if (b.first == -1)

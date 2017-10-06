@@ -7,6 +7,8 @@
 
 namespace game
 {
+	using namespace defs::general;
+
 	class modeController
 	{
 	public:
@@ -16,7 +18,6 @@ namespace game
 		int start();
 
 	private:
-		using eMode = defs::eMode;
 		eMode mode = eMode::UNKNOWN;
 		std::shared_ptr<Sound> pSound;
 		std::shared_ptr<Scene> pScene;

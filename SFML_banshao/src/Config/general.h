@@ -4,22 +4,18 @@
 
 namespace game::Config
 {
+	using json = nlohmann::json;
+
 	class config
 	{
-	public:
-		using json = nlohmann::json;
-
 	protected:
 		json _json;
-		std::string jsonPath;
 
 	public:
-		config() = default;
-		config(std::string jsonPath);
+		config();
+		config(std::string json);
 		~config();
 
-		virtual int loadFile() noexcept;
-		int saveFile() noexcept;
 		virtual void setDefaults() noexcept = 0;
 
 		template<class Ty_v>
@@ -32,11 +28,17 @@ namespace game::Config
 		// If incorrect value was found, set to default value.
 		// Automatically called in loadFile() function.
 		// Returns incorrect value count.
-		virtual int copyValues(json& j) noexcept = 0;
+		virtual int copyValues(const json& j) noexcept = 0;
+		virtual int checkValues() noexcept = 0;
+		friend void to_json(json& j, const config& o);
+		friend void from_json(const json& j, config& o);
 
-		bool checkBool(json& j, const std::string& key);
-		bool checkStr(json& j, const std::string& key);
-		bool checkInt(json& j, const std::string& key);
-		bool checkUnsigned(json& j, const std::string& key);
+		bool checkBool(const json& j, const std::string& key);
+		bool checkStr(const json& j, const std::string& key);
+		bool checkInt(const json& j, const std::string& key);
+		bool checkUnsigned(const json& j, const std::string& key);
 	};
+
+	void to_json(json& j, const config& o);
+	void from_json(const json& j, config& o);
 }

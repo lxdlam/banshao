@@ -4,10 +4,10 @@
 #include "../utils.h"
 #include <array>
 
-using namespace game::defs;
-
 namespace game::Config
 {
+	using namespace defs::config;
+
 	void keyconfig::clear() noexcept
 	{
 		std::array<std::array<unsigned, KEYSLOTS>, keys::GAMEPAD_KEY_COUNT> blank{};
@@ -106,7 +106,38 @@ namespace game::Config
 		}
 	}
 
-	bool keyconfig::checkUnsigned(json& j, const std::string& key, unsigned target, unsigned slot)
+	int keyconfig::loadFile(const std::string jsonPath) noexcept
+	{
+		setDefaults();
+		std::ifstream inFile(jsonPath);
+		if (inFile.fail())
+		{
+			LOG(WARNING) << "Load keyconfig file failed: " << jsonPath << ", using default.";
+			saveFile(jsonPath);
+			return -1;
+		}
+
+		json tmp;
+		inFile >> tmp;
+		int c = copyValues(tmp);
+		checkValues();
+		return c;
+	}
+
+	int keyconfig::saveFile(const std::string jsonPath) noexcept
+	{
+		std::ofstream outFile(jsonPath);
+		if (outFile.fail())
+		{
+			LOG(ERROR) << "Save to keyconfig file failed: " << jsonPath;
+			return -1;
+		}
+
+		outFile << _json.dump(4) << std::endl;
+		return 0;
+	}
+
+	bool keyconfig::checkUnsigned(const json& j, const std::string& key, unsigned target, unsigned slot)
 	{
 		if (j[key][target][slot].is_number_unsigned())
 		{
@@ -117,7 +148,7 @@ namespace game::Config
 		return true;
 	}
 
-	int keyconfig::copyValues(json &j) noexcept
+	int keyconfig::copyValues(const json &j) noexcept
 	{
 		int c = 0;
 
@@ -166,7 +197,7 @@ namespace game::Config
 		bindKey(K, target, slot, joyNo, 1000 + (direction > 0 ? 100 : 0) + axis);
 	}
 
-	std::array<std::pair<int, int>, defs::KEYSLOTS> keyconfig::getBindings(unsigned K, keys button) const
+	std::array<std::pair<int, int>, KEYSLOTS> keyconfig::getBindings(unsigned K, keys button) const
 	{
 		std::string k;
 		switch (K)
@@ -177,8 +208,8 @@ namespace game::Config
 		}
 		if (k.empty()) return {};
 
-		std::array<std::pair<int, int>, defs::KEYSLOTS> res{};
-		for (size_t i = 0; i < defs::KEYSLOTS; i++)
+		std::array<std::pair<int, int>, KEYSLOTS> res{};
+		for (size_t i = 0; i < KEYSLOTS; i++)
 		{
 			unsigned val = _json[k][button][i];
 			if (val == 0) continue;
@@ -188,5 +219,11 @@ namespace game::Config
 		}
 
 		return res;
+	}
+
+	int keyconfig::checkValues() noexcept
+	{
+		// TODO
+		return 0;
 	}
 }

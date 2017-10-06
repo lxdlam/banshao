@@ -7,10 +7,12 @@
 
 namespace game::Input
 {
+	using namespace defs::key;
+
 	class gamepad
 	{
 	public:
-		using keys = defs::gamepadKeys;
+		using keys = gamepadKeys;
 
 	private:
 		gamepad() = default;

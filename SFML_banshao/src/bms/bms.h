@@ -11,6 +11,8 @@ using utils::base36;
 
 namespace game
 {
+	using namespace game::defs::bms;
+
 	class bms
 	{
 	public:
@@ -22,7 +24,7 @@ namespace game
 
 	protected:
 		bool initialized = false;
-		defs::bmsErrorCode errorCode = defs::bmsErrorCode::OK;
+		bmsErrorCode errorCode = bmsErrorCode::OK;
 		int errorLine;
 
 	public:
@@ -57,29 +59,29 @@ namespace game
 		// File assigned by the bms file.
 		std::string stagefile;			// BG, 640x480
 		std::string banner;			// banner, 300x80
-		std::array<std::string, defs::MAXSAMPLEIDX + 1> wavFile{};
-		std::array<std::string, defs::MAXSAMPLEIDX + 1> bmpFile{};
+		std::array<std::string, MAXSAMPLEIDX + 1> wavFile{};
+		std::array<std::string, MAXSAMPLEIDX + 1> bmpFile{};
 
 		// Measures related.
-		std::array<double, defs::MAXSAMPLEIDX + 1> exBPM{};
-		std::array<double, defs::MAXSAMPLEIDX + 1> stop{};
-		std::array<double, defs::MAXMEASUREIDX + 1> barLength{};
+		std::array<double, MAXSAMPLEIDX + 1> exBPM{};
+		std::array<double, MAXSAMPLEIDX + 1> stop{};
+		std::array<double, MAXMEASUREIDX + 1> barLength{};
 		
 		// Channels.
 		int strToChannel36(channel&, const std::string& str);
 		int strToChannel16(channel&, const std::string& str);
-		std::array<unsigned, defs::MAXMEASUREIDX+ 1> bgmLayersCount{};
-		std::array<std::array<channel, defs::MAXMEASUREIDX + 1>, defs::BGMCHANNELS> chBGM{};
-		std::array<channel, defs::MAXMEASUREIDX + 1> chStop{};
-		std::array<channel, defs::MAXMEASUREIDX + 1> chBPMChange{};
-		std::array<channel, defs::MAXMEASUREIDX + 1> chExBPMChange{};
-		std::array<channel, defs::MAXMEASUREIDX + 1> chBGABase{};
-		std::array<channel, defs::MAXMEASUREIDX + 1> chBGALayer{};
-		std::array<channel, defs::MAXMEASUREIDX + 1> chBGAPoor{};
-		std::array<std::array<channel, defs::MAXMEASUREIDX + 1>, 20> chNotesVisible{};
-		std::array<std::array<channel, defs::MAXMEASUREIDX + 1>, 20> chNotesInvisible{};
-		std::array<std::array<channel, defs::MAXMEASUREIDX + 1>, 20> chNotesLN{};
-		std::array<std::array<channel, defs::MAXMEASUREIDX + 1>, 20> chMines{};
+		std::array<unsigned, MAXMEASUREIDX+ 1> bgmLayersCount{};
+		std::array<std::array<channel, MAXMEASUREIDX + 1>, BGMCHANNELS> chBGM{};
+		std::array<channel, MAXMEASUREIDX + 1> chStop{};
+		std::array<channel, MAXMEASUREIDX + 1> chBPMChange{};
+		std::array<channel, MAXMEASUREIDX + 1> chExBPMChange{};
+		std::array<channel, MAXMEASUREIDX + 1> chBGABase{};
+		std::array<channel, MAXMEASUREIDX + 1> chBGALayer{};
+		std::array<channel, MAXMEASUREIDX + 1> chBGAPoor{};
+		std::array<std::array<channel, MAXMEASUREIDX + 1>, 20> chNotesVisible{};
+		std::array<std::array<channel, MAXMEASUREIDX + 1>, 20> chNotesInvisible{};
+		std::array<std::array<channel, MAXMEASUREIDX + 1>, 20> chNotesLN{};
+		std::array<std::array<channel, MAXMEASUREIDX + 1>, 20> chMines{};
 		int strToNoteChannelDispatcher(decltype(chNotesVisible)&, int measure, int layer, int ch, const std::string& str);
 
 		// Properties detected when parsing.
@@ -127,7 +129,7 @@ namespace game
 
 		auto getMeasureLength(unsigned idx) const -> decltype(barLength[0]) const;
 		unsigned getBGMChannelCount(unsigned measure) const;
-		auto getChannel(defs::bmsGetChannelCode, unsigned chIdx, unsigned measureIdx) const -> const decltype(chBGM[0][0])&;
+		auto getChannel(bmsGetChannelCode, unsigned chIdx, unsigned measureIdx) const -> const decltype(chBGM[0][0])&;
 
 		auto getExBPM(size_t idx) const -> decltype(exBPM[0]);
 		auto getStop(size_t idx) const -> decltype(stop[0]);

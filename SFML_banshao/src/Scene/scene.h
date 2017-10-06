@@ -10,6 +10,8 @@
 
 namespace game
 {
+	using namespace defs::key;
+
 	// Parent class of scenes, defines how an object being stored and drawn.
 	// Every classes of scenes should inherit this class.
 	// Must import pointer of sound system when constructing.
@@ -56,10 +58,10 @@ namespace game
 		void run();
 		void setHighResponsive(bool);
 		void setActive(bool);
-		bool Scene::isFuncKeyPressed(defs::functionalKeys k) const;
-		bool Scene::isGamepadKeyPressed(defs::gamepadKeys k) const;
-		bool Scene::isFuncKeyReleased(defs::functionalKeys k) const;
-		bool Scene::isGamepadKeyReleased(defs::gamepadKeys k) const;
+		bool Scene::isFuncKeyPressed(functionalKeys k) const;
+		bool Scene::isGamepadKeyPressed(gamepadKeys k) const;
+		bool Scene::isFuncKeyReleased(functionalKeys k) const;
+		bool Scene::isGamepadKeyReleased(gamepadKeys k) const;
 		const unsigned long& getFunctionalInput() const;
 		const unsigned long& getGamepadInput() const;
 

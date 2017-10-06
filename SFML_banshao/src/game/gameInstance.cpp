@@ -1,9 +1,9 @@
 #include "../utils.h"
-#include "../Config/configManager.h"
 #include "../Scene/scene.h"
 #include "../Input/functional.h"
 #include "../Input/gamepad.h"
 #include <SFML/Graphics.hpp>
+#include "configManager.h"
 #include "gameInstance.h"
 
 #include <chrono>
@@ -12,6 +12,8 @@
 namespace game
 {
 	using namespace std::chrono;
+	using namespace defs::general;
+	using namespace defs::config;
 
 	gameInstance& gameInstance::getInstance()
 	{
@@ -22,9 +24,10 @@ namespace game
 	gameInstance::gameInstance()
 	{
 		utils::initLogging();
-		LOG(INFO) << defs::name << " " << defs::subname << (defs::subname.empty() ? "" : " ")
-			<< defs::versionMajor << "." << defs::versionMinor;
-		configManager::getInstance();
+		LOG(INFO) << "-----------------------------------------------------------------------";
+		LOG(INFO) << name << " " << subname << (subname.empty() ? "" : " ")
+			<< versionMajor << "." << versionMinor;
+		config();			// initialize static singleton
 		setWindowMode();
 		Input::gamepad::updateBindings(7);
 		pSound = std::make_shared<Sound>();
@@ -38,10 +41,10 @@ namespace game
 		if (isOpen())
 			close();
 
-		modeCon->switchMode(defs::eMode::EXIT);
+		modeCon->switchMode(eMode::EXIT);
 		modeCon.reset();
 		pSound.reset();
-		configManager::getInstance().save();
+		config().save();
 		LOG(DEBUG) << "Game Instance destroyed.";
 	}
 
@@ -108,11 +111,11 @@ namespace game
 	int gameInstance::setWindowMode()
 	{
 		std::pair<unsigned, unsigned> resolution = { 1280, 720 };
-		if (configManager::getInstance().video.get<bool>(defs::vid_FullHD))
+		if (config().video.get<bool>(vid_FullHD))
 			resolution = { 1920, 1080 };
 
-		bool fullscreen = configManager::getInstance().video.get<bool>(defs::vid_fullscreen);
-		bool borderless = configManager::getInstance().video.get<bool>(defs::vid_borderless);
+		bool fullscreen = config().video.get<bool>(vid_fullscreen);
+		bool borderless = config().video.get<bool>(vid_borderless);
 
 		int windowStyle = 0;
 		if (fullscreen)
@@ -127,7 +130,7 @@ namespace game
 
 		sfWin.create(
 			sf::VideoMode(resolution.first, resolution.second),
-			defs::name + " " + defs::subname,
+			name + " " + subname,
 			windowStyle);
 		sfWin.setActive(false);
 		setMaxFPS();
@@ -148,13 +151,13 @@ namespace game
 
 	int gameInstance::setVSync()
 	{
-		sfWin.setVerticalSyncEnabled(configManager::getInstance().video.get<bool>(defs::vid_vsync));
+		sfWin.setVerticalSyncEnabled(config().video.get<bool>(vid_vsync));
 		return 0;
 	}
 
 	int gameInstance::setMaxFPS()
 	{
-		sfWin.setFramerateLimit(configManager::getInstance().video.get<unsigned>(defs::vid_maxfps));
+		sfWin.setFramerateLimit(config().video.get<unsigned>(vid_maxfps));
 		return 0;
 	}
 

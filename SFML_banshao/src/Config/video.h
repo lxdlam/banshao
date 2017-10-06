@@ -6,13 +6,12 @@ namespace game::Config
 	class video : public config
 	{
 	public:
-		video() : config("config/video.json") {}
-		video(video const&) = delete;
-		void operator=(video const&) = delete;
+		video () {}
 
 	public:
 		virtual void setDefaults() noexcept override;
 	protected:
-		virtual int copyValues(json& j) noexcept override;
+		virtual int copyValues(const json& j) noexcept override;
+		virtual int checkValues() noexcept override;
 	};
 }

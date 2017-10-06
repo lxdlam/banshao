@@ -1,0 +1,31 @@
+{
+    "Audio": {
+        "BufferCount": 2,
+        "BufferLength": 256,
+        "OutputMode": 0
+    },
+    "Play": {
+        "Green1P": 1200,
+        "Green2P": 1200,
+        "HiSpeed1P": 100,
+        "HiSpeed2P": 100,
+        "Hid+1P": 100,
+        "Hid+2P": 100,
+        "Lift+1P": 100,
+        "Lift+2P": 100,
+        "Mode1P": 0,
+        "Mode2P": 0,
+        "Sud+1P": 100,
+        "Sud+2P": 100
+    },
+    "System": {
+        "Basespeed": 100
+    },
+    "Video": {
+        "Borderless": false,
+        "FullHD": false,
+        "FullScreen": false,
+        "MaxFPS": 240,
+        "VSync": false
+    }
+}

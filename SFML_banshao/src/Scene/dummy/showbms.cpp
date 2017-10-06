@@ -24,7 +24,7 @@ namespace game
 		//if (objBms.initWithFile("resources/_goodbounce_yukuri.bms"))
 		if (objBms.initWithFile("resources/bms/asdf.bme"))
 		{
-			LOG(WARNING) << "Error: load bms failed";
+			LOG(WARNING) << "load bms failed";
 			text[0].setString("load failed");
 			return;
 		}
@@ -40,6 +40,9 @@ namespace game
 		text[3].setString(std::to_string(bpm));
 		text[4].setString(std::to_string(notes));
 
+		// TODO in range check
+		judgeTime = defs::judge::judgeTime[objBms.getJudgeRank()];
+
 		loadSprites();
 
 		LOG(DEBUG) << "showbms scene created";
@@ -49,6 +52,10 @@ namespace game
 	{
 		LOG(DEBUG) << "showbms scene destroyed";
 	}
+	
+	//////////////////////////////////////////////////////////
+	// Graphic Implements
+	//////////////////////////////////////////////////////////
 
 	void showbms::loadSprites()
 	{
@@ -64,7 +71,7 @@ namespace game
 
 	void showbms::createNoteList()
 	{
-		for (size_t i = 0; i <= defs::MAXSAMPLEIDX; i++)
+		for (size_t i = 0; i <= MAXSAMPLEIDX; i++)
 		{
 			if (!objBms.getWavPath(i).empty())
 				soundSystem->loadKeySample(
@@ -86,7 +93,7 @@ namespace game
 			// Visible Notes: 0~19
 			for (unsigned i = 0; i < 10; i++)
 			{
-				auto ch = objBms.getChannel(defs::bmsGetChannelCode::NOTE1, i, m);
+				auto ch = objBms.getChannel(bmsGetChannelCode::NOTE1, i, m);
 				for (const auto& n : ch.notes)
 					notes.push_back({ rational(n.first, ch.segments), {i, n.second} });
 			}
@@ -98,7 +105,7 @@ namespace game
 			// BGM: 100 ~ 131
 			for (unsigned i = 0; i < objBms.getBGMChannelCount(m); i++)
 			{
-				auto ch = objBms.getChannel(defs::bmsGetChannelCode::BGM, i, m);
+				auto ch = objBms.getChannel(bmsGetChannelCode::BGM, i, m);
 				for (const auto& n : ch.notes)
 					notes.push_back({ rational(n.first, ch.segments), {100 + i, n.second} });
 			}
@@ -107,21 +114,21 @@ namespace game
 
 			// BPM Change: FE
 			{
-				auto ch = objBms.getChannel(defs::bmsGetChannelCode::BPM, 0, m);
+				auto ch = objBms.getChannel(bmsGetChannelCode::BPM, 0, m);
 				for (const auto& n : ch.notes)
 					notes.push_back({ rational(n.first, ch.segments), {0xFE, n.second} });
 			}
 
 			// EX BPM: FD
 			{
-				auto ch = objBms.getChannel(defs::bmsGetChannelCode::EXBPM, 0, m);
+				auto ch = objBms.getChannel(bmsGetChannelCode::EXBPM, 0, m);
 				for (const auto& n : ch.notes)
 					notes.push_back({ rational(n.first, ch.segments), {0xFD, n.second} });
 			}
 
 			// Stop: FF
 			{
-				auto ch = objBms.getChannel(defs::bmsGetChannelCode::STOP, 0, m);
+				auto ch = objBms.getChannel(bmsGetChannelCode::STOP, 0, m);
 				for (const auto& n : ch.notes)
 					notes.push_back({ rational(n.first, ch.segments), {0xFF, n.second} });
 			}
@@ -138,7 +145,7 @@ namespace game
 				auto& seg = note.first;
 				auto& lane = note.second.first;
 				auto& val = note.second.second;
-				double timems = bpmfucked ? -1.0 : basetime + (seg - baseseg) * len / bpm;
+				double timems = bpmfucked ? INFINITY : basetime + (seg - baseseg) * len / bpm;
 				if (lane >= 0 && lane < 20)		// Visible Notes
 					noteLists[lane][m].push_back({ seg, timems, val, false });
 				else if (lane >= 20 && lane < 40)
@@ -183,71 +190,12 @@ namespace game
 			basetime += (1.0 - baseseg) * len / bpm;
 		}
 	}
-	void showbms::mainLoop()
-	{
-		if (!started)
-		{
-			// Hi Speed
-			if (drawMeasure > 0)
-				if (isFuncKeyPressed(defs::functionalKeys::UP))
-					drawMeasure -= 1;
-			if (isFuncKeyPressed(defs::functionalKeys::DOWN))
-				drawMeasure += 1;
-			if (isFuncKeyPressed(defs::functionalKeys::F5))
-				start();
-
-		}
-		else
-		{
-			// play sound
-			std::vector<size_t> samplePlayBuf;
-			auto relativeTime = duration_cast<milliseconds>(system_clock::now() - startTime).count();
-
-			// keys
-			for (size_t k = 0; k < 10; k++)
-			{
-				for (auto& note = noteLists[k][drawMeasure].begin(); note != noteLists[k][drawMeasure].end(); note++)
-				{
-					if (std::get<3>(*note)) continue;
-					if (std::get<1>(*note) <= relativeTime)
-					{
-						std::get<3>(*note) = true;
-						samplePlayBuf.push_back(std::get<2>(*note));
-					}
-					else break;
-				}
-			}
-
-			// bgms
-			for (size_t k = 0; k < defs::BGMCHANNELS; k++)
-			{
-				if (!bgmLists[k][drawMeasure].empty())
-					for (auto& note = bgmLists[k][drawMeasure].begin(); note != bgmLists[k][drawMeasure].end(); note++)
-					{
-						if (std::get<3>(*note)) continue;
-						if (std::get<1>(*note) <= relativeTime)
-						{
-							std::get<3>(*note) = true;
-							samplePlayBuf.push_back(std::get<2>(*note));
-						}
-						else break;
-					}
-			}
-
-			if (!samplePlayBuf.empty())
-				soundSystem->playKeySample(samplePlayBuf.size(), samplePlayBuf.data());
-		}
-
-		if (isFuncKeyPressed(defs::functionalKeys::RIGHT))
-			hispeed += 25;
-		if (hispeed > 25)
-			if (isFuncKeyPressed(defs::functionalKeys::LEFT))
-				hispeed -= 25;
-	}
 
 	void showbms::preDraw()
 	{
 		if (!started) return;
+
+		// Convert current time(ms) to scale-based position.
 
 		auto relativeTime = duration_cast<milliseconds>(system_clock::now() - startTime).count();
 		while (drawMeasure < objBms.getMaxMeasure() && relativeTime >= measureTimeList[drawMeasure + 1])
@@ -326,7 +274,6 @@ namespace game
 		}
 	}
 
-
 	void showbms::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		std::array<sf::VertexArray, 20> noteVertices{};
@@ -342,6 +289,163 @@ namespace game
 			target.draw(noteVertices[k], s);
 		}
 	}
+
+
+	//////////////////////////////////////////////////////////
+	// Functional Implements
+	//////////////////////////////////////////////////////////
+
+	judgeArea showbms::judgeAreaCheck(double noteTime, double time)
+	{
+		auto dTime = noteTime - time;
+
+		if (dTime <= judgeTime.BPOOR)
+			return judgeArea::BEFORE;
+		else if (dTime < judgeTime.BAD)
+			return judgeArea::BEFORE_BPOOR;
+		else if (dTime < judgeTime.GOOD)
+			return judgeArea::BEFORE_BAD;
+		else if (dTime < judgeTime.GREAT)
+			return judgeArea::BEFORE_GOOD;
+		else if (dTime < judgeTime.PERFECT)
+			return judgeArea::BEFORE_GREAT;
+		else if (-dTime < judgeTime.PERFECT)
+			return judgeArea::BEFORE_PERFECT;
+		else if (-dTime < judgeTime.GREAT)
+			return judgeArea::AFTER_PERFECT;
+		else if (-dTime < judgeTime.GOOD)
+			return judgeArea::AFTER_GREAT;
+		else if (-dTime < judgeTime.BAD)
+			return judgeArea::AFTER_GOOD;
+		else if (-dTime < judgeTime.POOR)
+			return judgeArea::AFTER_BAD;
+		else if (-dTime < judgeTime.POOR + 2000)
+			return judgeArea::AFTER_POOR;
+		else
+			return judgeArea::AFTER;
+	}
+
+	std::pair<judgeArea, double> showbms::judgeNote(note& note, double time)
+	{
+		using area = judgeArea;
+		auto noteTime = std::get<1>(note);
+		auto a = judgeAreaCheck(noteTime, time);
+		std::pair<judgeArea, double> ret;
+		switch (a)
+		{
+		case area::BEFORE_BPOOR:	ret = { area::BEFORE_BPOOR, noteTime - time }; break;
+		case area::BEFORE_BAD:		ret = { area::BEFORE_BAD, noteTime - time }; break;
+		case area::BEFORE_GOOD:		ret = { area::BEFORE_GOOD, noteTime - time }; break;
+		case area::BEFORE_GREAT:	ret = { area::BEFORE_GREAT, noteTime - time }; break;
+		case area::BEFORE_PERFECT:	ret = { area::BEFORE_PERFECT, noteTime - time }; break;
+		case area::AFTER_PERFECT:	ret = { area::AFTER_PERFECT, noteTime - time }; break;
+		case area::AFTER_GREAT:		ret = { area::AFTER_GREAT, noteTime - time }; break;
+		case area::AFTER_GOOD:		ret = { area::AFTER_GOOD, noteTime - time }; break;
+		case area::AFTER_BAD:		ret = { area::AFTER_BAD, noteTime - time }; break;
+		case area::AFTER_POOR:		ret = { area::AFTER_POOR, noteTime - time }; break;
+		default:					ret = { area::NOTHING, 0 }; break;
+		}
+
+		// set hit
+		if (ret.first != area::BEFORE_BPOOR && ret.first != area::NOTHING)
+			std::get<3>(note) = true;
+
+		return ret;
+	}
+
+	void showbms::mainLoop()
+	{
+		using namespace defs::general;
+
+		if (!started)
+		{
+			// Hi Speed
+			if (drawMeasure > 0)
+				if (isFuncKeyPressed(functionalKeys::UP))
+					drawMeasure -= 1;
+			if (isFuncKeyPressed(functionalKeys::DOWN))
+				drawMeasure += 1;
+			if (isFuncKeyPressed(functionalKeys::F5))
+				start();
+
+		}
+		else
+		{
+			// play sound
+			auto relativeTime = duration_cast<milliseconds>(system_clock::now() - startTime).count();
+
+			// bind key sounds
+			for (size_t k = 0; k < 10; k++)
+			{
+				for (auto& note = noteLists[k][drawMeasure].begin(); note != noteLists[k][drawMeasure].end(); note++)
+				{
+					if (std::get<3>(*note)) continue;
+					if (judgeAreaCheck(std::get<1>(*note), relativeTime) != judgeArea::AFTER_KEY)
+					{
+						keySample[k] = std::get<2>(*note);
+						break;
+					}
+				}
+			}
+
+			// keys 1P
+			std::vector<size_t> keySamplePlayBuf_1P;
+			using keys = gamepadKeys;
+			for (int k = keys::S1L; k != keys::K19; k++)
+			{
+				if (isGamepadKeyPressed(static_cast<keys>(k)))
+				{
+					keySamplePlayBuf_1P.push_back(keySample[k]);
+				}
+			}
+			soundSystem->playKeySample(keySamplePlayBuf_1P.size(), keySamplePlayBuf_1P.data());
+			
+			/*
+			// auto play ?
+
+			for (size_t k = 0; k < 10; k++)
+			{
+				for (auto& note = noteLists[k][drawMeasure].begin(); note != noteLists[k][drawMeasure].end(); note++)
+				{
+					if (std::get<3>(*note)) continue;
+					if (std::get<1>(*note) <= relativeTime)
+					{
+						std::get<3>(*note) = true;
+						samplePlayBuf.push_back(std::get<2>(*note));
+					}
+					else break;
+				}
+			}
+			*/
+
+			// bgms
+			std::vector<size_t> samplePlayBuf;
+			for (size_t k = 0; k < BGMCHANNELS; k++)
+			{
+				if (!bgmLists[k][drawMeasure].empty())
+					for (auto& note = bgmLists[k][drawMeasure].begin(); note != bgmLists[k][drawMeasure].end(); note++)
+					{
+						if (std::get<3>(*note)) continue;
+						if (std::get<1>(*note) <= relativeTime)
+						{
+							std::get<3>(*note) = true;
+							samplePlayBuf.push_back(std::get<2>(*note));
+						}
+						else break;
+					}
+			}
+
+			if (!samplePlayBuf.empty())
+				soundSystem->playKeySample(samplePlayBuf.size(), samplePlayBuf.data());
+		}
+
+		if (isFuncKeyPressed(functionalKeys::RIGHT))
+			hispeed += 25;
+		if (hispeed > 25)
+			if (isFuncKeyPressed(functionalKeys::LEFT))
+				hispeed -= 25;
+	}
+
 
 	void showbms::start()
 	{
