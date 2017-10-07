@@ -26,7 +26,7 @@ namespace game
 	public:
 		Scene() = delete;
 		Scene(std::shared_ptr<Sound>);
-		~Scene();
+		virtual ~Scene();
 		virtual void preDraw();
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -68,5 +68,6 @@ namespace game
 	protected:
 		std::shared_ptr<Sound> soundSystem;
 		virtual void mainLoop();
+		void close();
 	};
 }

@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <fmod.hpp>
 #include <chrono>
-#include <queue>
+#include <mutex>
 #include <array>
 #include "../../Sound/sound.h"
 #include "../../bms/bms.h"
@@ -11,9 +11,12 @@
 #include "../../types.hpp"
 using namespace game::defs::bms;
 using namespace game::defs::judge;
+using std::get;
 
 namespace game
 {
+	size_t keyToU(const int k);
+
 	class showbms : public Scene
 	{
 	public:
@@ -24,29 +27,47 @@ namespace game
 	private:
 		// resources
 		sf::Font font;
-		sf::Text text[20];
+		sf::Text text[24];
 		void loadSprites() override;
+		void loadKeySamples();
 
 		// variables
 		bms objBms;
-		typedef std::tuple<rational, double, unsigned, bool> note;
-		typedef std::tuple<rational, double, unsigned> subNote;
-		// noteLists [key] [measure] {beat, time(ms), sample/value, hit}}
-		std::array<std::array<std::list<note>, MAXMEASUREIDX + 1>, 20> noteLists;
-		std::array<std::array<std::list<note>, defs::bms::MAXMEASUREIDX + 1>, BGMCHANNELS> bgmLists;
-		std::array<std::list<subNote>, MAXMEASUREIDX + 1> bpmLists;
-		std::array<std::list<subNote>, MAXMEASUREIDX + 1> stopLists;
+
+		enum noteParam { MEASURE, BEAT, TIME, VALUE, HIT };
+		typedef std::tuple<unsigned, rational, double, unsigned, bool> note;
+		typedef std::tuple<unsigned, rational, double, double> subNote;
+
+		// noteLists [key] {beat, time(ms), sample/value, hit}}
+		std::array<std::list<note>, 20> noteLists;
+		std::array<std::list<note>, BGMCHANNELS> bgmLists;
+		std::list<subNote> bpmList;
+		std::list<subNote> stopList;
+
+		// iterators
+		std::array<std::list<note>::iterator, 20> itNoteLists;
+		std::array<std::list<note>::iterator, BGMCHANNELS> itBgmLists;
+		std::list<subNote>::iterator itBpmList;
+		std::list<subNote>::iterator itStopList;
+
 		std::array<double, MAXMEASUREIDX + 1> measureTimeList;
 		void createNoteList();
+
+		// graphics
+		double baseX = 400.0f;
+		double baseY = 700.0f;
+		double hispeedFactor = baseY / 350.0;
 		std::array<size_t, 20> notesTextureIdx{};
+		std::array<sf::Vector2f, 20> noteSizeArray{};
 		void createNoteVertices(std::array<sf::VertexArray, 20>&) const;
 
 		// control variables
 		int hispeed = 100;
-		std::array<unsigned, 10> keySample{};
+		std::array<note*, 10> keyNoteBinding{};
 		judge_t judgeTime{};
 		judgeArea judgeAreaCheck(double noteTime, double time);
 		std::pair<judgeArea, double> judgeNote(note& note, double time);
+		bool judgeNoteMiss(note& note, double time);
 
 		// state variables
 		unsigned drawMeasure = 0;
@@ -54,8 +75,8 @@ namespace game
 		double drawBPM = 0;
 		double drawBasetime = 0;
 		rational drawBaseseg = rational(0, 1);
-		decltype(bpmLists[0].begin()) itBPM;
-		decltype(stopLists[0].begin()) itStop;
+		std::list<subNote>::iterator drawItBpm;
+		std::list<subNote>::iterator drawItStop;
 		std::pair<rational, double> drawStopUntil;
 
 		bool started = false;

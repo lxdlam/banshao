@@ -17,9 +17,7 @@ namespace game
 
 	Scene::~Scene()
 	{
-		// Wait input thread terminates
-		running = false;
-		inputTaskFuture.wait();
+		close();
 
 		// Destroy sprites first (if should be done manually)
 
@@ -126,6 +124,12 @@ namespace game
 		inputTaskFuture = std::async(std::launch::async, &Scene::input_thread_func, this);
 	}
 
+	void Scene::close()
+	{
+		running = false;
+		inputTaskFuture.wait();
+	}
+
 	bool Scene::isFuncKeyPressed(functionalKeys k) const
 	{
 		return (~prev_functionalInput & mask(k)) && (functionalInput & mask(k));
@@ -134,7 +138,6 @@ namespace game
 	bool Scene::isGamepadKeyPressed(gamepadKeys k) const
 	{
 		return (~prev_gamepadInput & mask(k)) && (gamepadInput & mask(k));
-
 	}
 
 	bool Scene::isFuncKeyReleased(functionalKeys k) const

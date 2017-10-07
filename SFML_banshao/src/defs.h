@@ -263,24 +263,23 @@ namespace game::defs
 		};
 
 		struct judge_t {
-			unsigned PERFECT;
-			unsigned GREAT;
-			unsigned GOOD;
-			unsigned BAD;
-			unsigned POOR;
-			unsigned BPOOR;
+			int PERFECT;
+			int GREAT;
+			int GOOD;
+			int BAD;
+			int BPOOR;
 		};
 
 		// Judge Time definitions.
 		// Values are one-way judge times in ms, representing
-		// PERFECT, GREAT, GOOD, BAD, POOR, ¿ÕPOOR respectively.
+		// PERFECT, GREAT, GOOD, BAD, ¿ÕPOOR respectively.
 		const std::vector<judge_t> judgeTime = {
-			{ 8, 27, 40, 150, 250, 600},		// VERY HARD
-			{15, 32, 60, 200, 300, 600},		// HARD
-			{18, 40, 96, 250, 400, 650},		// NORMAL
-			{21, 60, 116, 320, 500, 800},		// EASY
+			{ 8, 27, 40, 150, 600},		// VERY HARD
+			{15, 32, 60, 200, 600},		// HARD
+			{18, 40, 96, 250, 650},		// NORMAL
+			{21, 60, 116, 320, 800},		// EASY
 			{},									// VERY EASY??
-			{5, 10, 10, 150, 250, 600}			// XD
+			{5, 10, 10, 150, 600}			// XD
 		};
 		enum class judgeArea {
 			BEFORE,
@@ -293,8 +292,6 @@ namespace game::defs
 			AFTER_GREAT,
 			AFTER_GOOD,
 			AFTER_BAD,
-			AFTER_POOR,
-			AFTER_KEY,
 			AFTER,
 
 			NOTHING

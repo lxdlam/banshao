@@ -39,17 +39,29 @@ namespace game
 		text[2].setString(sf::String::fromUtf32(title.begin(), title.end()));
 		text[3].setString(std::to_string(bpm));
 		text[4].setString(std::to_string(notes));
+		text[12].setString("0");
+		text[13].setString("0");
+		text[14].setString("0");
+		text[15].setString("0");
+		text[16].setString("0");
+		text[17].setString("0");
+		text[18].setString("0");
+		text[19].setString("0");
 
 		// TODO in range check
 		judgeTime = defs::judge::judgeTime[objBms.getJudgeRank()];
 
 		loadSprites();
+		createNoteList();
+		loadKeySamples();
 
 		LOG(DEBUG) << "showbms scene created";
 	}
 
 	showbms::~showbms()
 	{
+		started = false;
+		close();
 		LOG(DEBUG) << "showbms scene destroyed";
 	}
 	
@@ -66,21 +78,125 @@ namespace game
 		notesTextureIdx = { 1, 3, 2, 3, 2, 3, 2, 3, 0, 0 };
 		auto noteIdx = createSprite(noteImageIdx, 0, 0, 32, 4);
 		vecSprite[noteIdx].setPosition(400, 400);
-		createNoteList();
+		for (size_t i = 0; i < notesTextureIdx.size(); i++)
+		{
+			float w = static_cast<float>(vecTexture[notesTextureIdx[i]].getSize().x);
+			float h = static_cast<float>(vecTexture[notesTextureIdx[i]].getSize().y);
+			noteSizeArray[i] = { w, h };
+		}
 	}
+
+	void showbms::preDraw()
+	{
+		if (!started) return;
+
+		// Convert current time(ms) to scale-based position.
+
+		auto relativeTime = duration_cast<milliseconds>(system_clock::now() - startTime).count();
+		while (drawMeasure < objBms.getMaxMeasure() && relativeTime >= measureTimeList[drawMeasure + 1])
+		{
+			drawMeasure++;
+			drawBaseseg = rational(0, 1);
+			drawBasetime = measureTimeList[drawMeasure];
+			drawItBpm = itBpmList;
+			drawItStop = itStopList;
+		}
+
+		// BPM
+		while (drawItBpm != bpmList.end() && relativeTime >= get<TIME>(*drawItBpm)
+			&& (drawItStop == stopList.end() || get<TIME>(*drawItBpm) <= get<TIME>(*drawItStop)))
+		{
+			drawBaseseg = get<BEAT>(*drawItBpm);
+			drawBasetime = get<TIME>(*drawItBpm);
+			drawBPM = get<VALUE>(*drawItBpm);
+			drawItBpm++;
+		}
+
+		// Stop
+		while (drawItStop != stopList.end() && relativeTime >= get<TIME>(*drawItStop)
+			&& (drawItBpm == bpmList.end() || get<TIME>(*drawItBpm) > get<TIME>(*drawItStop)))
+		{
+			double stopTimeMs = 1250.0 / drawBPM * get<VALUE>(*drawItStop);
+			drawBasetime += stopTimeMs;
+			drawStopUntil = { get<BEAT>(*drawItStop), get<TIME>(*drawItStop) + stopTimeMs };
+			drawItStop++;
+		}
+
+		if (relativeTime < drawStopUntil.second)
+		{
+			drawSeg = drawStopUntil.first;
+		}
+		else
+			drawSeg = drawBaseseg + (relativeTime - drawBasetime) / (objBms.getMeasureLength(drawMeasure) * 2.4e5 / drawBPM);
+
+		text[6].setString("#" + std::to_string(drawMeasure));
+		text[7].setString(std::to_string(drawSeg * objBms.getMeasureLength(drawMeasure)));
+		text[10].setString("Samples: " + std::to_string(soundSystem->getChannelsPlaying()));
+
+	}
+
+	void showbms::createNoteVertices(std::array<sf::VertexArray, 20>& noteVertices) const
+	{
+		double baseY = this->baseY;
+		unsigned cm = drawMeasure;
+		baseY += drawSeg * objBms.getMeasureLength(cm) * hispeed * hispeedFactor;
+		decltype(itNoteLists) note = itNoteLists;
+
+		for (unsigned m = cm; m <= objBms.getMaxMeasure(); m++)
+		{
+			auto mlen = objBms.getMeasureLength(m);
+			for (unsigned k = 0; k < 10; k++)
+			{
+				while (note[k] != noteLists[k].end())
+				{
+					if (get<MEASURE>(*note[k]) < m) { ++note[k]; continue; }
+					if (get<MEASURE>(*note[k]) > m) break;
+					if (!get<HIT>(*note[k]))
+					{
+						double y = baseY - get<BEAT>(*note[k]) * mlen * hispeed * hispeedFactor;
+						if (y < 0) break;
+
+						sf::Vector2f align7(static_cast<float>(baseX + k * noteSizeArray[k].x + 5.0f), static_cast<float>(y));
+						sf::Vector2f align1 = align7 + sf::Vector2f(noteSizeArray[k].x, 0.0f);
+						sf::Vector2f align3 = align1 + sf::Vector2f(0.0f, noteSizeArray[k].y);
+						sf::Vector2f align9 = align7 + sf::Vector2f(0.0f, noteSizeArray[k].y);
+						noteVertices[k].append(sf::Vertex(align7, align7));
+						noteVertices[k].append(sf::Vertex(align1, align1));
+						noteVertices[k].append(sf::Vertex(align9, align9));
+						noteVertices[k].append(sf::Vertex(align1, align1));
+						noteVertices[k].append(sf::Vertex(align9, align9));
+						noteVertices[k].append(sf::Vertex(align3, align3));
+					}
+					++note[k];
+				}
+			}
+			baseY -= mlen * hispeed * hispeedFactor;
+		}
+	}
+
+	void showbms::draw(sf::RenderTarget& target, sf::RenderStates states) const
+	{
+		std::array<sf::VertexArray, 20> noteVertices{};
+		for (unsigned k = 0; k < 10; k++)
+			noteVertices[k].setPrimitiveType(sf::PrimitiveType::Triangles);
+		createNoteVertices(noteVertices);
+		for (auto& t: text)
+			target.draw(t, states);
+		for (unsigned k = 0; k < 10; k++)
+		{
+			auto s = states;
+			s.texture = &vecTexture[notesTextureIdx[k]];
+			target.draw(noteVertices[k], s);
+		}
+	}
+
+
+	//////////////////////////////////////////////////////////
+	// Functional Implements
+	//////////////////////////////////////////////////////////
 
 	void showbms::createNoteList()
 	{
-		for (size_t i = 0; i <= MAXSAMPLEIDX; i++)
-		{
-			if (!objBms.getWavPath(i).empty())
-				soundSystem->loadKeySample(
-					objBms.getDirectory()
-					+ static_cast<char>(std::experimental::filesystem::path::preferred_separator)
-					+ objBms.getWavPath(i)
-					, i);
-		}
-
 		double basetime = 0;
 		double bpm = objBms.getBPM();
 		bool bpmfucked = false;
@@ -111,6 +227,7 @@ namespace game
 			}
 
 			// The following patterns must be arranged in specified order
+			// to keep the process order by [Notes > BPM > Stop]
 
 			// BPM Change: FE
 			{
@@ -147,7 +264,7 @@ namespace game
 				auto& val = note.second.second;
 				double timems = bpmfucked ? INFINITY : basetime + (seg - baseseg) * len / bpm;
 				if (lane >= 0 && lane < 20)		// Visible Notes
-					noteLists[lane][m].push_back({ seg, timems, val, false });
+					noteLists[lane].push_back({ m, seg, timems, val, false });
 				else if (lane >= 20 && lane < 40)
 				{
 
@@ -161,7 +278,7 @@ namespace game
 
 				}
 				else if (lane >= 100 && lane < 132)
-					bgmLists[lane - 100][m].push_back({ seg, timems, val, false });
+					bgmLists[lane - 100].push_back({ m, seg, timems, val, false });
 
 				else if (!bpmfucked) switch (lane)
 				{
@@ -169,158 +286,94 @@ namespace game
 					basetime += (seg - baseseg) * len / bpm;
 					baseseg = seg;
 					bpm = objBms.getExBPM(val);
-					bpmLists[m].push_back({ seg, timems, bpm });
+					bpmList.push_back({ m, seg, timems, bpm });
 					if (bpm <= 0) bpmfucked = true;
 					break;
 				case 0xFE:	// BPM Change
 					basetime += (seg - baseseg) * len / bpm;
 					baseseg = seg;
 					bpm = static_cast<double>(val);
-					bpmLists[m].push_back({ seg, timems, bpm });
+					bpmList.push_back({ m, seg, timems, bpm });
 					if (bpm <= 0) bpmfucked = true;
 					break;
 				case 0xFF:	// Stop
 					double stoplen = objBms.getStop(val);
 					if (stoplen <= 0) break;
-					stopLists[m].push_back({ seg, timems, stoplen });
+					stopList.push_back({ m, seg, timems, stoplen });
 					basetime += 1250.0 / bpm * stoplen;		// stoplen / 192
 					break;
 				}
 			}
 			basetime += (1.0 - baseseg) * len / bpm;
 		}
-	}
+		for (size_t i = 0; i < itNoteLists.size(); i++) itNoteLists[i] = noteLists[i].begin();
+		for (size_t i = 0; i < itBgmLists.size(); i++) itBgmLists[i] = bgmLists[i].begin();
+		itBpmList = bpmList.begin();
+		itStopList = stopList.begin();
 
-	void showbms::preDraw()
-	{
-		if (!started) return;
-
-		// Convert current time(ms) to scale-based position.
-
-		auto relativeTime = duration_cast<milliseconds>(system_clock::now() - startTime).count();
-		while (drawMeasure < objBms.getMaxMeasure() && relativeTime >= measureTimeList[drawMeasure + 1])
+		/*
+#ifdef _DEBUG
+		for (size_t i = 0; i < 8; i++)
 		{
-			drawMeasure++;
-			drawBaseseg = rational(0, 1);
-			drawBasetime = measureTimeList[drawMeasure];
-			itBPM = bpmLists[drawMeasure].begin();
-			itStop = stopLists[drawMeasure].begin();
-		}
-
-		// BPM
-		while (itBPM != bpmLists[drawMeasure].end() && relativeTime >= std::get<1>(*itBPM)
-			&& (itStop == stopLists[drawMeasure].end() || std::get<1>(*itBPM) <= std::get<1>(*itStop)))
-		{
-			drawBaseseg = std::get<0>(*itBPM);
-			drawBasetime = std::get<1>(*itBPM);
-			drawBPM = std::get<2>(*itBPM);
-			itBPM++;
-		}
-
-		// Stop
-		while (itStop != stopLists[drawMeasure].end() && relativeTime >= std::get<1>(*itStop)
-			&& (itBPM == bpmLists[drawMeasure].end() || std::get<1>(*itBPM) > std::get<1>(*itStop)))
-		{
-			double stopTimeMs = 1250.0 / drawBPM * std::get<2>(*itStop);
-			drawBasetime += stopTimeMs;
-			drawStopUntil = { std::get<0>(*itStop), std::get<1>(*itStop) + stopTimeMs };
-			itStop++;
-		}
-
-		if (relativeTime < drawStopUntil.second)
-		{
-			drawSeg = drawStopUntil.first;
-		}
-		else
-			drawSeg = drawBaseseg + (relativeTime - drawBasetime) / (objBms.getMeasureLength(drawMeasure) * 2.4e5 / drawBPM);
-
-		text[6].setString("#" + std::to_string(drawMeasure));
-		text[7].setString(std::to_string(drawSeg * objBms.getMeasureLength(drawMeasure)));
-		text[10].setString("Samples: " + std::to_string(soundSystem->getChannelsPlaying()));
-
-	}
-
-	void showbms::createNoteVertices(std::array<sf::VertexArray, 20>& noteVertices) const
-	{
-		float baseX = 400.0f;
-		float baseY = 700.0f;
-		double hispeedFactor = baseY / 350.0;
-		baseY += drawSeg * objBms.getMeasureLength(drawMeasure) * hispeed * hispeedFactor;
-		for (unsigned m = drawMeasure; m <= objBms.getMaxMeasure(); m++)
-		{
-			auto mlen = objBms.getMeasureLength(m);
-			for (unsigned k = 0; k < 10; k++)
+			LOG(DEBUG) << "Ch " << i << ":";
+			for (auto& note : noteLists[i])
 			{
-				float w = vecTexture[notesTextureIdx[k]].getSize().x;
-				float h = vecTexture[notesTextureIdx[k]].getSize().y;
-				for (const auto& note : noteLists[k][m])
-				{
-					const rational& seg = std::get<0>(note);
-					const bool& hit = std::get<3>(note);
-					if (hit) continue;
-
-					float y = baseY - seg * mlen * hispeed * hispeedFactor;
-					if (y < 0) break;
-					sf::Vector2f base(baseX + k * w + 5.0f, y);
-					noteVertices[k].append(sf::Vertex(base + sf::Vector2f(0.0f, 0.0f), sf::Vector2f(0.0f, 0.0f)));
-					noteVertices[k].append(sf::Vertex(base + sf::Vector2f(w, 0.0f), sf::Vector2f(w, 0.0f)));
-					noteVertices[k].append(sf::Vertex(base + sf::Vector2f(0.0f, h), sf::Vector2f(0.0f, h)));
-					noteVertices[k].append(sf::Vertex(base + sf::Vector2f(w, 0.0f), sf::Vector2f(w, 0.0f)));
-					noteVertices[k].append(sf::Vertex(base + sf::Vector2f(0.0f, h), sf::Vector2f(0.0f, h)));
-					noteVertices[k].append(sf::Vertex(base + sf::Vector2f(w, h), sf::Vector2f(w, h)));
-				}
+				LOG(DEBUG) << " " << get<MEASURE>(note) << "\t" << get<BEAT>(note) << "\t" << get<TIME>(note) << "\t"
+					<< get<VALUE>(note);
 			}
-			baseY -= mlen * hispeed * hispeedFactor;
 		}
+#endif
+*/
 	}
 
-	void showbms::draw(sf::RenderTarget& target, sf::RenderStates states) const
+	size_t keyToU(const int k)
 	{
-		std::array<sf::VertexArray, 20> noteVertices{};
-		for (unsigned k = 0; k < 10; k++)
-			noteVertices[k].setPrimitiveType(sf::PrimitiveType::Triangles);
-		createNoteVertices(noteVertices);
-		for (auto& t: text)
-			target.draw(t, states);
-		for (unsigned k = 0; k < 10; k++)
-		{
-			auto s = states;
-			s.texture = &vecTexture[notesTextureIdx[k]];
-			target.draw(noteVertices[k], s);
-		}
+		size_t s = k;
+		if (k >= S2L) s -= S2L;
+		if (s == S1L) s++;
+		return s - 1;
 	}
 
-
-	//////////////////////////////////////////////////////////
-	// Functional Implements
-	//////////////////////////////////////////////////////////
+	void showbms::loadKeySamples()
+	{
+		for (size_t i = 0; i <= MAXSAMPLEIDX; i++)
+		{
+			if (!objBms.getWavPath(i).empty())
+			{
+				soundSystem->loadKeySample(
+					objBms.getDirectory()
+					+ static_cast<char>(std::experimental::filesystem::path::preferred_separator)
+					+ objBms.getWavPath(i)
+					, i);
+				LOG(DEBUG) << "Load Sample " << i << ": " << objBms.getWavPath(i);
+			}
+		}
+	}
 
 	judgeArea showbms::judgeAreaCheck(double noteTime, double time)
 	{
-		auto dTime = noteTime - time;
+		int dTime = static_cast<int>(floor(noteTime - time));
 
-		if (dTime <= judgeTime.BPOOR)
+		if (dTime > judgeTime.BPOOR)
 			return judgeArea::BEFORE;
-		else if (dTime < judgeTime.BAD)
+		else if (dTime > judgeTime.BAD)
 			return judgeArea::BEFORE_BPOOR;
-		else if (dTime < judgeTime.GOOD)
+		else if (dTime > judgeTime.GOOD)
 			return judgeArea::BEFORE_BAD;
-		else if (dTime < judgeTime.GREAT)
+		else if (dTime > judgeTime.GREAT)
 			return judgeArea::BEFORE_GOOD;
-		else if (dTime < judgeTime.PERFECT)
+		else if (dTime > judgeTime.PERFECT)
 			return judgeArea::BEFORE_GREAT;
-		else if (-dTime < judgeTime.PERFECT)
+		else if (dTime >= 0)
 			return judgeArea::BEFORE_PERFECT;
-		else if (-dTime < judgeTime.GREAT)
+		else if (dTime >= -judgeTime.PERFECT)
 			return judgeArea::AFTER_PERFECT;
-		else if (-dTime < judgeTime.GOOD)
+		else if (dTime >= -judgeTime.GREAT)
 			return judgeArea::AFTER_GREAT;
-		else if (-dTime < judgeTime.BAD)
+		else if (dTime >= -judgeTime.GOOD)
 			return judgeArea::AFTER_GOOD;
-		else if (-dTime < judgeTime.POOR)
+		else if (dTime >= -judgeTime.BAD)
 			return judgeArea::AFTER_BAD;
-		else if (-dTime < judgeTime.POOR + 2000)
-			return judgeArea::AFTER_POOR;
 		else
 			return judgeArea::AFTER;
 	}
@@ -328,7 +381,7 @@ namespace game
 	std::pair<judgeArea, double> showbms::judgeNote(note& note, double time)
 	{
 		using area = judgeArea;
-		auto noteTime = std::get<1>(note);
+		auto noteTime = get<TIME>(note);
 		auto a = judgeAreaCheck(noteTime, time);
 		std::pair<judgeArea, double> ret;
 		switch (a)
@@ -342,15 +395,42 @@ namespace game
 		case area::AFTER_GREAT:		ret = { area::AFTER_GREAT, noteTime - time }; break;
 		case area::AFTER_GOOD:		ret = { area::AFTER_GOOD, noteTime - time }; break;
 		case area::AFTER_BAD:		ret = { area::AFTER_BAD, noteTime - time }; break;
-		case area::AFTER_POOR:		ret = { area::AFTER_POOR, noteTime - time }; break;
 		default:					ret = { area::NOTHING, 0 }; break;
 		}
-
 		// set hit
-		if (ret.first != area::BEFORE_BPOOR && ret.first != area::NOTHING)
-			std::get<3>(note) = true;
+		if (ret.first != area::BEFORE_BPOOR
+			&& ret.first != area::NOTHING)
+			get<HIT>(note) = true;
+
+		switch (ret.first)
+		{
+		case area::BEFORE_BPOOR:	LOG(DEBUG) << "BEFORE_BPOOR " << ret.second; break;
+		case area::BEFORE_BAD:		LOG(DEBUG) << "BEFORE_BAD " << ret.second; break;
+		case area::BEFORE_GOOD:		LOG(DEBUG) << "BEFORE_GOOD " << ret.second; break;
+		case area::BEFORE_GREAT:	LOG(DEBUG) << "BEFORE_GREAT " << ret.second; break;
+		case area::BEFORE_PERFECT:	LOG(DEBUG) << "BEFORE_PERFECT " << ret.second; break;
+		case area::AFTER_PERFECT:	LOG(DEBUG) << "AFTER_PERFECT " << ret.second; break;
+		case area::AFTER_GREAT:		LOG(DEBUG) << "AFTER_GREAT " << ret.second; break;
+		case area::AFTER_GOOD:		LOG(DEBUG) << "AFTER_GOOD " << ret.second; break;
+		case area::AFTER_BAD:		LOG(DEBUG) << "AFTER_BAD " << ret.second; break;
+		}
 
 		return ret;
+	}
+
+	bool showbms::judgeNoteMiss(note& note, double time)
+	{
+		if (get<HIT>(note))
+			return true;		// tricks
+
+		auto j = judgeAreaCheck(get<TIME>(note), time);
+		if (j == judgeArea::AFTER)
+		{
+			LOG(DEBUG) << "MISS\t" << get<MEASURE>(note) << "\t" << get<BEAT>(note) << "\t";
+			get<HIT>(note) = true;
+			return true;
+		}
+		return false;
 	}
 
 	void showbms::mainLoop()
@@ -371,68 +451,58 @@ namespace game
 		}
 		else
 		{
-			// play sound
 			auto relativeTime = duration_cast<milliseconds>(system_clock::now() - startTime).count();
 
-			// bind key sounds
-			for (size_t k = 0; k < 10; k++)
+			// bind sounds
+			for (size_t u = 0; u < 8; u++)
 			{
-				for (auto& note = noteLists[k][drawMeasure].begin(); note != noteLists[k][drawMeasure].end(); note++)
+				if (get<HIT>(*keyNoteBinding[u]) || judgeNoteMiss(*keyNoteBinding[u], relativeTime))
 				{
-					if (std::get<3>(*note)) continue;
-					if (judgeAreaCheck(std::get<1>(*note), relativeTime) != judgeArea::AFTER_KEY)
+					// move iterator to clear miss notes
+					if (itNoteLists[u] == noteLists[u].end()) continue;
+					while (judgeNoteMiss(*itNoteLists[u], relativeTime) && ++itNoteLists[u] != noteLists[u].end())
 					{
-						keySample[k] = std::get<2>(*note);
-						break;
+						keyNoteBinding[u] = &*itNoteLists[u];
+						text[u + 12].setString(std::to_string(get<VALUE>(*keyNoteBinding[u])));
+						//LOG(DEBUG) << "Bind " << u << " To " << get<VALUE>(*keyNoteBinding[u]);
 					}
 				}
 			}
-
+			
 			// keys 1P
 			std::vector<size_t> keySamplePlayBuf_1P;
 			using keys = gamepadKeys;
-			for (int k = keys::S1L; k != keys::K19; k++)
+			for (unsigned k = keys::S1L; k <= keys::K19; k++)
 			{
+				size_t u = keyToU(k);
 				if (isGamepadKeyPressed(static_cast<keys>(k)))
 				{
-					keySamplePlayBuf_1P.push_back(keySample[k]);
+					if (keyNoteBinding[u] == nullptr) continue;
+					keySamplePlayBuf_1P.push_back(get<VALUE>(*keyNoteBinding[u]));
+					judgeNote(*keyNoteBinding[u], relativeTime);
 				}
 			}
-			soundSystem->playKeySample(keySamplePlayBuf_1P.size(), keySamplePlayBuf_1P.data());
-			
-			/*
-			// auto play ?
-
-			for (size_t k = 0; k < 10; k++)
-			{
-				for (auto& note = noteLists[k][drawMeasure].begin(); note != noteLists[k][drawMeasure].end(); note++)
-				{
-					if (std::get<3>(*note)) continue;
-					if (std::get<1>(*note) <= relativeTime)
-					{
-						std::get<3>(*note) = true;
-						samplePlayBuf.push_back(std::get<2>(*note));
-					}
-					else break;
-				}
-			}
-			*/
+			if (!keySamplePlayBuf_1P.empty())
+				soundSystem->playKeySample(keySamplePlayBuf_1P.size(), keySamplePlayBuf_1P.data());
 
 			// bgms
 			std::vector<size_t> samplePlayBuf;
 			for (size_t k = 0; k < BGMCHANNELS; k++)
 			{
-				if (!bgmLists[k][drawMeasure].empty())
-					for (auto& note = bgmLists[k][drawMeasure].begin(); note != bgmLists[k][drawMeasure].end(); note++)
+				for (auto& note = itBgmLists[k]; note != bgmLists[k].end(); note++)
+				{
+					if (get<HIT>(*note)) continue;
+					if (get<TIME>(*note) <= relativeTime)
 					{
-						if (std::get<3>(*note)) continue;
-						if (std::get<1>(*note) <= relativeTime)
-						{
-							std::get<3>(*note) = true;
-							samplePlayBuf.push_back(std::get<2>(*note));
-						}
-						else break;
+						get<HIT>(*note) = true;
+						samplePlayBuf.push_back(get<VALUE>(*note));
 					}
+					else
+					{
+						itBgmLists[k] = note;
+						break;
+					}
+				}
 			}
 
 			if (!samplePlayBuf.empty())
@@ -449,15 +519,22 @@ namespace game
 
 	void showbms::start()
 	{
-		started = true;
-		startTime = system_clock::now();
 		drawMeasure = 0;
 		drawSeg = 0;
 		drawBPM = objBms.getBPM();
 		drawBasetime = 0;
 		drawBaseseg = rational(0, 1);
-		itBPM = bpmLists[0].begin();
-		itStop = stopLists[0].begin();
+		drawItBpm = itBpmList;
+		drawItStop = itStopList;
 		drawStopUntil = { rational(0, 1), 0 };
+		for (size_t i = 0; i < 10; i++)
+			if (itNoteLists[i] != noteLists[i].end())
+			{
+				keyNoteBinding[i] = &*itNoteLists[i];
+					LOG(DEBUG) << "Bind " << i << " To " << get<VALUE>(*keyNoteBinding[i]);
+				text[i + 12].setString(std::to_string(get<VALUE>(*keyNoteBinding[i])));
+			}
+		startTime = system_clock::now();
+		started = true;
 	}
 }

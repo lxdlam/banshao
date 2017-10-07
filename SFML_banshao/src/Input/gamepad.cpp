@@ -20,15 +20,6 @@ namespace game::Input
 			for (auto& k : joysticks)
 				k.clear();
 
-		std::string k;
-		switch (K)
-		{
-		case 5: k = k_5keys; break;
-		case 7: k = k_7keys; break;
-		case 9: k = k_9keys; break;
-		}
-		if (k.empty()) return;
-
 		haveJoystick = false;
 		for (unsigned i = 0; i < sf::Joystick::Count; i++)
 			if (sf::Joystick::isConnected(i))
@@ -40,7 +31,7 @@ namespace game::Input
 		for (int k = keys::S1L; k < keys::GAMEPAD_KEY_COUNT; k++)
 		{
 			auto eKey = static_cast<keys>(k);
-			auto binding = config().key.getBindings(k, eKey);
+			auto binding = config().key.getBindings(K, eKey);
 			for (auto b : binding)
 			{
 				if (b.first == -1)
@@ -60,12 +51,15 @@ namespace game::Input
 		using sf::Keyboard;
 		for (int k = keys::S1L; k < keys::GAMEPAD_KEY_COUNT; k++)
 		{
-			for (auto b: keyboardBinds[k])
+			for (auto b : keyboardBinds[k])
+			{
+				if (b > 1000) continue;
 				if (Keyboard::isKeyPressed(static_cast<Keyboard::Key>(b)))
 				{
 					res |= mask(static_cast<keys>(k));
 					break;
 				}
+			}
 		}
 
 		// Skip joystick detect if no joysticks connected
