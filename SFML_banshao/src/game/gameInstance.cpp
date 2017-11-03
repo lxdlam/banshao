@@ -1,7 +1,7 @@
 #include "../utils.h"
-#include "../Scene/scene.h"
-#include "../Input/functional.h"
-#include "../Input/gamepad.h"
+#include "../scene/scene.h"
+#include "../input/functional.h"
+#include "../input/gamepad.h"
 #include <SFML/Graphics.hpp>
 #include "configManager.h"
 #include "gameInstance.h"
@@ -27,7 +27,7 @@ namespace game
 		LOG(INFO) << "-----------------------------------------------------------------------";
 		LOG(INFO) << name << " " << subname << (subname.empty() ? "" : " ")
 			<< versionMajor << "." << versionMinor;
-		config();			// initialize static singleton
+		conf();			// initialize static singleton
 		setWindowMode();
 		Input::gamepad::updateBindings(7);
 		pSound = std::make_shared<Sound>();
@@ -44,7 +44,7 @@ namespace game
 		modeCon->switchMode(eMode::EXIT);
 		modeCon.reset();
 		pSound.reset();
-		config().save();
+		conf().save();
 		LOG(DEBUG) << "Game Instance destroyed.";
 	}
 
@@ -68,7 +68,6 @@ namespace game
 		while (isOpen())
 		{
 			sfWin.clear();
-			modeCon->getScenePtr()->preDraw();
 			sfWin.draw(*modeCon->getScenePtr());
 			sfWin.display();
 			totalFrameRendered++;
@@ -111,11 +110,11 @@ namespace game
 	int gameInstance::setWindowMode()
 	{
 		std::pair<unsigned, unsigned> resolution = { 1280, 720 };
-		if (config().video.get<bool>(vid_FullHD))
+		if (conf().video.get<bool>(vid_FullHD))
 			resolution = { 1920, 1080 };
 
-		bool fullscreen = config().video.get<bool>(vid_fullscreen);
-		bool borderless = config().video.get<bool>(vid_borderless);
+		bool fullscreen = conf().video.get<bool>(vid_fullscreen);
+		bool borderless = conf().video.get<bool>(vid_borderless);
 
 		int windowStyle = 0;
 		if (fullscreen)
@@ -151,13 +150,13 @@ namespace game
 
 	int gameInstance::setVSync()
 	{
-		sfWin.setVerticalSyncEnabled(config().video.get<bool>(vid_vsync));
+		sfWin.setVerticalSyncEnabled(conf().video.get<bool>(vid_vsync));
 		return 0;
 	}
 
 	int gameInstance::setMaxFPS()
 	{
-		sfWin.setFramerateLimit(config().video.get<unsigned>(vid_maxfps));
+		sfWin.setFramerateLimit(conf().video.get<unsigned>(vid_maxfps));
 		return 0;
 	}
 

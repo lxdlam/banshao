@@ -2,46 +2,49 @@
 #include "../defs.h"
 #include <fmod_common.h>
 
-namespace game::Config
-{
-	using namespace defs::config;
+namespace game {
+	namespace config
 
-	void audio::setDefaults() noexcept
 	{
-		set<unsigned>(aud_mode, AutoDetect);
-		set<unsigned>(aud_bufLen, 256);
-		set<int>(aud_bufCount, 2);
-	}
+		using namespace defs::config;
 
-	int audio::copyValues(const json& j) noexcept
-	{
-		int c = 0;
-		c += checkUnsigned(j, aud_mode);
-		c += checkUnsigned(j, aud_bufLen);
-		c += checkInt(j, aud_bufCount);
-		return c;
-	}
-
-	int audio::checkValues() noexcept
-	{
-		int c = 0;
-		
-		// output mode
-		auto mode = get<unsigned>(aud_mode);
-		if (mode >= GENERAL_COUNT && mode < 10
-			|| mode >= WINDOWS_COUNT && mode < 20
-			|| mode >= LINUX_COUNT && mode < 30
-			|| mode >= MAC_COUNT)
+		void audio::setDefaults() noexcept
 		{
-			c++;
 			set<unsigned>(aud_mode, AutoDetect);
+			set<unsigned>(aud_bufLen, 256);
+			set<int>(aud_bufCount, 2);
 		}
 
-		// buffer length
+		int audio::copyValues(const json& j) noexcept
+		{
+			int c = 0;
+			c += checkUnsigned(j, aud_mode);
+			c += checkUnsigned(j, aud_bufLen);
+			c += checkInt(j, aud_bufCount);
+			return c;
+		}
 
-		// buffer count
+		int audio::checkValues() noexcept
+		{
+			int c = 0;
 
-		return c;
+			// output mode
+			auto mode = get<unsigned>(aud_mode);
+			if (mode >= GENERAL_COUNT && mode < 10
+				|| mode >= WINDOWS_COUNT && mode < 20
+				|| mode >= LINUX_COUNT && mode < 30
+				|| mode >= MAC_COUNT)
+			{
+				c++;
+				set<unsigned>(aud_mode, AutoDetect);
+			}
+
+			// buffer length
+
+			// buffer count
+
+			return c;
+		}
+
 	}
-
 }

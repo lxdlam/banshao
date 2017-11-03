@@ -1,31 +1,34 @@
 #include "system.h"
 #include "../defs.h"
 
-namespace game::Config
-{
-	using namespace defs::config;
+namespace game {
+	namespace config
 
-	void system::setDefaults() noexcept
-	{	
-		set<unsigned>(sys_basespd, 100);
-	}
-
-	int system::copyValues(const json& j) noexcept 
 	{
-		return checkUnsigned(j, sys_basespd) ? 1 : 0;
-	}
+		using namespace defs::config;
 
-	int system::checkValues() noexcept
-	{
-		int c = 0;
-		
-		// base speed
-		if (get<unsigned>(sys_basespd) == 0)
+		void system::setDefaults() noexcept
 		{
-			c++;
 			set<unsigned>(sys_basespd, 100);
 		}
 
-		return c;
+		int system::copyValues(const json& j) noexcept
+		{
+			return checkUnsigned(j, sys_basespd) ? 1 : 0;
+		}
+
+		int system::checkValues() noexcept
+		{
+			int c = 0;
+
+			// base speed
+			if (get<unsigned>(sys_basespd) == 0)
+			{
+				c++;
+				set<unsigned>(sys_basespd, 100);
+			}
+
+			return c;
+		}
 	}
 }

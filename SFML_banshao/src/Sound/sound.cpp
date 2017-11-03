@@ -19,8 +19,8 @@ namespace game
 		}
 
 		fmodSystem->setDSPBufferSize(
-			config().audio.get<unsigned>(aud_bufLen),
-			config().audio.get<int>(aud_bufCount)
+			conf().audio.get<unsigned>(aud_bufLen),
+			conf().audio.get<int>(aud_bufCount)
 		);
 
 		r = fmodSystem->init(512, FMOD_INIT_NORMAL, 0);    // Initialize FMOD.
@@ -115,7 +115,7 @@ namespace game
 				r = fmodSystem->playSound(keySamples[index[i]], 0, false, 0);
 #if _DEBUG
 			if (r != FMOD_OK)
-				LOG(WARNING) << "ERROR: Playing Sample Error: " << r << ", " << FMOD_ErrorString(r);
+				LOG(WARNING) << "[FMOD] Playing Sample Error: " << r << ", " << FMOD_ErrorString(r);
 #endif
 		}
 	}

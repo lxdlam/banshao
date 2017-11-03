@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Scene/scene.h"
+#include "../scene/scene.h"
 #include <memory>
 #include <string>
 #include "../defs.h"
@@ -18,7 +18,7 @@ namespace game
 		int start();
 
 	private:
-		eMode mode = eMode::UNKNOWN;
+		eMode mode;
 		std::shared_ptr<Sound> pSound;
 		std::shared_ptr<Scene> pScene;
 

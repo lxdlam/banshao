@@ -9,14 +9,6 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x64">
-      <Configuration>Release</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -38,19 +30,6 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -62,12 +41,6 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -75,13 +48,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>ELPP_NO_DEFAULT_LOG_FILE;SFML_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>./external;C:\boost\boost_1_65_1;D:\dev\SFML-2.4.2\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SFML_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <EnableModules>true</EnableModules>
     </ClCompile>
     <Link>
       <AdditionalDependencies>fmodL_vc.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;D:\dev\SFML-2.4.2\lib;C:\boost\boost_1_65_1\stage\lib</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /d /y "$(ProjectDir)..\natives\fmodL.dll" "$(OutDir)"</Command>
@@ -90,13 +64,6 @@
       <Message>Copy dlls into build directory. (DEBUG)</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-    </ClCompile>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -104,15 +71,16 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>ELPP_NO_DEFAULT_LOG_FILE;SFML_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>./external;C:\boost\boost_1_65_1;D:\dev\SFML-2.4.2\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SFML_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <EnableModules>true</EnableModules>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>fmod_vc.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-system-s.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;D:\dev\SFML-2.4.2\lib;C:\boost\boost_1_65_1\stage\lib</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Message>Copy dlls into build directory.</Message>
@@ -123,61 +91,50 @@
       </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-    </ClCompile>
-    <Link>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\bms\bms.cpp" />
     <ClCompile Include="src\game\configManager.cpp" />
-    <ClCompile Include="src\Config\keyconfig.cpp" />
-    <ClCompile Include="src\Config\audio.cpp" />
-    <ClCompile Include="src\Config\play.cpp" />
-    <ClCompile Include="src\Config\system.cpp" />
-    <ClCompile Include="src\external\easylogging++.cc" />
-    <ClCompile Include="src\Input\functional.cpp" />
-    <ClCompile Include="src\Input\gamepad.cpp" />
+    <ClCompile Include="src\config\keyconfig.cpp" />
+    <ClCompile Include="src\config\audio.cpp" />
+    <ClCompile Include="src\config\play.cpp" />
+    <ClCompile Include="src\config\system.cpp" />
+    <ClCompile Include="src\input\functional.cpp" />
+    <ClCompile Include="src\input\gamepad.cpp" />
     <ClCompile Include="src\game\modeController.cpp" />
-    <ClCompile Include="src\Scene\dummy\showbms.cpp" />
-    <ClCompile Include="src\Scene\dummy\test.cpp" />
-    <ClCompile Include="src\Scene\scene.cpp" />
-    <ClCompile Include="src\Sound\sound.cpp" />
+    <ClCompile Include="src\scene\musicSelect.cpp" />
+    <ClCompile Include="src\scene\scene.cpp" />
+    <ClCompile Include="src\skin\data.cpp" />
+    <ClCompile Include="src\skin\skinManager.cpp" />
+    <ClCompile Include="src\skin\skin.cpp" />
+    <ClCompile Include="src\sound\sound.cpp" />
     <ClCompile Include="src\utils.cpp" />
     <ClCompile Include="src\game\gameInstance.cpp" />
-    <ClCompile Include="src\Config\general.cpp" />
-    <ClCompile Include="src\Config\video.cpp" />
+    <ClCompile Include="src\config\configBase.cpp" />
+    <ClCompile Include="src\config\video.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\bms\bms.h" />
     <ClInclude Include="src\game\configManager.h" />
-    <ClInclude Include="src\Config\keyconfig.h" />
-    <ClInclude Include="src\Config\play.h" />
+    <ClInclude Include="src\config\keyconfig.h" />
+    <ClInclude Include="src\config\play.h" />
     <ClInclude Include="src\defs.h" />
-    <ClInclude Include="src\external\easylogging++.h" />
     <ClInclude Include="src\external\json.hpp" />
-    <ClInclude Include="src\Input\functional.h" />
-    <ClInclude Include="src\Input\gamepad.h" />
+    <ClInclude Include="src\scene\musicSelect.h" />
+    <ClInclude Include="src\skin\data.h" />
+    <ClInclude Include="src\input\functional.h" />
+    <ClInclude Include="src\input\gamepad.h" />
     <ClInclude Include="src\game\modeController.h" />
-    <ClInclude Include="src\Scene\dummy\showbms.h" />
-    <ClInclude Include="src\Scene\dummy\test.h" />
-    <ClInclude Include="src\Scene\scene.h" />
+    <ClInclude Include="src\scene\scene.h" />
     <ClInclude Include="src\game\gameInstance.h" />
-    <ClInclude Include="src\Config\general.h" />
-    <ClInclude Include="src\Config\video.h" />
-    <ClInclude Include="src\Config\audio.h" />
-    <ClInclude Include="src\Config\system.h" />
+    <ClInclude Include="src\config\configBase.h" />
+    <ClInclude Include="src\config\video.h" />
+    <ClInclude Include="src\config\audio.h" />
+    <ClInclude Include="src\config\system.h" />
     <ClInclude Include="src\resource.h" />
-    <ClInclude Include="src\Sound\sound.h" />
+    <ClInclude Include="src\skin\skinManager.h" />
+    <ClInclude Include="src\skin\skin.h" />
+    <ClInclude Include="src\sound\sound.h" />
     <ClInclude Include="src\types.hpp" />
     <ClInclude Include="src\utils.h" />
   </ItemGroup>

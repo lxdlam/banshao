@@ -1,18 +1,22 @@
 #pragma once
 
+#include <bitset>
 #include "../defs.h"
 
-namespace game::Input
-{
-	using namespace defs::key;
+namespace game {
+	namespace Input
 
-	class functional
 	{
-	public:
-		functional() = delete;
-		~functional() = delete;
+		using namespace defs::key;
 
-		using keys = functionalKeys;
-		static unsigned long detect();
-	};
+		class functional
+		{
+		public:
+			functional() = delete;
+			~functional() = delete;
+
+			using keys = functionalKeys;
+			static std::bitset<keys::FUNC_KEY_COUNT> detect();
+		};
+	}
 }

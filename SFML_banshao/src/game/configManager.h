@@ -1,14 +1,14 @@
 #pragma once
-#include "../Config/audio.h"
-#include "../Config/video.h"
-#include "../Config/keyconfig.h"
-#include "../Config/system.h"
-#include "../Config/play.h"
+#include "../config/audio.h"
+#include "../config/video.h"
+#include "../config/keyconfig.h"
+#include "../config/system.h"
+#include "../config/play.h"
+#include "../defs.h"
 
 namespace game
 {
-	constexpr char configFile[] = "config/config.json";
-	constexpr char keyconfigFile[] = "config/keyconfig.json";
+	using namespace defs::file;
 
 	class configManager
 	{
@@ -18,21 +18,22 @@ namespace game
 	public:
 		configManager(configManager&) = delete;
 		configManager& operator= (configManager&) = delete;
-		friend configManager& config();
+		friend configManager& conf();
 
 	public:
-		Config::system system;
-		Config::keyconfig key;
-		Config::audio audio;
-		Config::video video;
-		Config::play play;
+		config::system system;
+		config::keyconfig key;
+		config::audio audio;
+		config::video video;
+		config::play play;
 
 		void load();
+		void loadKey();
 		void save();
 		void saveKey();
 	};
 
-	static configManager& config()
+	static configManager& conf()
 	{
 		static configManager _inst;
 		return _inst;

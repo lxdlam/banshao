@@ -9,6 +9,7 @@
 using utils::base16;
 using utils::base36;
 
+
 namespace game
 {
 	using namespace defs::bms;
@@ -500,6 +501,7 @@ namespace game
 		return bgmLayersCount[measure];
 	}
 	
+#pragma warning(suppress: 4715)
 	auto bms::getChannel(bmsGetChannelCode code, unsigned chIdx, unsigned measureIdx) const -> const decltype(chBGM[0][0])&
 	{
 		using eC = bmsGetChannelCode;

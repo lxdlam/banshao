@@ -16,6 +16,7 @@ namespace game
 	class bms
 	{
 	public:
+		// TODO replace string_t with pathType
 		typedef std::u32string string_t;
 		bms() = default;
 		~bms() = default;

@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <fmod.hpp>
 #include <array>
-#include "../../Sound/sound.h"
+#include "../../sound/sound.h"
 #include "../scene.h"
 
 namespace game

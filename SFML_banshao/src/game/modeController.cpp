@@ -2,8 +2,11 @@
 #include <string>
 #include "../utils.h"
 
-#include "../Scene/dummy/showbms.h"
-#include "../Scene/dummy/test.h"
+#include "../scene/musicSelect.h"
+//#include "../scene/dummy/showbms.h"
+//#include "../scene/dummy/test.h"
+
+#include "../skin/data.h"
 
 namespace game
 {
@@ -26,7 +29,7 @@ namespace game
 
 	int modeController::start()
 	{
-		switchMode(eMode::TEST);
+		switchMode(eMode::MUSIC_SELECT);
 		return 0;
 	}
 	
@@ -41,7 +44,7 @@ namespace game
 		{
 		case eMode::EXIT:			return "Exit";
 		case eMode::TITLE:			return "Title";
-		case eMode::SONG_SELECT:	return "Song Select";
+		case eMode::MUSIC_SELECT:	return "Music Select";
 		case eMode::THEME_SELECT:	return "Theme Select";
 		case eMode::KEY_CONFIG:		return "Key Config";
 
@@ -63,12 +66,13 @@ namespace game
 
 	int modeController::switchMode(eMode newMode)
 	{
+		data().resetTimer();
 		mode = newMode;
 		switch (mode)
 		{
 		case eMode::EXIT: 			pScene = nullptr; return 0;
 		case eMode::TITLE: 			break;
-		case eMode::SONG_SELECT: 	break;
+		case eMode::MUSIC_SELECT: 	pScene = std::make_shared<musicSelect>(pSound); break;
 		case eMode::THEME_SELECT: 	break;
 		case eMode::KEY_CONFIG: 	break;
 
@@ -84,10 +88,11 @@ namespace game
 		case eMode::COURSE_RESULT: 	break;
 			
 		//case eMode::TEST:			pScene = std::make_shared<test>(pSound); break;
-		case eMode::TEST:			pScene = std::make_shared<showbms>(pSound); break;
+		//case eMode::TEST:			pScene = std::make_shared<showbms>(pSound); break;
 		default:					pScene = std::make_shared<Scene>(pSound); break;
 		}
 		LOG(DEBUG) << "mode switched to " + getCurrentModeStr();
+		data().resetTimer();
 		pScene->run();
 		return 0;
 	}

@@ -1,5 +1,5 @@
 #include "test.h"
-#include "../../Input/gamepad.h"
+#include "../../input/gamepad.h"
 #include "../../utils.h"
 
 namespace game
@@ -29,15 +29,15 @@ namespace game
 
 	void test::loadSounds()
 	{
-		soundSystem->loadKeySample("resources/Sound/kick_000.wav", 0);
-		soundSystem->loadKeySample("resources/Sound/kick_000.wav", 1);
-		soundSystem->loadKeySample("resources/Sound/cdefgab_000.wav", 2);
-		soundSystem->loadKeySample("resources/Sound/cdefgab_001.wav", 3);
-		soundSystem->loadKeySample("resources/Sound/cdefgab_002.wav", 4);
-		soundSystem->loadKeySample("resources/Sound/cdefgab_003.wav", 5);
-		soundSystem->loadKeySample("resources/Sound/cdefgab_004.wav", 6);
-		soundSystem->loadKeySample("resources/Sound/cdefgab_005.wav", 7);
-		soundSystem->loadKeySample("resources/Sound/cdefgab_006.wav", 8);
+		soundSystem->loadKeySample("resources/sound/kick_000.wav", 0);
+		soundSystem->loadKeySample("resources/sound/kick_000.wav", 1);
+		soundSystem->loadKeySample("resources/sound/cdefgab_000.wav", 2);
+		soundSystem->loadKeySample("resources/sound/cdefgab_001.wav", 3);
+		soundSystem->loadKeySample("resources/sound/cdefgab_002.wav", 4);
+		soundSystem->loadKeySample("resources/sound/cdefgab_003.wav", 5);
+		soundSystem->loadKeySample("resources/sound/cdefgab_004.wav", 6);
+		soundSystem->loadKeySample("resources/sound/cdefgab_005.wav", 7);
+		soundSystem->loadKeySample("resources/sound/cdefgab_006.wav", 8);
 	}
 
 	void test::mainLoop()

@@ -13,6 +13,18 @@ namespace game
 		play.setDefaults();
 		key.setDefaults();
 
+		load();
+		loadKey();
+	}
+
+	configManager::~configManager()
+	{
+		save();
+		saveKey();
+	}
+
+	void configManager::load()
+	{
 		std::ifstream inFile(configFile);
 		if (inFile.fail())
 		{
@@ -32,15 +44,12 @@ namespace game
 			audio = conf["Audio"];
 			play = conf["Play"];
 		}
-
-		// key configs are stored in another file
-		key.loadFile(keyconfigFile);
 	}
 
-	configManager::~configManager()
+	void configManager::loadKey()
 	{
-		save();
-		saveKey();
+		// key configs are stored in another file
+		key.loadFile(keyconfigFile);
 	}
 
 	void configManager::save()

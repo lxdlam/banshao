@@ -261,3 +261,4 @@ paket-files/
 __pycache__/
 *.pyc
 /SFML_banshao/resources/bms
+/SFML_banshao/LR2files

@@ -1,9 +1,30 @@
 #pragma once
-#include "external/easylogging++.h"
+#include <filesystem>
+#include <vector>
+#include <utility>
+#include <iostream>
+#include <fstream>
+#include "types.hpp"
 
+enum severity_level
+{
+	DEBUG,
+	INFO,
+	WARNING,
+	ERROR,
+	FATAL
+};
+
+std::ostream& LOG(severity_level);
 namespace utils
 {
 	void initLogging();
+	static std::ofstream logNullSink;
+	static std::ostream* logSink = &std::cout;
+	std::ostream& getLogSink(severity_level);
+
+	std::vector<fs::path> findFiles(fs::path path);
+	std::pair<unsigned, bool> stoub(const std::string&);
 
 	constexpr int base36(char c)
 	{

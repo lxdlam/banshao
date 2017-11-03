@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "../Sound/sound.h"
+#include "../sound/sound.h"
 #include "modeController.h"
 
 namespace game

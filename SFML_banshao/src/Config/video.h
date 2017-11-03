@@ -1,17 +1,20 @@
 #pragma once
-#include "general.h"
+#include "configBase.h"
 
-namespace game::Config
-{
-	class video : public config
+namespace game {
+	namespace config
+
 	{
-	public:
-		video () {}
+		class video : public configBase
+		{
+		public:
+			video() {}
 
-	public:
-		virtual void setDefaults() noexcept override;
-	protected:
-		virtual int copyValues(const json& j) noexcept override;
-		virtual int checkValues() noexcept override;
-	};
+		public:
+			virtual void setDefaults() noexcept override;
+		protected:
+			virtual int copyValues(const json& j) noexcept override;
+			virtual int checkValues() noexcept override;
+		};
+	}
 }

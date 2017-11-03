@@ -1,14 +1,15 @@
 #include "scene.h"
-#include "../Input/functional.h"
-#include "../Input/gamepad.h"
+#include "../skin/data.h"
+#include "../input/functional.h"
+#include "../input/gamepad.h"
 #include "../utils.h"
 
 namespace game
 {
 	Scene::Scene(std::shared_ptr<Sound> pSound)
 	{
-		loadImage("resources/error.png");
-		vecTexture[loadTexture(0)].setRepeated(true);
+		//loadImage("resources/error.png");
+		//vecTexture[loadTexture(0)].setRepeated(true);
 
 		soundSystem = pSound;
 
@@ -24,6 +25,7 @@ namespace game
 		LOG(DEBUG) << "Scene destroyed";
 	}
 
+	/*
 	void Scene::loadSprites()
 	{
 		//auto imgIdx = loadImage("resources/placeholder.png");
@@ -69,11 +71,14 @@ namespace game
 		auto textureIdx = loadTexture(imageIdx, x, y, w, h);
 		return createSprite(textureIdx);
 	}
+	*/
 
-	void Scene::preDraw()
+	void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
+		skin.draw(target, states);
 	}
 
+	/*
 	void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		/// You can draw other high-level objects
@@ -88,6 +93,7 @@ namespace game
 		for (const auto& sprite : vecSprite)
 			target.draw(sprite, states);
 	}
+	*/
 
 	void Scene::input_thread_func()
 	{
@@ -98,8 +104,9 @@ namespace game
 
 			prev_functionalInput = functionalInput;
 			prev_gamepadInput = gamepadInput;
-			functionalInput = active ? Input::functional::detect() : 0;
-			gamepadInput = active ? Input::gamepad::detect() : 0;
+			functionalInput = active && skin.receiveInput() ? Input::functional::detect() : 0;
+			gamepadInput = active && skin.receiveInput() ? Input::gamepad::detect() : 0;
+
 			if (running) mainLoop();
 			if (soundSystem) soundSystem->update();
 
@@ -132,35 +139,72 @@ namespace game
 
 	bool Scene::isFuncKeyPressed(functionalKeys k) const
 	{
-		return (~prev_functionalInput & mask(k)) && (functionalInput & mask(k));
+		return (!prev_functionalInput[k]) && (functionalInput[k]);
 	}
 
 	bool Scene::isGamepadKeyPressed(gamepadKeys k) const
 	{
-		return (~prev_gamepadInput & mask(k)) && (gamepadInput & mask(k));
+		return (!prev_gamepadInput[k]) && (gamepadInput[k]);
 	}
 
 	bool Scene::isFuncKeyReleased(functionalKeys k) const
 	{
-		return (prev_functionalInput & mask(k)) && (~functionalInput & mask(k));
+		return (prev_functionalInput[k]) && (!functionalInput[k]);
 	}
 
 	bool Scene::isGamepadKeyReleased(gamepadKeys k) const
 	{
-		return (prev_gamepadInput & mask(k)) && (~gamepadInput & mask(k));
+		return (prev_gamepadInput[k]) && (!gamepadInput[k]);
+	}
+
+	bool Scene::isFuncKeyHolding(functionalKeys k) const
+	{
+		return (prev_functionalInput[k]) && (functionalInput[k]);
+	}
+
+	bool Scene::isGamepadKeyHolding(gamepadKeys k) const
+	{
+		return (prev_gamepadInput[k]) && (gamepadInput[k]);
+	}
+
+	void Scene::checkKeys(unsigned rTime)
+	{
+		for (size_t k = 0; k < GAMEPAD_KEY_COUNT; ++k)
+		{
+			if (isGamepadKeyPressed(static_cast<gamepadKeys>(k))
+				&& !isGamepadKeyHolding(static_cast<gamepadKeys>(k)))
+			{
+				for (const auto& t : gamepadTimerPressMap[k])
+					data().setTimer(t, rTime);
+				for (const auto& d : gamepadDstOptPressMap[k])
+					data().setDstOption(d.dstIdx, d.val);
+			}
+			if (isGamepadKeyReleased(static_cast<gamepadKeys>(k))
+				&& !isGamepadKeyReleased(static_cast<gamepadKeys>(k)))
+			{
+				for (const auto& t : gamepadTimerReleaseMap[k])
+					data().setTimer(t, rTime);
+				for (const auto& d : gamepadDstOptReleaseMap[k])
+					data().setDstOption(d.dstIdx, d.val);
+			}
+		}
 	}
 
 	void Scene::mainLoop()
 	{
+		auto rTime = data().getTimeFromStart();
+		checkKeys(rTime);
 	}
 
-	const unsigned long& Scene::getFunctionalInput() const
+	const std::bitset<FUNC_KEY_COUNT>& Scene::getFunctionalInput() const
 	{
 		return functionalInput;
 	}
-	const unsigned long& Scene::getGamepadInput() const
+
+	const std::bitset<GAMEPAD_KEY_COUNT>& Scene::getGamepadInput() const
 	{
 		return gamepadInput;
 	}
+
 
 }

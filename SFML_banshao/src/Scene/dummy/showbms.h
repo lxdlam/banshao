@@ -4,7 +4,7 @@
 #include <chrono>
 #include <mutex>
 #include <array>
-#include "../../Sound/sound.h"
+#include "../../sound/sound.h"
 #include "../../bms/bms.h"
 #include "../scene.h"
 #include "../../defs.h"

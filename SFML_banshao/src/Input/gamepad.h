@@ -2,41 +2,45 @@
 #include "../defs.h"
 #include <vector>
 #include <array>
+#include <bitset>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Joystick.hpp>
 
-namespace game::Input
-{
-	using namespace defs::key;
+namespace game {
+	namespace Input
 
-	class gamepad
 	{
-	public:
-		using keys = gamepadKeys;
+		using namespace defs::key;
 
-	private:
-		gamepad() = default;
-		~gamepad() = default;
-		static gamepad& getInstance();
+		class gamepad
+		{
+		public:
+			using keys = gamepadKeys;
 
-		bool haveJoystick = false;
-		std::array<bool, sf::Joystick::Count> joysticksConnected{};
+		private:
+			gamepad() = default;
+			~gamepad() = default;
+			static gamepad& getInstance();
 
-		// Usage: keyboardBinds [targetKey] [bindings]
-		std::array<std::vector<int>, keys::GAMEPAD_KEY_COUNT> keyboardBinds;
+			bool haveJoystick = false;
+			std::array<bool, sf::Joystick::Count> joysticksConnected{};
 
-		// evil nesting declarations..
-		// Usage: joystickBinds [joystickNo] [targetKey] [bindings]
-		//  code +1000 if Axis, with hundreds digit representing direction (0 for -, 1 for +)
-		std::array<std::array<std::vector<int>, keys::GAMEPAD_KEY_COUNT>, sf::Joystick::Count> joystickBinds;
+			// Usage: keyboardBinds [targetKey] [bindings]
+			std::array<std::vector<int>, keys::GAMEPAD_KEY_COUNT> keyboardBinds;
 
-		int deadZone = 25;
+			// evil nesting declarations..
+			// Usage: joystickBinds [joystickNo] [targetKey] [bindings]
+			//  code +1000 if Axis, with hundreds digit representing direction (0 for -, 1 for +)
+			std::array<std::array<std::vector<int>, keys::GAMEPAD_KEY_COUNT>, sf::Joystick::Count> joystickBinds;
 
-		void _updateBindings(unsigned K);
-		unsigned long _detect();
+			int deadZone = 25;
 
-	public:
-		static void updateBindings(unsigned K);
-		static unsigned long detect();
-	};
+			void _updateBindings(unsigned K);
+			std::bitset<keys::GAMEPAD_KEY_COUNT> _detect();
+
+		public:
+			static void updateBindings(unsigned K);
+			static std::bitset<keys::GAMEPAD_KEY_COUNT> detect();
+		};
+	}
 }

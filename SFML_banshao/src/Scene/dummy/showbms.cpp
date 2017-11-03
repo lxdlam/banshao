@@ -1,5 +1,5 @@
 #include "showbms.h"
-#include "../../Input/gamepad.h"
+#include "../../input/gamepad.h"
 #include "../../utils.h"
 #include <cmath>
 #include <filesystem>
