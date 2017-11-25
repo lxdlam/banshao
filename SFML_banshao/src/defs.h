@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <array>
 #include <vector>
 
 using std::string;
@@ -1255,6 +1256,145 @@ namespace game { namespace defs
 			ONMOUSE,
 			TEXT
 		};
+	}
+
+	namespace scene
+	{
+		using skin::dst_option;
+		using skin::timer;
+		struct setDst { dst_option dstIdx; bool val; };
+		static const std::array<std::vector<timer>, key::GAMEPAD_KEY_COUNT> gamepadTimerPressMap
+		{ {
+			{timer::KEY_ON_SCR_1P},	// 1P Scratch L
+			{timer::KEY_ON_SCR_1P}, // 1P Scratch R
+			{timer::PANEL1_ON, timer::KEY_ON_1_1P},
+			{timer::PANEL2_ON, timer::KEY_ON_2_1P},
+			{timer::PANEL3_ON, timer::KEY_ON_3_1P},
+			{timer::PANEL4_ON, timer::KEY_ON_4_1P},
+			{timer::PANEL5_ON, timer::KEY_ON_5_1P},
+			{timer::PANEL6_ON, timer::KEY_ON_6_1P},
+			{timer::PANEL7_ON, timer::KEY_ON_7_1P},
+			{timer::PANEL8_ON, timer::KEY_ON_8_1P},
+			{timer::PANEL9_ON, timer::KEY_ON_9_1P},
+			{},	// 1P Start
+			{},	// 1P Select
+			{},	// 1P SpeedUp
+			{},	// 1P SpeedDown
+			{},	// 2P Scratch L
+			{}, // 2P Scratch R
+			{timer::PANEL1_ON, timer::KEY_ON_1_2P},
+			{timer::PANEL2_ON, timer::KEY_ON_2_2P},
+			{timer::PANEL3_ON, timer::KEY_ON_3_2P},
+			{timer::PANEL4_ON, timer::KEY_ON_4_2P},
+			{timer::PANEL5_ON, timer::KEY_ON_5_2P},
+			{timer::PANEL6_ON, timer::KEY_ON_6_2P},
+			{timer::PANEL7_ON, timer::KEY_ON_7_2P},
+			{timer::PANEL8_ON, timer::KEY_ON_8_2P},
+			{timer::PANEL9_ON, timer::KEY_ON_9_2P},
+			{timer::KEY_ON_SCR_2P},	// 2P Start
+			{timer::KEY_ON_SCR_2P},	// 2P Select
+			{},	// 2P SpeedUp
+			{},	// 2P SpeedDown
+		} };
+		static const std::array<std::vector<setDst>, key::GAMEPAD_KEY_COUNT> gamepadDstOptPressMap
+		{ {
+			{},	// 1P Scratch L
+			{}, // 1P Scratch R
+			{{dst_option::PANEL1_ON, true}},
+			{{dst_option::PANEL2_ON, true}},
+			{{dst_option::PANEL3_ON, true}},
+			{{dst_option::PANEL4_ON, true}},
+			{{dst_option::PANEL5_ON, true}},
+			{{dst_option::PANEL6_ON, true}},
+			{{dst_option::PANEL7_ON, true}},
+			{{dst_option::PANEL8_ON, true}},
+			{{dst_option::PANEL9_ON, true}},
+			{},	// 1P Start
+			{},	// 1P Select
+			{},	// 1P SpeedUp
+			{},	// 1P SpeedDown
+			{},	// 2P Scratch L
+			{},	// 2P Scratch R
+			{{dst_option::PANEL1_ON, true}},
+			{{dst_option::PANEL2_ON, true}},
+			{{dst_option::PANEL3_ON, true}},
+			{{dst_option::PANEL4_ON, true}},
+			{{dst_option::PANEL5_ON, true}},
+			{{dst_option::PANEL6_ON, true}},
+			{{dst_option::PANEL7_ON, true}},
+			{{dst_option::PANEL8_ON, true}},
+			{{dst_option::PANEL9_ON, true}},
+			{},	// 2P Start
+			{},	// 2P Select
+			{},	// 2P SpeedUp
+			{},	// 2P SpeedDown
+		} };
+		static const std::array<std::vector<timer>, key::GAMEPAD_KEY_COUNT> gamepadTimerReleaseMap
+		{ {
+			{timer::KEY_OFF_SCR_1P},	// 1P Scratch L
+			{timer::KEY_OFF_SCR_1P}, // 1P Scratch R
+			{timer::PANEL1_OFF, timer::KEY_OFF_1_1P},
+			{timer::PANEL2_OFF, timer::KEY_OFF_2_1P},
+			{timer::PANEL3_OFF, timer::KEY_OFF_3_1P},
+			{timer::PANEL4_OFF, timer::KEY_OFF_4_1P},
+			{timer::PANEL5_OFF, timer::KEY_OFF_5_1P},
+			{timer::PANEL6_OFF, timer::KEY_OFF_6_1P},
+			{timer::PANEL7_OFF, timer::KEY_OFF_7_1P},
+			{timer::PANEL8_OFF, timer::KEY_OFF_8_1P},
+			{timer::PANEL9_OFF, timer::KEY_OFF_9_1P},
+			{},	// 1P Start
+			{},	// 1P Select
+			{},	// 1P SpeedUp
+			{},	// 1P SpeedDown
+			{},	// 2P Scratch L
+			{}, // 2P Scratch R
+			{timer::PANEL1_OFF, timer::KEY_OFF_1_2P},
+			{timer::PANEL2_OFF, timer::KEY_OFF_2_2P},
+			{timer::PANEL3_OFF, timer::KEY_OFF_3_2P},
+			{timer::PANEL4_OFF, timer::KEY_OFF_4_2P},
+			{timer::PANEL5_OFF, timer::KEY_OFF_5_2P},
+			{timer::PANEL6_OFF, timer::KEY_OFF_6_2P},
+			{timer::PANEL7_OFF, timer::KEY_OFF_7_2P},
+			{timer::PANEL8_OFF, timer::KEY_OFF_8_2P},
+			{timer::PANEL9_OFF, timer::KEY_OFF_9_2P},
+			{timer::KEY_OFF_SCR_2P},	// 2P Start
+			{timer::KEY_OFF_SCR_2P},	// 2P Select
+			{},	// 2P SpeedUp
+			{},	// 2P SpeedDown
+		} };
+		static const std::array<std::vector<setDst>, key::GAMEPAD_KEY_COUNT> gamepadDstOptReleaseMap
+		{ {
+			{},	// 1P Scratch L
+			{}, // 1P Scratch R
+			{{dst_option::PANEL1_ON, false}},
+			{{dst_option::PANEL2_ON, false}},
+			{{dst_option::PANEL3_ON, false}},
+			{{dst_option::PANEL4_ON, false}},
+			{{dst_option::PANEL5_ON, false}},
+			{{dst_option::PANEL6_ON, false}},
+			{{dst_option::PANEL7_ON, false}},
+			{{dst_option::PANEL8_ON, false}},
+			{{dst_option::PANEL9_ON, false}},
+			{},	// 1P Start
+			{},	// 1P Select
+			{},	// 1P SpeedUp
+			{},	// 1P SpeedDown
+			{},	// 2P Scratch L
+			{},	// 2P Scratch R
+			{{dst_option::PANEL1_ON, false}},
+			{{dst_option::PANEL2_ON, false}},
+			{{dst_option::PANEL3_ON, false}},
+			{{dst_option::PANEL4_ON, false}},
+			{{dst_option::PANEL5_ON, false}},
+			{{dst_option::PANEL6_ON, false}},
+			{{dst_option::PANEL7_ON, false}},
+			{{dst_option::PANEL8_ON, false}},
+			{{dst_option::PANEL9_ON, false}},
+			{},	// 2P Start
+			{},	// 2P Select
+			{},	// 2P SpeedUp
+			{},	// 2P SpeedDown
+		} };
 	}
 }
 }

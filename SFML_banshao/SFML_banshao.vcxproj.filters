@@ -75,6 +75,9 @@
     <ClCompile Include="src\scene\musicSelect.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\skin\element.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\resource.h">
@@ -144,6 +147,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\musicSelect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\skin\element.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

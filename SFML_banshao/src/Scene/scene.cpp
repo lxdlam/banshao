@@ -129,6 +129,8 @@ namespace game
 	{
 		running = true;
 		inputTaskFuture = std::async(std::launch::async, &Scene::input_thread_func, this);
+
+		std::thread(&skinClass::delayedStartReceiveInput, &skin).detach();
 	}
 
 	void Scene::close()
@@ -176,12 +178,15 @@ namespace game
 			{
 				for (const auto& t : gamepadTimerPressMap[k])
 					data().setTimer(t, rTime);
+				for (const auto& t : gamepadTimerReleaseMap[k])
+					data().setTimer(t, 0);
 				for (const auto& d : gamepadDstOptPressMap[k])
 					data().setDstOption(d.dstIdx, d.val);
 			}
-			if (isGamepadKeyReleased(static_cast<gamepadKeys>(k))
-				&& !isGamepadKeyReleased(static_cast<gamepadKeys>(k)))
+			if (isGamepadKeyReleased(static_cast<gamepadKeys>(k)))
 			{
+				for (const auto& t : gamepadTimerPressMap[k])
+					data().setTimer(t, 0);
 				for (const auto& t : gamepadTimerReleaseMap[k])
 					data().setTimer(t, rTime);
 				for (const auto& d : gamepadDstOptReleaseMap[k])

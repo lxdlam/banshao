@@ -171,7 +171,8 @@ namespace game
 
 	int Sound::update()
 	{
-		FMOD_RESULT r = fmodSystem->update();
+		if (!fmodSystem) return 1;
+			FMOD_RESULT r = fmodSystem->update();
 #if _DEBUG
 		if (r != FMOD_OK)
 			LOG(ERROR) << "[FMOD] Sound System Update Error: " << r << ", " << FMOD_ErrorString(r);

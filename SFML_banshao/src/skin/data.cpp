@@ -1,4 +1,5 @@
 #include "data.h"
+#include "../utils.h"
 
 namespace game
 {
@@ -15,12 +16,12 @@ namespace game
 		return _inst;
 	}
 
-	unsigned dataClass::getTimeFromStart()
+	long long dataClass::getTimeFromStart()
 	{
 		return duration_cast<milliseconds>(system_clock::now() - skinStartTime).count() + 1;
 	}
 
-	int dataClass::getTimeFromTimer(timer timer)
+	long long dataClass::getTimeFromTimer(timer timer)
 	{
 		int rt = getTimeFromStart() - getTimer(timer);
 		if (rt < 0)
@@ -29,8 +30,18 @@ namespace game
 			return rt;
 	}
 
-	void dataClass::setTimer(timer dst, unsigned src)
+	long long dataClass::getTimeFromTimer(timer timer, long long time)
 	{
+		int rt = time - getTimer(timer);
+		if (rt < 0)
+			return -1;
+		else
+			return rt;
+	}
+
+	void dataClass::setTimer(timer dst, long long src)
+	{
+		LOG(DEBUG) << "Timer " << static_cast<size_t>(dst) << " set to " << src;
 		_timer[static_cast<size_t>(dst)] = src;
 	}
 
@@ -41,6 +52,7 @@ namespace game
 
 	void dataClass::setDstOption(dst_option dst, bool src)
 	{
+		LOG(DEBUG) << "Opt " << static_cast<size_t>(dst) << " set to " << src;
 		_dstOption[static_cast<size_t>(dst)] = src;
 	}
 

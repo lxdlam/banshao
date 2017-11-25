@@ -4,6 +4,8 @@
 #include "../utils.h"
 #include <fstream>
 #include <sstream>
+#include <chrono>
+#include <thread>
 #include <SFML/Graphics.hpp>
 
 namespace game
@@ -35,8 +37,8 @@ namespace game
 			loadLR2Skin(path);
 		// TODO Extended skin format ?
 
-		data().setTimer(timer::INPUT_START, startInputTime);
-
+		//data().setTimer(timer::INPUT_START, startInputTime);
+		freeImages();
 	}
 	
 #pragma region LR2 csv parsing
@@ -307,13 +309,24 @@ namespace game
 		int cycle = std::stoi(*++it);
 		int timer = std::stoi(*++it);
 
+		if (div_x == 0)
+		{
+			LOG(WARNING) << "[Skin] div_x is 0 (Line " << line << ")";
+			div_x = 1;
+		}
+		if (div_y == 0)
+		{
+			LOG(WARNING) << "[Skin] div_y is 0 (Line " << line << ")";
+			div_y = 1;
+		}
+
 		int ret = 0;
 		elements.emplace_back();
 		auto& e = elements.back();
 
 		if (opt == "#SRC_IMAGE")
 		{
-			e = std::make_shared<element>();
+			e = std::make_shared<element>(gr, x, y, w, h, div_x, div_y, cycle, timer);
 			ret = 1;
 		}
 		else if (opt == "#SRC_NUMBER")
@@ -331,9 +344,9 @@ namespace game
 				keta = std::stoi(*++it);
 			}
 
-			e = std::make_shared<elemNumber>();
+			e = std::make_shared<elemNumber>(gr, x, y, w, h, div_x, div_y, cycle, timer, num, align, keta);
 			auto numPtr = std::dynamic_pointer_cast<elemNumber>(e);
-			if (e->type == elementType::NUMBER && numPtr)
+			if (e->type() == elementType::NUMBER && numPtr)
 			{
 				numPtr->num = num;
 				numPtr->alignType = align;
@@ -383,21 +396,9 @@ namespace game
 			e = std::make_shared<elemOnMouse>();
 			ret = 6;
 		}
-
-		e->imageIdx = gr;
-		e->textureIdx = gr;
-		e->x = x;
-		e->y = y;
-		e->w = w;
-		e->h = h;
-		e->div_x = div_x;
-		e->div_y = div_y;
-		e->divCycleTime = cycle;
-		e->divAnimStartTimer = timer;
-
 		return ret;
 	}
-
+	
 	int skinClass::loadLR2dst(const std::vector<std::string> &t)
 	{
 		auto it = t.begin();
@@ -466,7 +467,7 @@ namespace game
 			ret = 5;
 		}
 
-		if (e->keyFrames.empty())
+		if (e->empty())
 		{
 			int loop, dstTimer, op1, op2, op3, op4;
 			if (t.size() < 18)
@@ -496,21 +497,10 @@ namespace game
 				}
 			}
 
-			e->loopTo = loop;
-			e->timer = static_cast<timer>(dstTimer);
-			e->dstOption[0] = op1;
-			e->dstOption[1] = op2;
-			e->dstOption[2] = op3;
-			e->scratchOp = op4;
+			e->setDstParam(loop, dstTimer, op1, op2, op3, op4);
 		}
 
-		e->keyFrames.push_back({
-			static_cast<unsigned>(time),
-			x, y, w, h,
-			static_cast<unsigned>(acc),
-			static_cast<unsigned>(r), static_cast<unsigned>(g), static_cast<unsigned>(b), static_cast<unsigned>(a),
-			static_cast<unsigned>(blend), static_cast<unsigned>(filter),
-			angle, static_cast<unsigned>(center)});
+		e->pushKeyFrame(time, x, y, w, h, acc, r, g, b, a, blend, filter, angle, center);
 
 		return ret;
 	}
@@ -746,7 +736,7 @@ namespace game
 		convertImageToTexture();
 		for (auto& e : elements)
 		{
-			if (e && e->type != elementType::TEXT)
+			if (e && e->type() != elementType::TEXT)
 			{
 				createSprite(*e);
 			}
@@ -787,6 +777,11 @@ namespace game
 			}
 	}
 
+	void skinClass::freeImages()
+	{
+		vecImage.clear();
+	}
+
 	void skinClass::convertImageToTexture()
 	{
 		for (auto& img : vecImage)
@@ -798,170 +793,71 @@ namespace game
 
 	void skinClass::createSprite(element& e)
 	{
-		if (e.keyFrames.empty()) return;
-		sf::Sprite& sprite = e.sprite;
+		if (e.empty()) return;
 
-		if (e.textureIdx > vecTexture.size())
+		if (e.getTextureIdx() > vecTexture.size())
 		{
-			switch (e.textureIdx)
+			switch (e.getTextureIdx())
 			{
 			case STAGEFILE:
-				sprite.setTexture(texStageFile);
+				e.setTexture(texStageFile);
 				break;
 			case BACKBMP:
-				sprite.setTexture(texBackBmp);
+				e.setTexture(texBackBmp);
 				break;
 			case BANNER:
-				sprite.setTexture(texBanner);
+				e.setTexture(texBanner);
 				break;
 			case SKIN_THUMBNAIL:
-				sprite.setTexture(texSkinThumbnail);
+				e.setTexture(texSkinThumbnail);
 				break;
 			case BLACK_DOT:
-				sprite.setTexture(texBlackDot);
+				e.setTexture(texBlackDot);
 				break;
 			case WHITE_DOT:
-				sprite.setTexture(texWhiteDot);
+				e.setTexture(texWhiteDot);
 				break;
 			default:
-				LOG(WARNING) << "[Skin] Image index undefined: " << e.textureIdx;
-				sprite.setTexture(vecTexture[ERROR_TEXTURE]);
+				LOG(WARNING) << "[Skin] Image index undefined: " << e.getTextureIdx();
+				e.setTexture(vecTexture[ERROR_TEXTURE]);
 			}
 		}
 		else
 		{
-			sprite.setTexture(vecTexture[e.textureIdx]);
-			unsigned w = e.w, h = e.h;
-			auto texSize = vecTexture[e.textureIdx].getSize();
-			if (e.x + w > texSize.x) w = texSize.x - e.x;
-			if (e.y + h > texSize.y) h = texSize.y - e.y;
-			sprite.setTextureRect(sf::IntRect(e.x, e.y, w, h));
+			e.setTexture(vecTexture[e.getTextureIdx()]);
 		}
+
+		e.createSprite();
 	}
 
-	void skinClass::updateSprite(element& e) const
+	void skinClass::updateSprite(element& e, long long time) const
 	{
-		if (e.keyFrames.empty()) return;
-
-		int rTime = data().getTimeFromTimer(e.timer);
-		if (rTime == -1 || data().getTimer(e.timer) == 0 || 
-			e.loopTo == -1 && rTime > e.keyFrames[e.keyFrames.size() - 1].time)
-		{
-			e.draw = false;
-			return;
-		}
-
-		auto& sprite = e.sprite;
-
-		// get keyFrame section
-		unsigned keyFrameIdx = -1, keyFrameNext = -1;
-		for (size_t f = 0; f < e.keyFrames.size(); ++f)
-			if (e.keyFrames[f].time <= rTime)
-				keyFrameIdx = f;
-
-		if (keyFrameIdx == -1)
-			return;
-		else if (keyFrameIdx == e.keyFrames.size() - 1)
-			return;
-		else
-			keyFrameNext = keyFrameIdx + 1;
-
-		// normalize time
-		auto& curr = e.keyFrames[keyFrameIdx];
-		auto& next = e.keyFrames[keyFrameNext];
-		float timeFactor;
-		unsigned keyFrameLength = next.time - curr.time;
-		if (keyFrameLength > 0)
-			timeFactor = 1.0f * rTime / keyFrameLength;
-		else
-			timeFactor = 1.0f;
-
-		// calculate parameters
-		auto textureRect = sprite.getTextureRect();
-		float x = curr.x + (next.x - curr.x) * timeFactor;
-		float y = curr.y + (next.y - curr.y) * timeFactor;
-		float w = (curr.w + (next.w - curr.w) * timeFactor) / textureRect.width;
-		float h = (curr.h + (next.h - curr.h) * timeFactor) / textureRect.height;
-		unsigned r = static_cast<unsigned>(curr.r + (next.r - curr.r) * timeFactor);
-		unsigned g = static_cast<unsigned>(curr.g + (next.g - curr.g) * timeFactor);
-		unsigned b = static_cast<unsigned>(curr.b + (next.b - curr.b) * timeFactor);
-		unsigned a = static_cast<unsigned>(curr.a + (next.a - curr.a) * timeFactor);
-		float angle = curr.rotateAngle + (next.rotateAngle - curr.rotateAngle) * timeFactor;
-		sprite.setPosition(x, y);
-		sprite.setScale(w, h);
-		sprite.setColor(sf::Color(r, g, b, a));
-		sprite.setRotation(angle);
-
-		using Eq = sf::BlendMode::Equation;
-		using Factor = sf::BlendMode::Factor;
-		blend pb = static_cast<blend>(curr.blend);
-		switch (pb)
-		{
-		case blend::TRANSCOLOR:
-			e.blendMode = sf::BlendNone;
-			break;
-
-		case blend::ALPHA:
-			e.blendMode = sf::BlendAlpha;
-			break;
-
-		case blend::ADD:
-			e.blendMode = sf::BlendAdd;
-			break;
-
-		case blend::MULTIPLY:
-			e.blendMode = sf::BlendMultiply;
-			break;
-
-		case blend::SUBTRACT:
-			e.blendMode = sf::BlendMode(
-				Factor::SrcAlpha, Factor::One, Eq::ReverseSubtract,
-				Factor::One, Factor::One, Eq::Add);
-			break;
-
-		case blend::ANTI_COLOR:
-			e.blendMode = sf::BlendMode(
-				Factor::Zero, Factor::OneMinusSrcColor);
-			break;
-
-		case blend::MULTIPLY_ANTI_BACKGROUND:
-			e.blendMode = sf::BlendMode(
-				Factor::OneMinusDstColor, Factor::Zero);
-			break;
-
-		case blend::MULTIPLY_WITH_ALPHA:
-			e.blendMode = sf::BlendMode(
-				Factor::DstColor, Factor::Zero, Eq::Add,
-				Factor::DstAlpha, Factor::Zero, Eq::Add);
-			break;
-
-		case blend::XOR:
-			e.blendMode = sf::BlendMode(
-				Factor::OneMinusDstColor, Factor::OneMinusSrcColor, Eq::Add,
-				Factor::One, Factor::One, Eq::Add
-			);
-			break;
-		}
-		e.draw = true;
+		e.update(e.getRTime(time));
 	}
 
 	void skinClass::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
+		long long rTime = data().getTimeFromStart();
 		for (auto& e : elements)
 		{
 			if (e)
 			{
-				updateSprite(*e);
-				if (!e->draw) continue;
-				auto s = states;
-				s.blendMode = e->blendMode;
-				target.draw(e->sprite, s);
+				updateSprite(*e, rTime);
+				e->draw(target, states);
 			}
 		}
 	}
 
 	bool skinClass::receiveInput()
 	{
-		return data().getTimeFromStart() > startInputTime;
+		return recvInput;
+	}
+
+	void skinClass::delayedStartReceiveInput()
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(startInputTime));
+		LOG(DEBUG) << "[Skin] Start receiving input";
+		data().setTimer(timer::INPUT_START, data().getTimeFromStart());
+		recvInput = true;
 	}
 }

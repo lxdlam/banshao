@@ -21,14 +21,15 @@ namespace game
 
 	protected:
 		time_point<system_clock> skinStartTime;
-		std::array<unsigned, static_cast<size_t>(timer::TIMER_COUNT)> _timer{};
+		std::array<long long, static_cast<size_t>(timer::TIMER_COUNT)> _timer{};
 		std::array<bool,     static_cast<size_t>(dst_option::DST_OPTION_COUNT)> _dstOption{};
 		std::array<int,      static_cast<size_t>(num::NUM_COUNT)> _num{};
 	public:
 		void resetTimer();
-		unsigned getTimeFromStart();
-		int getTimeFromTimer(timer);
-		void setTimer(timer, unsigned);
+		long long getTimeFromStart();
+		long long getTimeFromTimer(timer);
+		long long getTimeFromTimer(timer, long long time);
+		void setTimer(timer, long long);
 		unsigned getTimer(timer);
 		void setDstOption(dst_option, bool);
 		bool getDstOption(dst_option);

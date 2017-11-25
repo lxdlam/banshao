@@ -6,6 +6,8 @@ namespace game
 	musicSelect::musicSelect(std::shared_ptr<Sound> pSound): Scene(pSound)
 	{
 		skin.init("LR2files/Theme/LR2/Select/select.lr2skin", false);
+		//skin.init("LR2files/Theme/test/select.lr2skin", false);
+		data().setNum(num::SEC, 222);
 	}
 
 	musicSelect::~musicSelect()
@@ -16,15 +18,6 @@ namespace game
 	{
 		auto rTime = data().getTimeFromStart();
 		checkKeys(rTime);
-		if (skin.receiveInput())
-		{
-			if (!startedInput)
-			{
-				// things to do the time starting to receive input
-				startedInput = true;
-			}
-
-		}
 	}
 
 }

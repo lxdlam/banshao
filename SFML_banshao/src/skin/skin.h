@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <SFML/Graphics.hpp>
 #include <boost/tokenizer.hpp>
+#include "element.h"
 #include "../defs.h"
 #include "../types.hpp"
 
@@ -48,6 +49,7 @@ namespace game
 	public:
 		size_t getImageCount();
 		void loadImages();
+		void freeImages();
 		void convertImageToTexture();
 
 	private:
@@ -57,126 +59,7 @@ namespace game
 
 	#pragma region Element class definition
 	public:
-		class element
-		{
-		private:
-			elementType type = elementType::GENERAL;
 
-		public:
-			virtual ~element() {}
-			friend class skinClass;
-			struct keyFrame					// mostly come from #DST_IMAGE
-			{
-				unsigned time;				// keyframe time mark
-				int x, y, w, h;
-				unsigned accelerateType;	// acc, 0~3: constant / accel / decel / discontinuous
-				unsigned r, g, b, a;
-				unsigned blend;				// blend, see defs::skin::blend
-				unsigned zoomFilter;		// filter
-				int rotateAngle;			// angle, 360 for one lap
-				unsigned alignCenter;		// center, values are keypad corner
-				
-				//bool move = false;
-				//bool color = false;
-				//bool rotate = false;
-			};
-
-		protected:
-			size_t textureIdx;
-			mutable bool draw = false;
-			mutable sf::Sprite sprite;
-			mutable sf::BlendMode blendMode;
-
-		#pragma region SRC_IMAGE definitions
-		protected:
-			size_t imageIdx;
-
-			// Top-left point in the image
-			unsigned x, y;
-
-			// set -1 to use whole image
-			// for videos, the value is forced -1
-			int w, h;
-
-			// Source segmentation part count.
-			// default is 1
-			unsigned div_x, div_y;
-			unsigned divCycleTime;			// cycle
-			unsigned divAnimStartTimer;		// timer
-
-		#pragma endregion
-
-		#pragma region DST_IMAGE definitions
-		protected:
-			// Key frame lines
-			std::vector<keyFrame> keyFrames;
-
-			int loopTo;						// loop
-
-			timer timer;					// Start timer. See defs::skin::timer
-
-			unsigned dstOption[3];			// op1~3
-			unsigned scratchOp;				// op4
-
-		#pragma endregion
-
-		};
-
-		class elemNumber : public element
-		{
-		public:
-			friend class skinClass;
-			elemNumber() { type = elementType::NUMBER; }
-
-		// SRC NUMBER Definitions
-		protected:
-
-			// Data representating, see defs::skin::num
-			unsigned num;
-
-			// number align type | align
-			//	0: Right
-			//	1: Left
-			//	2: Center
-			unsigned alignType;
-
-			// Max number of digits | keta
-			unsigned digits;
-		};
-
-		class elemSlider : public element
-		{
-		public:
-			elemSlider() { type = elementType::SLIDER; }
-		};
-
-		class elemBargraph : public element
-		{
-		public:
-			elemBargraph() { type = elementType::BARGRAPH; }
-		};
-
-		class elemButton : public element
-		{
-		public:
-			elemButton() { type = elementType::BUTTON; }
-		};
-
-		class elemOnMouse : public element
-		{
-		public:
-			elemOnMouse() { type = elementType::ONMOUSE; }
-
-		};
-
-		class elemText : public element
-		{
-		public:
-			elemText() { type = elementType::TEXT; }
-
-		};
-
-	#pragma endregion
 
 	protected:
 		std::vector<std::shared_ptr<element>> elements;
@@ -185,7 +68,7 @@ namespace game
 	// public functions
 	public:
 		void createSprite(element& e);
-		void updateSprite(element& e) const;
+		void updateSprite(element& e, long long time) const;
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
     ///////////////////////////////////////////////////////////
@@ -235,6 +118,7 @@ namespace game
 
 		///////////////////////////////////////////////////////////
 
+		bool recvInput = false;
 		unsigned startInputTime = 0;
 		unsigned resultStartInputTimeRank = 0;		// Result / Course Result Only
 		unsigned resultStartInputTimeUpdate = 0;	// Result / Course Result Only
@@ -258,5 +142,6 @@ namespace game
 		///////////////////////////////////////////////////////////
 	public:
 		bool receiveInput();
+		void delayedStartReceiveInput();
 	};
 }
