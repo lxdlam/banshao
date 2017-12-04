@@ -22,8 +22,10 @@ namespace game
 	protected:
 		time_point<system_clock> skinStartTime;
 		std::array<long long, static_cast<size_t>(timer::TIMER_COUNT)> _timer{};
-		std::array<bool,     static_cast<size_t>(dst_option::DST_OPTION_COUNT)> _dstOption{};
-		std::array<int,      static_cast<size_t>(num::NUM_COUNT)> _num{};
+		std::array<bool,      static_cast<size_t>(dst_option::DST_OPTION_COUNT)> _dstOption{};
+		std::array<int,       static_cast<size_t>(num::NUM_COUNT)> _num{};
+		std::array<unsigned,  static_cast<size_t>(slider::SLIDER_COUNT)> _slider{};
+		std::array<unsigned,  static_cast<size_t>(slider::SLIDER_COUNT)> _slider_max{};
 	public:
 		void resetTimer();
 		long long getTimeFromStart();
@@ -35,12 +37,17 @@ namespace game
 		bool getDstOption(dst_option);
 		void setNum(num, int);
 		int getNum(num);
+		void setSlider(slider, unsigned);
+		void setSliderMax(slider, unsigned);
+		unsigned getSlider(slider);
+		unsigned getSliderMax(slider);
 
 	protected:
 		// init functions called in constructor.
 		// Actual values are managed by the game.
 		void resetDstOption();
 		void resetNum();
+		void resetSlider();
 
 	};
 	

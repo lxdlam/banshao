@@ -345,17 +345,6 @@ namespace game
 			}
 
 			e = std::make_shared<elemNumber>(gr, x, y, w, h, div_x, div_y, cycle, timer, num, align, keta);
-			auto numPtr = std::dynamic_pointer_cast<elemNumber>(e);
-			if (e->type() == elementType::NUMBER && numPtr)
-			{
-				numPtr->num = num;
-				numPtr->alignType = align;
-				numPtr->digits = keta;
-			}
-			else
-			{
-				LOG(WARNING) << "[Skin] src / dst Type mismatch (Line " << line << ")";
-			}
 
 			ret = 2;
 		}
@@ -377,7 +366,7 @@ namespace game
 					disable = std::stoi(*++it);
 			}
 
-			e = std::make_shared<elemSlider>();
+			e = std::make_shared<elemSlider>(gr, x, y, w, h, div_x, div_y, cycle, timer, muki, range, type, disable);
 
 			ret = 3;
 		}

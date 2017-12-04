@@ -1246,6 +1246,46 @@ namespace game { namespace defs
 			NUM_COUNT
 		};
 
+		// unsigned
+		enum class slider
+		{
+			SELECT_POSITION = 1,
+
+			HISPEED_1P = 2,
+			HISPEED_2P,
+
+			LANECOVER_1P = 4,
+			LANECOVER_2P,
+
+			SONG_PROGRESS = 6,
+
+			SKINSELECT_CUSTOMIZE = 7,
+
+			IR_POSITION = 8,
+
+			EQ0 = 10,
+			EQ1,
+			EQ2,
+			EQ3,
+			EQ4,
+			EQ5,
+			EQ6,
+
+			VOLUME_MASTER = 17,
+			VOLUME_KEY,
+			VOLUME_BGM,
+
+			FX_MASTER_P1 = 20,
+			FX_MASTER_P2,
+			FX_KEY_P1,
+			FX_KEY_P2,
+			FX_BGM_P1,
+			FX_BGM_P2,
+			FX_PITCH,
+
+			SLIDER_COUNT
+		};
+
 		enum class elementType
 		{
 			GENERAL,

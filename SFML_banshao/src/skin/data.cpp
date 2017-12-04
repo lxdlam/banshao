@@ -1,5 +1,6 @@
 #include "data.h"
 #include "../utils.h"
+#include "../game/configManager.h"
 
 namespace game
 {
@@ -8,6 +9,7 @@ namespace game
 		resetTimer();
 		resetDstOption();
 		resetNum();
+		resetSlider();
 	}
 
 	dataClass& data()
@@ -87,5 +89,38 @@ namespace game
 	void dataClass::resetNum()
 	{
 		_num.fill(0);
+	}
+
+	void dataClass::setSlider(slider dst, unsigned src)
+	{
+		_slider[static_cast<size_t>(dst)] = src;
+	}
+	void dataClass::setSliderMax(slider dst, unsigned src)
+	{
+		_slider_max[static_cast<size_t>(dst)] = src;
+	}
+	unsigned dataClass::getSlider(slider dst)
+	{
+		return _slider[static_cast<size_t>(dst)];
+	}
+	unsigned dataClass::getSliderMax(slider dst)
+	{
+		return _slider_max[static_cast<size_t>(dst)];
+	}
+
+	void dataClass::resetSlider()
+	{
+		_slider.fill(0);
+		_slider_max.fill(100);
+
+		//setSlider(slider::VOLUME_MASTER, conf().audio.get("VolumeMaster"));
+		setSlider(slider::VOLUME_MASTER, 100);
+		setSlider(slider::VOLUME_KEY, 50);
+		setSlider(slider::VOLUME_BGM, 75);
+
+		setSliderMax(slider::SELECT_POSITION, 1);
+		setSliderMax(slider::SONG_PROGRESS, 1000);
+		setSliderMax(slider::SKINSELECT_CUSTOMIZE, 1);
+		setSliderMax(slider::FX_PITCH, 12);
 	}
 }

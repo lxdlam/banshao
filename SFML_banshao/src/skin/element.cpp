@@ -373,4 +373,28 @@ namespace game
 				target.draw(numbers[d][*it][frame], states);
 	}
 
+
+	void elemSlider::updateSprites(float timeFactor, float x, float y, float w, float h, unsigned r, unsigned g, unsigned b, unsigned a, float angle)
+	{
+		slider ty = static_cast<slider>(type);
+		float var = std::floorf(1.0f * data().getSlider(ty) / data().getSliderMax(ty) * range);
+		switch (direction)
+		{
+		case 0:			// up
+			y -= var;
+			break;
+		case 1:			// right
+			x += var;
+			break;
+		case 2:			// down
+			y += var;
+			break;
+		case 3:			// left
+			x -= var;
+			break;
+		}
+
+		element::updateSprites(timeFactor, x, y, w, h, r, g, b, a, angle);
+	}
+
 }

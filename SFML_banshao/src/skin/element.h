@@ -101,7 +101,6 @@ namespace game
 	class elemNumber : public element
 	{
 	public:
-		friend class skinClass;
 		elemNumber(size_t textureIdx, unsigned x, unsigned y, int w, int h, unsigned div_x, unsigned div_y, unsigned cycle, unsigned timer,
 			unsigned num, unsigned align, unsigned digit):
 			element(textureIdx, x, y, w, h, div_x, div_y, cycle, timer),
@@ -138,7 +137,29 @@ namespace game
 	class elemSlider : public element
 	{
 	public:
-		elemSlider() { _type = elementType::SLIDER; }
+		elemSlider(size_t textureIdx, unsigned x, unsigned y, int w, int h, unsigned div_x, unsigned div_y, unsigned cycle, unsigned timer,
+			unsigned muki, unsigned range, unsigned type, unsigned disable):
+			element(textureIdx, x, y, w, h, div_x, div_y, cycle, timer),
+			direction(muki), range(range), type(type), changeable(disable) { _type = elementType::SLIDER; }
+
+	protected:
+		// Slider direction (from lowest to highest)
+		//  0: Up
+		//  1: Right
+		//  2: Down
+		//  3: Left
+		unsigned direction;
+
+		// move range (by pixel, value range is defined internal)
+		unsigned range;
+
+		// Slider type representating, see defs::skin::slider
+		unsigned type;
+
+		unsigned changeable;
+
+	public:
+		virtual void updateSprites(float time, float x, float y, float w, float h, unsigned r, unsigned g, unsigned b, unsigned a, float angle);
 	};
 
 	class elemBargraph : public element
