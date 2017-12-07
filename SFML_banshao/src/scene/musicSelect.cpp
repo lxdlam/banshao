@@ -7,8 +7,12 @@ namespace game
 	{
 		skin.init("LR2files/Theme/LR2/Select/select.lr2skin", false);
 		//skin.init("LR2files/Theme/test/select.lr2skin", false);
-		data().setNum(num::SEC, 222);
+		data().setNum(num::SEC, 123);
+		data().setNum(num::TOTAL_PERFECT, 538151);
+		data().setNum(num::TOTAL_GREAT, 123456);
+		data().setNum(num::SELECT_BPM_MAX, 339);
 		data().setDstOption(dst_option::SELECT_SELECTING_SONG, true);
+		data().setDstOption(dst_option::SELECT_SELECTING_PLAYABLE, true);
 
 		data().setDstOption(dst_option::SYSTEM_BGA_NORMAL, true);
 		data().setDstOption(dst_option::SYSTEM_AUTOPLAY_OFF, true);
@@ -44,6 +48,12 @@ namespace game
 		data().setDstOption(dst_option::CHART_NO_BACKBMP, true);
 		data().setDstOption(dst_option::CHART_HAVE_REPLAY, true);
 
+		data().setDstOption(dst_option::LEVEL_OVERFLOW_ANOTHER, true);
+		data().setDstOption(dst_option::CHART_PLAYMODE_7KEYS, true);
+
+		data().setDstOption(dst_option::IR_NOT_IN_GHOSTBATTLE, true);
+		data().setDstOption(dst_option::IR_NOT_SHOWING_RANKING, true);
+		data().setDstOption(dst_option::IR_自分と相手のスコアを比較する状況ではない, true);
 
 	}
 

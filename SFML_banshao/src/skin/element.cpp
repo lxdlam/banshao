@@ -13,7 +13,7 @@ namespace game
 			angle, static_cast<unsigned>(center)});
 	}
 
-	void element::setDstParam(int loop, int timer, unsigned op1, unsigned op2, unsigned op3, unsigned op4)
+	void element::setDstParam(int loop, int timer, int op1, int op2, int op3, int op4)
 	{
 		loopTo = loop;
 		this->timer = static_cast<defs::skin::timer>(timer);
@@ -78,14 +78,19 @@ namespace game
 		}
 	}
 
+	void element::checkDraw()
+	{
+		bDraw = data().getDstOption(dstOption[0]) &&
+			data().getDstOption(dstOption[1]) &&
+			data().getDstOption(dstOption[2]);
+	}
+
 	void element::update(long long rTime)
 	{
 		if (!created() || rTime == -1)
 			return;
 
-		bDraw = data().getDstOption(static_cast<dst_option>(dstOption[0])) &&
-			data().getDstOption(static_cast<dst_option>(dstOption[1])) &&
-			data().getDstOption(static_cast<dst_option>(dstOption[2]));
+		checkDraw();
 		if (!bDraw)
 			return;
 
@@ -111,6 +116,7 @@ namespace game
 		for (size_t f = 0; f < keyFrames.size(); ++f)
 			if (keyFrames[f].time <= rTime)
 				keyFrameIdx = f;
+			else break;
 
 		// normalize time
 		if (keyFrameIdx == -1)
@@ -129,20 +135,26 @@ namespace game
 
 		auto& curr = keyFrames[keyFrameIdx];
 		auto& next = keyFrames[keyFrameNext];
-		float timeFactor = 1.0f;
+		float timeFactor = 0.0f;
 		unsigned keyFrameLength = next.time - curr.time;
-		if (keyFrameLength > 0)
-			timeFactor = 1.0f * rTime / keyFrameLength;
+		if (keyFrameLength > 0 && curr.accelerateType != 3)
+		{
+			timeFactor = 1.0f * (rTime - curr.time) / keyFrameLength;
+			if (curr.accelerateType == 1)
+				timeFactor = powf(timeFactor, 2.0f);
+			else if (curr.accelerateType == 2)
+				timeFactor = powf(timeFactor, 0.5f);
+		}
 
 		// calculate parameters
 		float x = curr.x + (next.x - curr.x) * timeFactor;
 		float y = curr.y + (next.y - curr.y) * timeFactor;
 		float w = (curr.w + (next.w - curr.w) * timeFactor) / subW;		// -1 / -1 = 1
 		float h = (curr.h + (next.h - curr.h) * timeFactor) / subH;
-		unsigned r = static_cast<unsigned>(curr.r + (next.r - curr.r) * timeFactor);
-		unsigned g = static_cast<unsigned>(curr.g + (next.g - curr.g) * timeFactor);
-		unsigned b = static_cast<unsigned>(curr.b + (next.b - curr.b) * timeFactor);
-		unsigned a = static_cast<unsigned>(curr.a + (next.a - curr.a) * timeFactor);
+		unsigned r = static_cast<unsigned>(curr.r + int(next.r - curr.r) * timeFactor);
+		unsigned g = static_cast<unsigned>(curr.g + int(next.g - curr.g) * timeFactor);
+		unsigned b = static_cast<unsigned>(curr.b + int(next.b - curr.b) * timeFactor);
+		unsigned a = static_cast<unsigned>(curr.a + int(next.a - curr.a) * timeFactor);
 		float angle = curr.rotateAngle + (next.rotateAngle - curr.rotateAngle) * timeFactor;
 		frame = (divCycleTime == 0) ? 0 : rTime / divCycleTime % frames;
 
@@ -155,6 +167,8 @@ namespace game
 	{
 		auto& texture = *getTexture();
 		auto texSize = texture.getSize();
+		if (w == -1) w = texSize.x;
+		if (h == -1) h = texSize.y;
 		//if (x + w > texSize.x) w = texSize.x - x;
 		//if (y + h > texSize.y) h = texSize.y - y;
 		subW = w / div_x;
@@ -224,8 +238,10 @@ namespace game
 
 		auto& texture = *getTexture();
 		auto texSize = texture.getSize();
-		if (x + w > texSize.x) w = texSize.x - x;
-		if (y + h > texSize.y) h = texSize.y - y;
+		if (w == -1) w = texSize.x;
+		if (h == -1) h = texSize.y;
+		//if (x + w > texSize.x) w = texSize.x - x;
+		//if (y + h > texSize.y) h = texSize.y - y;
 
 		frames = div / numType;
 
@@ -296,18 +312,19 @@ namespace game
 		// FIXME replace displayNum with a static array
 		// get number
 		int number = data().getNum(static_cast<defs::skin::num>(num));
+		size_t size = 1;
 		if (number != displayNumBuffer || displayNum.empty())
 		{
 			displayNum.clear();
 			negative = number < 0;
 			do
 			{
-				displayNum.push_back(number % 10);
+				displayNum.push_front(number % 10);
 				number /= 10;
 			} while (number != 0 && displayNum.size() < digits);
 
 			// zeros
-			size_t size = displayNum.size();
+			size = displayNum.size();
 			int blanks = digits - size;
 
 			if (alignType == 0)
@@ -328,7 +345,7 @@ namespace game
 
 		displayNumBuffer = number;
 		if (haveMinusNum) x += w * subW;
-		if (alignType == 2) x += w * subW * (digits - displayNum.size()) / 2;
+		if (alignType == 2) x += w * subW * (digits - size) / 2;
 
 		// symbol
 		if (haveMinusNum)
@@ -418,5 +435,37 @@ namespace game
 		frame = data().getButton(static_cast<button>(type));
 		if (frame >= sprites.size()) frame = 0;
 		element::updateSprites(timeFactor, x, y, w, h, r, g, b, a, angle);
+	}
+
+	void elemButton::checkDraw()
+	{
+		element::checkDraw();
+		if (!bDraw) return;
+
+		if (panel == -1 && data().getDstOption(dst_option::NO_PANEL_ON) ||
+			panel == 0 || 
+			(panel >= 1 && panel <= 9 &&
+				data().getDstOption(panel + static_cast<int>(dst_option::PANEL1_ON) - 1)))
+			return;
+
+		bDraw = false;
+	}
+
+	void elemOnMouse::checkDraw()
+	{
+		element::checkDraw();
+		if (!bDraw) return;
+
+		if (panel == -1 && data().getDstOption(dst_option::NO_PANEL_ON) ||
+			panel == 0 ||
+			(panel >= 1 && panel <= 9 &&
+				data().getDstOption(panel + static_cast<int>(dst_option::PANEL1_ON) - 1)))
+		{
+			// TODO mouse hover
+			if (true)
+				return;
+		}
+
+		bDraw = false;
 	}
 }

@@ -73,13 +73,13 @@ namespace game
 
 		int loopTo;						// loop
 		timer timer;					// Start timer. See defs::skin::timer
-		unsigned dstOption[3];			// op1~3
-		unsigned scratchOp;				// op4
+		int dstOption[3];				// op1~3
+		int scratchOp;					// op4
 
 	public:
 		size_t getTextureIdx() { return textureIdx; }
 		void pushKeyFrame(int time, int x, int y, int w, int h, int acc, int r, int g, int b, int a, int blend, int filter, int angle, int center);
-		void setDstParam(int loop, int timer, unsigned op1, unsigned op2, unsigned op3, unsigned op4);
+		void setDstParam(int loop, int timer, int op1, int op2, int op3, int op4);
 
 	public:
 		element(size_t textureIdx, unsigned x, unsigned y, int w, int h, unsigned div_x, unsigned div_y, unsigned cycle, unsigned timer):
@@ -93,9 +93,13 @@ namespace game
 		bool empty() { return keyFrames.empty(); }
 		void setBlendMode(int blend);
 		virtual void createSprite();
+
 		void update(long long time);
-		virtual void updateSprites(float time, float x, float y, float w, float h, unsigned r, unsigned g, unsigned b, unsigned a, float angle);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+	protected:
+		virtual void checkDraw();
+		virtual void updateSprites(float time, float x, float y, float w, float h, unsigned r, unsigned g, unsigned b, unsigned a, float angle);
 	};
 
 	class elemNumber : public element
@@ -130,8 +134,10 @@ namespace game
 	public:
 		virtual bool created() { return !numbers.empty(); }
 		virtual void createSprite();
-		virtual void updateSprites(float time, float x, float y, float w, float h, unsigned r, unsigned g, unsigned b, unsigned a, float angle);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+	protected:
+		virtual void updateSprites(float time, float x, float y, float w, float h, unsigned r, unsigned g, unsigned b, unsigned a, float angle);
 	};
 
 	class elemSlider : public element
@@ -158,7 +164,7 @@ namespace game
 
 		unsigned changeable;
 
-	public:
+	protected:
 		virtual void updateSprites(float time, float x, float y, float w, float h, unsigned r, unsigned g, unsigned b, unsigned a, float angle);
 	};
 
@@ -201,15 +207,25 @@ namespace game
 
 	// TODO click support
 
-	public:
+	protected:
+		virtual void checkDraw();
 		virtual void updateSprites(float time, float x, float y, float w, float h, unsigned r, unsigned g, unsigned b, unsigned a, float angle);
 	};
 
 	class elemOnMouse : public element
 	{
 	public:
-		elemOnMouse() { _type = elementType::ONMOUSE; }
+		elemOnMouse(size_t textureIdx, unsigned x, unsigned y, int w, int h, unsigned div_x, unsigned div_y, unsigned cycle, unsigned timer,
+			int panel, int x2, int y2, int w2, int h2) :
+			element(textureIdx, x, y, w, h, div_x, div_y, cycle, timer),
+			panel(panel), x2(x2), y2(y2), w2(w2), h2(h2) { _type = elementType::ONMOUSE; }
 
+	protected:
+		int panel;
+		int x2, y2, w2, h2;
+
+	protected:
+		virtual void checkDraw();
 	};
 
 	class elemText : public element

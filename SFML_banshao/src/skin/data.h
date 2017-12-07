@@ -39,6 +39,7 @@ namespace game
 
 		void setDstOption(dst_option, bool);
 		bool getDstOption(dst_option);
+		bool getDstOption(int);
 
 		void setNum(num, int);
 		int getNum(num);

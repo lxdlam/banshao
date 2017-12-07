@@ -65,6 +65,16 @@ namespace game
 		return _dstOption[static_cast<size_t>(dst)];
 	}
 
+	bool dataClass::getDstOption(int dst)
+	{
+		if (abs(dst) > 999)
+			return false;
+		if (dst < 0)
+			return !_dstOption[-dst];
+		else
+			return _dstOption[dst];
+	}
+
 	void dataClass::setNum(num dst, int src)
 	{
 		_num[static_cast<size_t>(dst)] = src;

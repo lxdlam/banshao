@@ -79,9 +79,23 @@ namespace game
 		auto it = t.begin();
 		if (*it == "#IMAGE")
 		{
-			path path(*++it);
+			string p = *++it;
+			path path(p);
 			if (path.stem() == "*")
 			{
+				for (const auto& cf : customFile)
+				{
+					if (std::get<1>(cf) == p)
+					{
+						const auto& paths = std::get<2>(cf);
+						if (paths.empty())
+							imagePath.push_back("");
+						else 
+							imagePath.push_back(paths[std::get<4>(cf)]);
+						return 2;
+					}
+				}
+
 				auto ls = utils::findFiles(path);
 				if (!ls.empty())
 				{
@@ -92,7 +106,7 @@ namespace game
 				{
 					imagePath.push_back(defs::file::errorTextureImage);
 				}
-				return 2;
+				return 3;
 			}
 			else
 				imagePath.push_back(std::move(path));
@@ -344,7 +358,8 @@ namespace game
 				keta = std::stoi(*++it);
 			}
 
-			e = std::make_shared<elemNumber>(gr, x, y, w, h, div_x, div_y, cycle, timer, num, align, keta);
+			e = std::make_shared<elemNumber>(gr, x, y, w, h, div_x, div_y, cycle, timer,
+				num, align, keta);
 
 			ret = 2;
 		}
@@ -366,7 +381,8 @@ namespace game
 					disable = std::stoi(*it);
 			}
 
-			e = std::make_shared<elemSlider>(gr, x, y, w, h, div_x, div_y, cycle, timer, muki, range, type, disable);
+			e = std::make_shared<elemSlider>(gr, x, y, w, h, div_x, div_y, cycle, timer,
+				muki, range, type, disable);
 
 			ret = 3;
 		}
@@ -384,7 +400,8 @@ namespace game
 				muki = std::stoi(*++it);
 			}
 
-			e = std::make_shared<elemBargraph>(gr, x, y, w, h, div_x, div_y, cycle, timer, type, muki);
+			e = std::make_shared<elemBargraph>(gr, x, y, w, h, div_x, div_y, cycle, timer,
+				type, muki);
 
 			ret = 4;
 		}
@@ -406,12 +423,29 @@ namespace game
 					plusonly = std::stoi(*it);
 			}
 
-			e = std::make_shared<elemButton>(gr, x, y, w, h, div_x, div_y, cycle, timer, type, click, panel, plusonly);
+			e = std::make_shared<elemButton>(gr, x, y, w, h, div_x, div_y, cycle, timer,
+				type, click, panel, plusonly);
 			ret = 5;
 		}
 		else if (opt == "#SRC_ONMOUSE")
 		{
-			e = std::make_shared<elemOnMouse>();
+			int panel, x2, y2, w2, h2;
+			if (t.size() < 16)
+			{
+				LOG(WARNING) << "[Skin] Parameter not enough (Line " << line << ")";
+				panel = x2 = y2 = w2 = h2 = 0;
+			}
+			else
+			{
+				panel = std::stoi(*++it);
+				x2 = std::stoi(*++it);
+				y2 = std::stoi(*++it);
+				w2 = std::stoi(*++it);
+				h2 = std::stoi(*++it);
+			}
+
+			e = std::make_shared<elemOnMouse>(gr, x, y, w, h, div_x, div_y, cycle, timer,
+				panel, x2, y2, w2, h2);
 			ret = 6;
 		}
 		return ret;
@@ -501,13 +535,30 @@ namespace game
 				op1 = op2 = op3 = op4 = 0;
 				if (++it != t.end())
 				{
-					op1 = std::stoi(*it);
+					string op;
+
+					op = *it;
+					if (op[0] == '!' || op[0] == '-')
+						op1 = -std::stoi(op.substr(1));
+					else
+						op1 = std::stoi(op);
+
 					if (++it != t.end())
 					{
-						op2 = std::stoi(*it);
+						op = *it;
+						if (op[0] == '!' || op[0] == '-')
+							op2 = -std::stoi(op.substr(1));
+						else
+							op2 = std::stoi(op);
+
 						if (++it != t.end())
 						{
-							op3 = std::stoi(*it);
+							op = *it;
+							if (op[0] == '!' || op[0] == '-')
+								op3 = -std::stoi(op.substr(1));
+							else
+								op3 = std::stoi(op);
+
 							if (++it != t.end())
 								op4 = std::stoi(*it);
 						}
@@ -685,20 +736,20 @@ namespace game
 		else if (*it == "#CUSTOMFILE")
 		{
 			string title = *++it;
-			string tmp = *++it;
-			path pathf(tmp);
+			string p = *++it;
+			path pathf(p);
 			path def(*++it);
 
 			auto ls = utils::findFiles(pathf);
 			unsigned defVal = 0;
 			for (size_t param = 0; param < ls.size(); ++param)
-				if (ls[param] == def)
+				if (ls[param].stem() == def)
 				{
 					defVal = param;
 					break;
 				}
 
-			customFile.emplace_back(title, std::move(ls), defVal, defVal);
+			customFile.emplace_back(title, p, std::move(ls), defVal, defVal);
 			return 3;
 		}
 
@@ -732,8 +783,15 @@ namespace game
 
 		if (lr2skin.eof())
 		{
+			// reset position to head
 			lr2skin.close();
 			lr2skin.open(path, std::ios::binary);
+		}
+
+		// TODO load skin customize
+		for (auto c : customize)
+		{
+			data().setDstOption(static_cast<dst_option>(std::get<0>(c) + std::get<3>(c)), true);
 		}
 
 		while (!lr2skin.eof())

@@ -108,8 +108,9 @@ namespace game
 			unsigned>
 		> customize;
 
-		// title, file_path_list, default, value
+		// title, path, file_path_list, default, value
 		std::vector<std::tuple<
+			std::string,
 			std::string,
 			std::vector<fs::path>, 
 			size_t,
