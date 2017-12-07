@@ -165,13 +165,44 @@ namespace game
 	class elemBargraph : public element
 	{
 	public:
-		elemBargraph() { _type = elementType::BARGRAPH; }
+		elemBargraph(size_t textureIdx, unsigned x, unsigned y, int w, int h, unsigned div_x, unsigned div_y, unsigned cycle, unsigned timer,
+			unsigned type, unsigned muki):
+			element(textureIdx, x, y, w, h, div_x, div_y, cycle, timer),
+			type(type), direction(muki) { _type = elementType::BARGRAPH; }
+
+	protected:
+		// Slider direction (from lowest to highest)
+		//  0: Right
+		//  1: Down
+		unsigned direction;
+
+		// Bargraph type representating, see defs::skin::bargraph
+		unsigned type;
+
+	public:
+		virtual void updateSprites(float time, float x, float y, float w, float h, unsigned r, unsigned g, unsigned b, unsigned a, float angle);
 	};
 
 	class elemButton : public element
 	{
 	public:
-		elemButton() { _type = elementType::BUTTON; }
+		elemButton(size_t textureIdx, unsigned x, unsigned y, int w, int h, unsigned div_x, unsigned div_y, unsigned cycle, unsigned timer,
+			unsigned type, unsigned click, int panel, int plusonly): 
+			element(textureIdx, x, y, w, h, div_x, div_y, 0, timer),
+			type(type), clickable(click), panel(panel), plusonly(plusonly) { _type = elementType::BUTTON; }
+
+	protected:
+		// Button type representating, see defs::skin::button
+		unsigned type;
+
+		bool clickable;
+		int panel;
+		int plusonly;
+
+	// TODO click support
+
+	public:
+		virtual void updateSprites(float time, float x, float y, float w, float h, unsigned r, unsigned g, unsigned b, unsigned a, float angle);
 	};
 
 	class elemOnMouse : public element

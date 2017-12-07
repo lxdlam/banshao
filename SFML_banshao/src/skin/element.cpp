@@ -397,4 +397,26 @@ namespace game
 		element::updateSprites(timeFactor, x, y, w, h, r, g, b, a, angle);
 	}
 
+	void elemBargraph::updateSprites(float timeFactor, float x, float y, float w, float h, unsigned r, unsigned g, unsigned b, unsigned a, float angle)
+	{
+		float var = data().getBargraph(static_cast<bargraph>(type));
+		switch (direction)
+		{
+		case 0:			// right
+			w *= var;
+			break;
+		case 1:			// down
+			h *= var;
+			break;
+		}
+
+		element::updateSprites(timeFactor, x, y, w, h, r, g, b, a, angle);
+	}
+
+	void elemButton::updateSprites(float timeFactor, float x, float y, float w, float h, unsigned r, unsigned g, unsigned b, unsigned a, float angle)
+	{
+		frame = data().getButton(static_cast<button>(type));
+		if (frame >= sprites.size()) frame = 0;
+		element::updateSprites(timeFactor, x, y, w, h, r, g, b, a, angle);
+	}
 }

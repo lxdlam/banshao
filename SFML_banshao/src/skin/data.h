@@ -26,6 +26,9 @@ namespace game
 		std::array<int,       static_cast<size_t>(num::NUM_COUNT)> _num{};
 		std::array<unsigned,  static_cast<size_t>(slider::SLIDER_COUNT)> _slider{};
 		std::array<unsigned,  static_cast<size_t>(slider::SLIDER_COUNT)> _slider_max{};
+		std::array<float,     static_cast<size_t>(bargraph::BARGRAPH_COUNT)> _bargraph{};
+		std::array<unsigned,  static_cast<size_t>(button::BUTTON_COUNT)> _button{};
+
 	public:
 		void resetTimer();
 		long long getTimeFromStart();
@@ -33,14 +36,23 @@ namespace game
 		long long getTimeFromTimer(timer, long long time);
 		void setTimer(timer, long long);
 		unsigned getTimer(timer);
+
 		void setDstOption(dst_option, bool);
 		bool getDstOption(dst_option);
+
 		void setNum(num, int);
 		int getNum(num);
+
 		void setSlider(slider, unsigned);
 		void setSliderMax(slider, unsigned);
 		unsigned getSlider(slider);
 		unsigned getSliderMax(slider);
+
+		void setBargraph(bargraph, float);
+		float getBargraph(bargraph);
+
+		void setButton(button, unsigned);
+		unsigned getButton(button);
 
 	protected:
 		// init functions called in constructor.
@@ -48,6 +60,8 @@ namespace game
 		void resetDstOption();
 		void resetNum();
 		void resetSlider();
+		void resetBargraph();
+		void resetButton();
 
 	};
 	

@@ -10,6 +10,8 @@ namespace game
 		resetDstOption();
 		resetNum();
 		resetSlider();
+		resetBargraph();
+		resetButton();
 	}
 
 	dataClass& data()
@@ -122,5 +124,35 @@ namespace game
 		setSliderMax(slider::SONG_PROGRESS, 1000);
 		setSliderMax(slider::SKINSELECT_CUSTOMIZE, 1);
 		setSliderMax(slider::FX_PITCH, 12);
+	}
+
+	void dataClass::setBargraph(bargraph dst, float src)
+	{
+		_bargraph[static_cast<size_t>(dst)] = src;
+	}
+
+	float dataClass::getBargraph(bargraph dst)
+	{
+		return _bargraph[static_cast<size_t>(dst)];
+	}
+
+	void dataClass::resetBargraph()
+	{
+		_bargraph.fill(0);
+	}
+
+	void dataClass::setButton(button dst, unsigned src)
+	{
+		_button[static_cast<size_t>(dst)] = src;
+	}
+
+	unsigned dataClass::getButton(button dst)
+	{
+		return _button[static_cast<size_t>(dst)];
+	}
+
+	void dataClass::resetButton()
+	{
+		_button.fill(0);
 	}
 }

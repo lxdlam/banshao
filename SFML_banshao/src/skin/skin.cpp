@@ -363,7 +363,7 @@ namespace game
 				type = std::stoi(*++it);
 				disable = 0;
 				if (++it != t.end())
-					disable = std::stoi(*++it);
+					disable = std::stoi(*it);
 			}
 
 			e = std::make_shared<elemSlider>(gr, x, y, w, h, div_x, div_y, cycle, timer, muki, range, type, disable);
@@ -372,12 +372,41 @@ namespace game
 		}
 		else if (opt == "#SRC_BARGRAPH")
 		{
-			e = std::make_shared<elemBargraph>();
+			int type, muki;
+			if (t.size() < 13)
+			{
+				LOG(WARNING) << "[Skin] Parameter not enough (Line " << line << ")";
+				type = muki = 0;
+			}
+			else
+			{
+				type = std::stoi(*++it);
+				muki = std::stoi(*++it);
+			}
+
+			e = std::make_shared<elemBargraph>(gr, x, y, w, h, div_x, div_y, cycle, timer, type, muki);
+
 			ret = 4;
 		}
 		else if (opt == "#SRC_BUTTON")
 		{
-			e = std::make_shared<elemButton>();
+			int type, click, panel, plusonly;
+			if (t.size() < 14)
+			{
+				LOG(WARNING) << "[Skin] Parameter not enough (Line " << line << ")";
+				type = click = panel = plusonly = 0;
+			}
+			else
+			{
+				type = std::stoi(*++it);
+				click = std::stoi(*++it);
+				panel = std::stoi(*++it);
+				plusonly = 0;
+				if (++it != t.end())
+					plusonly = std::stoi(*it);
+			}
+
+			e = std::make_shared<elemButton>(gr, x, y, w, h, div_x, div_y, cycle, timer, type, click, panel, plusonly);
 			ret = 5;
 		}
 		else if (opt == "#SRC_ONMOUSE")
